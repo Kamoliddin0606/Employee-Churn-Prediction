@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Upload, FileSpreadsheet, AlertCircle, CheckCircle2, X } from 'lucide-react';
+import { Upload, FileSpreadsheet, AlertCircle, CheckCircle2, X, Calendar } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
 import { Progress } from './ui/progress';
@@ -24,6 +24,8 @@ export function FileImport() {
   const [errors, setErrors] = useState<string[]>([]);
   const [warnings, setWarnings] = useState<string[]>([]);
   const [importStatus, setImportStatus] = useState<'idle' | 'parsing' | 'importing' | 'success' | 'error'>('idle');
+  const [manualYear, setManualYear] = useState<number>(new Date().getFullYear() - 1);
+  const [showYearInput, setShowYearInput] = useState(false);
 
   const {
     employees,
@@ -67,15 +69,26 @@ export function FileImport() {
     }
   }, []);
 
-  const handleFilePreview = async (file: File) => {
+  const handleFilePreview = async (file: File, yearOverride?: number) => {
     setImportStatus('parsing');
     setErrors([]);
     setWarnings([]);
     setImportProgress(10);
 
     try {
-      const result = await parseExcelFile(file);
+      const result = await parseExcelFile(file, yearOverride);
       setImportProgress(50);
+      
+      // Check if Time Period was not found - show year input option
+      // Only set showYearInput on initial preview (when yearOverride is not provided)
+      if (yearOverride === undefined) {
+        const timePeriodNotFound = result.warnings.some(w => w.includes('Time Period topilmadi'));
+        setShowYearInput(timePeriodNotFound);
+        // If Time Period not found, default to previous year (most common case)
+        if (timePeriodNotFound) {
+          setManualYear(new Date().getFullYear() - 1);
+        }
+      }
 
       if (result.errors.length > 0) {
         setErrors(result.errors);
@@ -116,6 +129,13 @@ export function FileImport() {
     }
   };
 
+  const handleYearChange = (year: number) => {
+    setManualYear(year);
+    if (file) {
+      handleFilePreview(file, year);
+    }
+  };
+
   const handleImport = async () => {
     if (!file) return;
 
@@ -124,7 +144,8 @@ export function FileImport() {
     setImportProgress(0);
 
     try {
-      const result = await parseExcelFile(file);
+      // Always use manualYear when showYearInput is true
+      const result = await parseExcelFile(file, showYearInput ? manualYear : undefined);
       
       if (result.errors.length > 0) {
         setErrors(result.errors);
@@ -314,6 +335,29 @@ export function FileImport() {
                     <li>{t.import.andMore.replace('{count}', String(warnings.length - 5))}</li>
                   )}
                 </ul>
+              </div>
+            )}
+
+            {/* Year Input - shown when Time Period not found */}
+            {showYearInput && (
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg space-y-3">
+                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400">
+                  <Calendar className="h-5 w-5" />
+                  <span className="font-medium">{t.import.yearInput}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="number"
+                    value={manualYear}
+                    onChange={(e) => handleYearChange(parseInt(e.target.value, 10) || new Date().getFullYear())}
+                    min={2000}
+                    max={2100}
+                    className="w-24 px-3 py-2 text-sm border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    {t.import.yearInputDesc}
+                  </span>
+                </div>
               </div>
             )}
 

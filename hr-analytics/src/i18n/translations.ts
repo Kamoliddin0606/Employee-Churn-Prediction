@@ -51,6 +51,10 @@ export const translations = {
       clearFilter: "Tozalash",
       selectedDepartments: "Tanlangan",
       topViolators: "Tartib buzarlar ro'yxati",
+      period: "Davr",
+      availableRange: "Mavjud oraliq",
+      from: "Dan",
+      to: "Gacha",
     },
     
     // Status codes
@@ -85,6 +89,8 @@ export const translations = {
       readError: "Faylni o'qishda xatolik",
       importError: 'Import xatoligi',
       unknownError: "Noma'lum xatolik",
+      yearInput: "Ma'lumotlar yili",
+      yearInputDesc: "Time Period topilmadi. Yilni qo'lda kiriting.",
     },
     
     // Employee List
@@ -227,6 +233,10 @@ export const translations = {
       clearFilter: 'Очистить',
       selectedDepartments: 'Выбрано',
       topViolators: 'Список нарушителей',
+      period: 'Период',
+      availableRange: 'Доступный диапазон',
+      from: 'С',
+      to: 'По',
     },
     
     // Status codes
@@ -261,6 +271,8 @@ export const translations = {
       readError: 'Ошибка чтения файла',
       importError: 'Ошибка импорта',
       unknownError: 'Неизвестная ошибка',
+      yearInput: 'Год данных',
+      yearInputDesc: 'Time Period не найден. Введите год вручную.',
     },
     
     // Employee List
@@ -403,6 +415,10 @@ export const translations = {
       clearFilter: 'Clear',
       selectedDepartments: 'Selected',
       topViolators: 'Top Violators List',
+      period: 'Period',
+      availableRange: 'Available range',
+      from: 'From',
+      to: 'To',
     },
     
     // Status codes
@@ -437,6 +453,8 @@ export const translations = {
       readError: 'Error reading file',
       importError: 'Import error',
       unknownError: 'Unknown error',
+      yearInput: 'Data Year',
+      yearInputDesc: 'Time Period not found. Enter the year manually.',
     },
     
     // Employee List

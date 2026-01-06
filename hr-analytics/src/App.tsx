@@ -44,9 +44,9 @@ function App() {
 
   const navItems = [
     { id: 'dashboard', label: t.nav.dashboard, icon: LayoutDashboard },
-    { id: 'import', label: t.nav.import, icon: Upload },
-    { id: 'employees', label: t.nav.employees, icon: Users },
     { id: 'charts', label: t.nav.charts, icon: BarChart3 },
+    { id: 'employees', label: t.nav.employees, icon: Users },
+    { id: 'import', label: t.nav.import, icon: Upload },
     { id: 'admin', label: t.nav.settings, icon: Settings },
   ];
 

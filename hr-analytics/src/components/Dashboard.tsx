@@ -4,7 +4,6 @@ import {
   Clock, 
   AlertTriangle, 
   TrendingUp,
-  Calendar,
   Award,
   UserX,
   Timer,
@@ -12,11 +11,13 @@ import {
   X,
   Check,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Calendar
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
+import { DateRangePicker } from './ui/date-range-picker';
 import { useStore } from '../store/useStore';
 import { 
   calculateEmployeeStats, 
@@ -28,10 +29,14 @@ import { useLanguage } from '../i18n';
 
 export function Dashboard() {
   const { employees, attendance } = useStore();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
   const [isFilterExpanded, setIsFilterExpanded] = useState(true);
   const [topListLimit, setTopListLimit] = useState(5);
+  
+  // Period filter
+  const [dateFrom, setDateFrom] = useState<string>('');
+  const [dateTo, setDateTo] = useState<string>('');
   
   // Department table sorting
   type DeptSortField = 'department' | 'employeeCount' | 'attendance' | 'absent' | 'late' | 'violations' | 'discipline';
@@ -52,6 +57,13 @@ export function Dashboard() {
     return [...new Set(employees.map(e => e.department))].sort();
   }, [employees]);
 
+  // Get available date range from attendance data
+  const dateRange = useMemo(() => {
+    if (attendance.length === 0) return { min: '', max: '', dates: [] as string[] };
+    const dates = [...new Set(attendance.map(a => a.date))].sort();
+    return { min: dates[0], max: dates[dates.length - 1], dates };
+  }, [attendance]);
+
   // Filter employees and attendance by selected departments
   const filteredEmployees = useMemo(() => {
     if (selectedDepartments.length === 0) return employees;
@@ -59,10 +71,24 @@ export function Dashboard() {
   }, [employees, selectedDepartments]);
 
   const filteredAttendance = useMemo(() => {
-    if (selectedDepartments.length === 0) return attendance;
-    const filteredEmployeeIds = new Set(filteredEmployees.map(e => e.id));
-    return attendance.filter(a => filteredEmployeeIds.has(a.employeeId));
-  }, [attendance, filteredEmployees, selectedDepartments]);
+    let result = attendance;
+    
+    // Filter by departments
+    if (selectedDepartments.length > 0) {
+      const filteredEmployeeIds = new Set(filteredEmployees.map(e => e.id));
+      result = result.filter(a => filteredEmployeeIds.has(a.employeeId));
+    }
+    
+    // Filter by date range
+    if (dateFrom) {
+      result = result.filter(a => a.date >= dateFrom);
+    }
+    if (dateTo) {
+      result = result.filter(a => a.date <= dateTo);
+    }
+    
+    return result;
+  }, [attendance, filteredEmployees, selectedDepartments, dateFrom, dateTo]);
 
   const toggleDepartment = (dept: string) => {
     setSelectedDepartments(prev => 
@@ -221,25 +247,53 @@ export function Dashboard() {
         </CardHeader>
         {isFilterExpanded && (
           <CardContent className="pt-0">
-            <div className="flex items-center justify-end gap-2 mb-3">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={(e) => { e.stopPropagation(); selectAllDepartments(); }}
-                disabled={selectedDepartments.length === allDepartments.length}
-              >
-                <Check className="h-3 w-3 mr-1" />
-                {t.dashboard.selectAll}
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={(e) => { e.stopPropagation(); clearFilters(); }}
-                disabled={selectedDepartments.length === 0}
-              >
-                <X className="h-3 w-3 mr-1" />
-                {t.dashboard.clearFilter}
-              </Button>
+            {/* Period Filter */}
+            <div className="flex flex-wrap items-center gap-3 mb-4 pb-4 border-b">
+              <span className="text-sm font-medium">{t.dashboard.period}:</span>
+              <DateRangePicker
+                dateFrom={dateFrom}
+                dateTo={dateTo}
+                onDateFromChange={setDateFrom}
+                onDateToChange={setDateTo}
+                availableDates={dateRange.dates}
+                locale={language as 'uz' | 'ru' | 'en'}
+                labels={{
+                  from: t.dashboard.from,
+                  to: t.dashboard.to,
+                  clear: t.dashboard.clearFilter,
+                  selectRange: t.dashboard.period
+                }}
+              />
+              {dateRange.min && (
+                <span className="text-xs text-muted-foreground ml-auto">
+                  {t.dashboard.availableRange}: {dateRange.min} — {dateRange.max}
+                </span>
+              )}
+            </div>
+
+            {/* Department Filter */}
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm font-medium">{t.dashboard.filterByDepartment}:</span>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={(e) => { e.stopPropagation(); selectAllDepartments(); }}
+                  disabled={selectedDepartments.length === allDepartments.length}
+                >
+                  <Check className="h-3 w-3 mr-1" />
+                  {t.dashboard.selectAll}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={(e) => { e.stopPropagation(); clearFilters(); }}
+                  disabled={selectedDepartments.length === 0}
+                >
+                  <X className="h-3 w-3 mr-1" />
+                  {t.dashboard.clearFilter}
+                </Button>
+              </div>
             </div>
             <div className="flex flex-wrap gap-2">
               {allDepartments.map(dept => (

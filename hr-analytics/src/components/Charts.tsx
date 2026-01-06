@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   BarChart,
   Bar,
@@ -15,6 +15,7 @@ import {
   Area
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
+import { DateRangePicker } from './ui/date-range-picker';
 import { useStore } from '../store/useStore';
 import { getDepartmentComparison, calculateEmployeeStats } from '../utils/attendanceCalculator';
 import { BarChart3, PieChartIcon, TrendingUp, Calendar } from 'lucide-react';
@@ -23,20 +24,43 @@ import { useLanguage } from '../i18n';
 
 export function Charts() {
   const { employees, attendance } = useStore();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  
+  // Period filter
+  const [dateFrom, setDateFrom] = useState<string>('');
+  const [dateTo, setDateTo] = useState<string>('');
+
+  // Get available date range from attendance data
+  const dateRange = useMemo(() => {
+    if (attendance.length === 0) return { min: '', max: '', dates: [] as string[] };
+    const dates = [...new Set(attendance.map(a => a.date))].sort();
+    return { min: dates[0], max: dates[dates.length - 1], dates };
+  }, [attendance]);
+
+  // Filter attendance by date range
+  const filteredAttendance = useMemo(() => {
+    let result = attendance;
+    if (dateFrom) {
+      result = result.filter(a => a.date >= dateFrom);
+    }
+    if (dateTo) {
+      result = result.filter(a => a.date <= dateTo);
+    }
+    return result;
+  }, [attendance, dateFrom, dateTo]);
 
   const departmentData = useMemo(() => {
-    return getDepartmentComparison(employees, attendance);
-  }, [employees, attendance]);
+    return getDepartmentComparison(employees, filteredAttendance);
+  }, [employees, filteredAttendance]);
 
   const statusDistribution = useMemo(() => {
-    const present = attendance.filter(a => a.statusCode === 'W').length;
-    const late = attendance.filter(a => a.statusCode === 'L').length;
-    const earlyLeave = attendance.filter(a => a.statusCode === 'E').length;
-    const lateAndEarly = attendance.filter(a => a.statusCode === 'LE').length;
-    const absent = attendance.filter(a => a.statusCode === 'A').length;
-    const noSchedule = attendance.filter(a => a.statusCode === 'NS').length;
-    const holiday = attendance.filter(a => a.statusCode === 'H').length;
+    const present = filteredAttendance.filter(a => a.statusCode === 'W').length;
+    const late = filteredAttendance.filter(a => a.statusCode === 'L').length;
+    const earlyLeave = filteredAttendance.filter(a => a.statusCode === 'E').length;
+    const lateAndEarly = filteredAttendance.filter(a => a.statusCode === 'LE').length;
+    const absent = filteredAttendance.filter(a => a.statusCode === 'A').length;
+    const noSchedule = filteredAttendance.filter(a => a.statusCode === 'NS').length;
+    const holiday = filteredAttendance.filter(a => a.statusCode === 'H').length;
 
     return [
       { name: `${t.status.W} (W)`, value: present, color: '#22c55e' },
@@ -47,12 +71,12 @@ export function Charts() {
       { name: `${t.status.NS} (NS)`, value: noSchedule, color: '#9ca3af' },
       { name: `${t.status.H} (H)`, value: holiday, color: '#3b82f6' },
     ].filter(item => item.value > 0);
-  }, [attendance, t]);
+  }, [filteredAttendance, t]);
 
   const dailyTrend = useMemo(() => {
     const dateMap = new Map<string, { date: string; present: number; late: number; absent: number; total: number }>();
     
-    attendance.forEach(record => {
+    filteredAttendance.forEach(record => {
       // Skip non-work days
       if (!record.isWorkDay) return;
       
@@ -73,10 +97,10 @@ export function Charts() {
     });
 
     return Array.from(dateMap.values()).sort((a, b) => a.date.localeCompare(b.date));
-  }, [attendance]);
+  }, [filteredAttendance]);
 
   const disciplineDistribution = useMemo(() => {
-    const stats = employees.map(e => calculateEmployeeStats(e, attendance));
+    const stats = employees.map(e => calculateEmployeeStats(e, filteredAttendance));
     
     const ranges = [
       { range: '90-100', min: 90, max: 100, count: 0 },
@@ -92,7 +116,7 @@ export function Charts() {
     });
 
     return ranges;
-  }, [employees, attendance]);
+  }, [employees, filteredAttendance]);
 
   const violationsByDepartment = useMemo(() => {
     return departmentData.map(dept => ({
@@ -119,6 +143,34 @@ export function Charts() {
 
   return (
     <div className="space-y-6">
+      {/* Period Filter */}
+      <Card>
+        <CardContent className="py-4">
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-sm font-medium">{t.dashboard.period}:</span>
+            <DateRangePicker
+              dateFrom={dateFrom}
+              dateTo={dateTo}
+              onDateFromChange={setDateFrom}
+              onDateToChange={setDateTo}
+              availableDates={dateRange.dates}
+              locale={language as 'uz' | 'ru' | 'en'}
+              labels={{
+                from: t.dashboard.from,
+                to: t.dashboard.to,
+                clear: t.dashboard.clearFilter,
+                selectRange: t.dashboard.period
+              }}
+            />
+            {dateRange.min && (
+              <span className="text-xs text-muted-foreground ml-auto">
+                {t.dashboard.availableRange}: {dateRange.min} — {dateRange.max}
+              </span>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="grid lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
