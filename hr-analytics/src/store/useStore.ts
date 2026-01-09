@@ -5,8 +5,19 @@ import type {
   AttendanceRecord, 
   ImportHistory, 
   ThemeMode,
-  FilterState 
+  FilterState,
+  User 
 } from '../types';
+
+// Default admin user
+const DEFAULT_ADMIN: User = {
+  id: 'admin-001',
+  username: 'admin',
+  password: '795123*',
+  isAdmin: true,
+  allowedDepartments: [],
+  createdAt: new Date().toISOString(),
+};
 
 interface AppState {
   employees: Employee[];
@@ -16,6 +27,11 @@ interface AppState {
   filters: FilterState;
   isImporting: boolean;
   importProgress: number;
+  
+  // Auth state
+  users: User[];
+  currentUser: User | null;
+  isAuthenticated: boolean;
   
   setEmployees: (employees: Employee[]) => void;
   addEmployee: (employee: Employee) => void;
@@ -38,6 +54,17 @@ interface AppState {
   
   setIsImporting: (isImporting: boolean) => void;
   setImportProgress: (progress: number) => void;
+  
+  // Auth actions
+  login: (username: string, password: string) => boolean;
+  logout: () => void;
+  addUser: (user: Omit<User, 'id' | 'createdAt'>) => void;
+  updateUser: (id: string, user: Partial<User>) => void;
+  deleteUser: (id: string) => void;
+  
+  // Helper to get filtered data based on user permissions
+  getFilteredEmployees: () => Employee[];
+  getFilteredAttendance: () => AttendanceRecord[];
 }
 
 const initialFilters: FilterState = {
@@ -59,6 +86,11 @@ export const useStore = create<AppState>()(
       filters: initialFilters,
       isImporting: false,
       importProgress: 0,
+      
+      // Auth state
+      users: [DEFAULT_ADMIN],
+      currentUser: null,
+      isAuthenticated: false,
 
       setEmployees: (employees) => set({ employees }),
       
@@ -164,6 +196,77 @@ export const useStore = create<AppState>()(
 
       setIsImporting: (isImporting) => set({ isImporting }),
       setImportProgress: (importProgress) => set({ importProgress }),
+      
+      // Auth actions
+      login: (username, password) => {
+        const state = get();
+        const user = state.users.find(
+          u => u.username === username && u.password === password
+        );
+        
+        if (user) {
+          set({
+            currentUser: { ...user, lastLogin: new Date().toISOString() },
+            isAuthenticated: true,
+          });
+          return true;
+        }
+        return false;
+      },
+      
+      logout: () => set({
+        currentUser: null,
+        isAuthenticated: false,
+      }),
+      
+      addUser: (userData) => set((state) => {
+        const newUser: User = {
+          ...userData,
+          id: `user-${Date.now()}`,
+          createdAt: new Date().toISOString(),
+        };
+        return { users: [...state.users, newUser] };
+      }),
+      
+      updateUser: (id, userData) => set((state) => ({
+        users: state.users.map(u => 
+          u.id === id ? { ...u, ...userData } : u
+        ),
+        // Update currentUser if it's the same user
+        currentUser: state.currentUser?.id === id 
+          ? { ...state.currentUser, ...userData }
+          : state.currentUser,
+      })),
+      
+      deleteUser: (id) => set((state) => ({
+        users: state.users.filter(u => u.id !== id),
+      })),
+      
+      // Helper to get filtered employees based on user permissions
+      getFilteredEmployees: () => {
+        const state = get();
+        if (!state.currentUser) return [];
+        
+        // Admin with no department restrictions sees all
+        if (state.currentUser.allowedDepartments.length === 0) {
+          return state.employees;
+        }
+        
+        return state.employees.filter(e => 
+          state.currentUser!.allowedDepartments.includes(e.department)
+        );
+      },
+      
+      // Helper to get filtered attendance based on user permissions
+      getFilteredAttendance: () => {
+        const state = get();
+        if (!state.currentUser) return [];
+        
+        const filteredEmployees = state.getFilteredEmployees();
+        const employeeIds = new Set(filteredEmployees.map(e => e.id));
+        
+        return state.attendance.filter(a => employeeIds.has(a.employeeId));
+      },
     }),
     {
       name: 'hr-analytics-storage',
@@ -172,6 +275,9 @@ export const useStore = create<AppState>()(
         attendance: state.attendance,
         importHistory: state.importHistory,
         theme: state.theme,
+        users: state.users,
+        currentUser: state.currentUser,
+        isAuthenticated: state.isAuthenticated,
       }),
       onRehydrateStorage: () => (state) => {
         if (state?.theme === 'dark') {

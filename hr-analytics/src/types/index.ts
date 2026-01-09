@@ -99,6 +99,22 @@ export interface ParsedExcelRow {
 
 export type ThemeMode = 'light' | 'dark';
 
+// Auth types
+export interface User {
+  id: string;
+  username: string;
+  password: string; // In production, this should be hashed
+  isAdmin: boolean;
+  allowedDepartments: string[]; // Empty array means all departments
+  createdAt: string;
+  lastLogin?: string;
+}
+
+export interface AuthState {
+  currentUser: User | null;
+  isAuthenticated: boolean;
+}
+
 export interface FilterState {
   department: string;
   dateFrom: string;
