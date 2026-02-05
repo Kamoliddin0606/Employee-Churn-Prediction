@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react';
-import { 
-  LayoutDashboard, 
-  Upload, 
-  Users, 
-  BarChart3, 
+import {
+  LayoutDashboard,
+  Upload,
+  Users,
+  BarChart3,
   Settings,
   Moon,
   Sun,
   Menu,
   X,
-  Globe
+  Globe,
+  Clock,
+  AlertTriangle
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
 import { Button } from './components/ui/button';
@@ -20,11 +22,13 @@ import {
   DropdownMenuTrigger,
 } from './components/ui/dropdown-menu';
 import { Dashboard } from './components/Dashboard';
-import { FileImport } from './components/FileImport';
+import { FileImportBackend } from './components/FileImportBackend';
 import { EmployeeList } from './components/EmployeeList';
 import { Charts } from './components/Charts';
 import { AdminPanel } from './components/AdminPanel';
 import { StatusLegend } from './components/StatusLegend';
+import ScheduleManager from './components/ScheduleManager';
+import ViolationReport from './components/ViolationReport';
 import { useStore } from './store/useStore';
 import { useLanguage, languageNames, languageFlags, Language } from './i18n';
 
@@ -47,6 +51,8 @@ function App() {
     { id: 'charts', label: t.nav.charts, icon: BarChart3 },
     { id: 'employees', label: t.nav.employees, icon: Users },
     { id: 'import', label: t.nav.import, icon: Upload },
+    { id: 'schedules', label: 'Jadvallar', icon: Clock },
+    { id: 'violations', label: 'Buzilishlar', icon: AlertTriangle },
     { id: 'admin', label: t.nav.settings, icon: Settings },
   ];
 
@@ -64,9 +70,9 @@ function App() {
               {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
             <div className="flex items-center gap-2">
-              <img 
-                src="/logo.jpg" 
-                alt="Gloriya Global" 
+              <img
+                src="/logo.jpg"
+                alt="Gloriya Global"
                 className="h-10 w-10 rounded-lg object-contain"
               />
               <div>
@@ -123,11 +129,10 @@ function App() {
                     setActiveTab(item.id);
                     setIsMobileMenuOpen(false);
                   }}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                    activeTab === item.id
-                      ? 'bg-primary text-primary-foreground'
-                      : 'hover:bg-muted'
-                  }`}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeTab === item.id
+                    ? 'bg-primary text-primary-foreground'
+                    : 'hover:bg-muted'
+                    }`}
                 >
                   <item.icon className="h-5 w-5" />
                   <span>{item.label}</span>
@@ -158,7 +163,7 @@ function App() {
 
           <TabsContent value="import" className="animate-fade-in">
             <div className="max-w-3xl mx-auto">
-              <FileImport />
+              <FileImportBackend />
             </div>
           </TabsContent>
 
@@ -168,6 +173,14 @@ function App() {
 
           <TabsContent value="charts" className="animate-fade-in">
             <Charts />
+          </TabsContent>
+
+          <TabsContent value="schedules" className="animate-fade-in">
+            <ScheduleManager />
+          </TabsContent>
+
+          <TabsContent value="violations" className="animate-fade-in">
+            <ViolationReport />
           </TabsContent>
 
           <TabsContent value="admin" className="animate-fade-in">
