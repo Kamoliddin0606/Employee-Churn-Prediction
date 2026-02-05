@@ -29,6 +29,7 @@ import schedulesRouter from './routes/schedules';
 import importRouter from './routes/import';
 import settingsRouter from './routes/settings';
 import violationsRouter from './routes/violations';
+import compensationRouter from './routes/compensation';
 
 // =============================================================================
 // SERVER CONFIGURATION
@@ -54,9 +55,10 @@ const app: Express = express();
  * Allows requests from frontend development server
  */
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:3000'],
+    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
 }));
 
 /**
@@ -116,6 +118,7 @@ app.use('/api/schedules', schedulesRouter);
 app.use('/api/import', importRouter);
 app.use('/api/settings', settingsRouter);
 app.use('/api/violations', violationsRouter);
+app.use('/api/compensation', compensationRouter);
 
 // =============================================================================
 // ERROR HANDLING

@@ -109,6 +109,34 @@ function cleanDepartmentName(department: string): string {
 }
 
 /**
+ * Validate and normalize attendance status code
+ * Ensures only valid codes are used, defaults to 'NS' for invalid codes
+ * 
+ * @param code - Raw status code from Excel
+ * @returns Valid AttendanceStatusCode
+ */
+export function validateStatusCode(code: string): AttendanceStatusCode {
+    if (!code || code.trim() === '') {
+        return 'NS'; // Default: No Schedule
+    }
+
+    const normalized = code.trim().toUpperCase();
+
+    // Check if it's a valid status code
+    if (VALID_STATUS_CODES.includes(normalized as AttendanceStatusCode)) {
+        return normalized as AttendanceStatusCode;
+    }
+
+    // Log warning for invalid codes
+    log.warn('Invalid status code detected, defaulting to NS', {
+        original: code,
+        normalized
+    });
+
+    return 'NS'; // Default for invalid codes
+}
+
+/**
  * Find the header row in worksheet
  * Searches for row containing Name, ID, Department columns
  * 
@@ -564,5 +592,6 @@ export default {
     parseTimeValue,
     calculateLateMinutes,
     calculateEarlyLeaveMinutes,
-    calculateTotalWorkMinutes
+    calculateTotalWorkMinutes,
+    validateStatusCode
 };

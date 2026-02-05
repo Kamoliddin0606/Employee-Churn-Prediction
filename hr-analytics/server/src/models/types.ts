@@ -196,6 +196,34 @@ export interface CalculationSettings {
     updatedAt: string;
 }
 
+/**
+ * EmployeeCompensation entity
+ * Monthly KPI and salary data for penalty calculations
+ * 
+ * Used to calculate final salary after deducting penalties based on violations.
+ * Each employee can have one compensation record per month.
+ * 
+ * @property baseSalary - Fixed monthly salary without KPI
+ * @property kpiAmount - Monthly KPI bonus amount
+ * @property totalSalary - Auto-calculated: baseSalary + kpiAmount
+ * @property bonus - Additional bonuses (optional)
+ * @property deductions - Manual deductions (optional)
+ */
+export interface EmployeeCompensation {
+    id: number;
+    employeeId: number;
+    year: number;
+    month: number;           // 1-12
+    baseSalary: number;      // KPIsiz maosh
+    kpiAmount: number;       // KPI qiymati
+    totalSalary: number;     // Auto-calculated: baseSalary + kpiAmount
+    bonus: number;           // Qo'shimcha bonus
+    deductions: number;      // Chegirmalar
+    notes: string | null;    // Izohlar
+    createdAt: string;
+    updatedAt: string;
+}
+
 // =============================================================================
 // API TYPES
 // =============================================================================

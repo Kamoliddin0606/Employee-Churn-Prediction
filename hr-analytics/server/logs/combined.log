@@ -37618,3 +37618,1539 @@
 [2026-02-05 14:36:22] INFO: Monthly violation calculation completed | {"context":"ViolationCalculator","year":2026,"month":1,"processedCount":75}
 [2026-02-05 14:36:22] INFO: POST /calculate | {"status":200,"duration":"79ms"}
 [2026-02-05 14:36:22] INFO: GET /report | {"status":200,"duration":"0ms","query":{"year":"2026","month":"1","departmentId":"6","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 14:38:40] INFO: GET / | {"status":304,"duration":"0ms"}
+[2026-02-05 14:38:40] INFO: GET / | {"status":304,"duration":"0ms"}
+[2026-02-05 14:38:40] INFO: GET / | {"status":304,"duration":"1ms"}
+[2026-02-05 14:38:40] INFO: GET / | {"status":304,"duration":"0ms"}
+[2026-02-05 14:38:40] INFO: GET / | {"status":304,"duration":"1ms","query":{"limit":"1000"}}
+[2026-02-05 14:38:40] INFO: GET / | {"status":304,"duration":"0ms","query":{"limit":"1000"}}
+[2026-02-05 14:38:40] INFO: GET /exceptions/list | {"status":304,"duration":"1ms"}
+[2026-02-05 14:38:40] INFO: GET /exceptions/list | {"status":304,"duration":"0ms"}
+[2026-02-05 14:38:40] INFO: GET /calculation | {"status":304,"duration":"1ms"}
+[2026-02-05 14:38:40] INFO: GET /calculation | {"status":304,"duration":"0ms"}
+[2026-02-05 14:38:48] INFO: GET / | {"status":304,"duration":"1ms"}
+[2026-02-05 14:38:48] INFO: GET /report | {"status":304,"duration":"1ms","query":{"year":"2026","month":"2","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 14:38:48] INFO: GET / | {"status":304,"duration":"1ms"}
+[2026-02-05 14:38:48] INFO: GET /report | {"status":304,"duration":"1ms","query":{"year":"2026","month":"2","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 14:38:51] INFO: GET /report | {"status":200,"duration":"1ms","query":{"year":"2026","month":"1","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 14:39:01] INFO: Running database migrations...
+[2026-02-05 14:39:01] INFO: Initializing database connection | {"path":"C:\\Users\\Kamoliddin\\Documents\\GitHub\\Employee-Churn-Prediction\\hr-analytics\\server\\data\\hr_analytics.db"}
+[2026-02-05 14:39:01] INFO: Database connection established successfully
+[2026-02-05 14:39:01] INFO: Starting database migrations...
+[2026-02-05 14:39:01] DEBUG: Migration 1/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 2/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 3/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 4/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 5/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 6/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 7/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 8/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 9/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 10/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 11/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 12/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 13/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 14/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 15/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 16/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 17/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 18/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 19/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 20/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 21/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 22/23 completed
+[2026-02-05 14:39:01] DEBUG: Migration 23/23 completed
+[2026-02-05 14:39:01] INFO: All 23 migrations completed successfully
+[2026-02-05 14:39:01] INFO: 🚀 HR Analytics API server started | {"port":3001,"environment":"development","url":"http://localhost:3001"}
+[2026-02-05 14:39:01] INFO: Available endpoints:
+[2026-02-05 14:39:01] INFO:   GET  /api/health
+[2026-02-05 14:39:01] INFO:   GET  /api/employees
+[2026-02-05 14:39:01] INFO:   GET  /api/departments
+[2026-02-05 14:39:01] INFO:   GET  /api/schedules
+[2026-02-05 14:39:01] INFO:   POST /api/import/upload
+[2026-02-05 14:39:01] INFO:   POST /api/import/recalculate
+[2026-02-05 14:39:01] INFO:   GET  /api/settings/calculation
+[2026-02-05 14:39:01] INFO:   GET  /api/violations/summary
+[2026-02-05 14:39:01] INFO:   POST /api/violations/calculate
+[2026-02-05 14:39:19] INFO: Running database migrations...
+[2026-02-05 14:39:19] INFO: Initializing database connection | {"path":"C:\\Users\\Kamoliddin\\Documents\\GitHub\\Employee-Churn-Prediction\\hr-analytics\\server\\data\\hr_analytics.db"}
+[2026-02-05 14:39:19] INFO: Database connection established successfully
+[2026-02-05 14:39:19] INFO: Starting database migrations...
+[2026-02-05 14:39:19] DEBUG: Migration 1/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 2/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 3/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 4/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 5/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 6/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 7/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 8/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 9/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 10/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 11/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 12/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 13/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 14/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 15/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 16/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 17/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 18/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 19/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 20/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 21/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 22/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 23/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 24/25 completed
+[2026-02-05 14:39:19] DEBUG: Migration 25/25 completed
+[2026-02-05 14:39:19] INFO: All 25 migrations completed successfully
+[2026-02-05 14:39:19] INFO: 🚀 HR Analytics API server started | {"port":3001,"environment":"development","url":"http://localhost:3001"}
+[2026-02-05 14:39:19] INFO: Available endpoints:
+[2026-02-05 14:39:19] INFO:   GET  /api/health
+[2026-02-05 14:39:19] INFO:   GET  /api/employees
+[2026-02-05 14:39:19] INFO:   GET  /api/departments
+[2026-02-05 14:39:19] INFO:   GET  /api/schedules
+[2026-02-05 14:39:19] INFO:   POST /api/import/upload
+[2026-02-05 14:39:19] INFO:   POST /api/import/recalculate
+[2026-02-05 14:39:19] INFO:   GET  /api/settings/calculation
+[2026-02-05 14:39:19] INFO:   GET  /api/violations/summary
+[2026-02-05 14:39:19] INFO:   POST /api/violations/calculate
+[2026-02-05 14:39:38] INFO: Initializing database connection | {"path":"C:\\Users\\Kamoliddin\\Documents\\GitHub\\Employee-Churn-Prediction\\hr-analytics\\server\\data\\hr_analytics.db"}
+[2026-02-05 14:39:38] INFO: Database connection established successfully
+[2026-02-05 14:39:38] INFO: Starting database migrations...
+[2026-02-05 14:39:38] DEBUG: Migration 1/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 2/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 3/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 4/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 5/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 6/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 7/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 8/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 9/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 10/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 11/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 12/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 13/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 14/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 15/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 16/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 17/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 18/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 19/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 20/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 21/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 22/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 23/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 24/25 completed
+[2026-02-05 14:39:38] DEBUG: Migration 25/25 completed
+[2026-02-05 14:39:38] INFO: All 25 migrations completed successfully
+[2026-02-05 14:39:38] INFO: Migration script completed
+[2026-02-05 14:39:38] INFO: Database connection closed
+[2026-02-05 15:28:22] INFO: Running database migrations...
+[2026-02-05 15:28:22] INFO: Initializing database connection | {"path":"C:\\Users\\Kamoliddin\\Documents\\GitHub\\Employee-Churn-Prediction\\hr-analytics\\server\\data\\hr_analytics.db"}
+[2026-02-05 15:28:22] INFO: Database connection established successfully
+[2026-02-05 15:28:22] INFO: Starting database migrations...
+[2026-02-05 15:28:22] DEBUG: Migration 1/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 2/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 3/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 4/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 5/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 6/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 7/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 8/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 9/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 10/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 11/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 12/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 13/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 14/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 15/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 16/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 17/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 18/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 19/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 20/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 21/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 22/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 23/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 24/25 completed
+[2026-02-05 15:28:22] DEBUG: Migration 25/25 completed
+[2026-02-05 15:28:22] INFO: All 25 migrations completed successfully
+[2026-02-05 15:28:22] INFO: 🚀 HR Analytics API server started | {"port":3001,"environment":"development","url":"http://localhost:3001"}
+[2026-02-05 15:28:22] INFO: Available endpoints:
+[2026-02-05 15:28:22] INFO:   GET  /api/health
+[2026-02-05 15:28:22] INFO:   GET  /api/employees
+[2026-02-05 15:28:22] INFO:   GET  /api/departments
+[2026-02-05 15:28:22] INFO:   GET  /api/schedules
+[2026-02-05 15:28:22] INFO:   POST /api/import/upload
+[2026-02-05 15:28:22] INFO:   POST /api/import/recalculate
+[2026-02-05 15:28:22] INFO:   GET  /api/settings/calculation
+[2026-02-05 15:28:22] INFO:   GET  /api/violations/summary
+[2026-02-05 15:28:22] INFO:   POST /api/violations/calculate
+[2026-02-05 15:28:38] INFO: Generating compensation template | {"context":"CompensationAPI"}
+[2026-02-05 15:28:38] INFO: Template generated successfully | {"context":"CompensationAPI"}
+[2026-02-05 15:28:38] INFO: GET /template | {"status":200,"duration":"28ms"}
+[2026-02-05 15:29:47] INFO: Running database migrations...
+[2026-02-05 15:29:47] INFO: Initializing database connection | {"path":"C:\\Users\\Kamoliddin\\Documents\\GitHub\\Employee-Churn-Prediction\\hr-analytics\\server\\data\\hr_analytics.db"}
+[2026-02-05 15:29:47] INFO: Database connection established successfully
+[2026-02-05 15:29:47] INFO: Starting database migrations...
+[2026-02-05 15:29:47] DEBUG: Migration 1/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 2/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 3/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 4/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 5/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 6/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 7/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 8/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 9/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 10/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 11/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 12/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 13/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 14/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 15/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 16/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 17/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 18/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 19/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 20/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 21/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 22/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 23/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 24/25 completed
+[2026-02-05 15:29:47] DEBUG: Migration 25/25 completed
+[2026-02-05 15:29:47] INFO: All 25 migrations completed successfully
+[2026-02-05 15:29:47] INFO: 🚀 HR Analytics API server started | {"port":3001,"environment":"development","url":"http://localhost:3001"}
+[2026-02-05 15:29:47] INFO: Available endpoints:
+[2026-02-05 15:29:47] INFO:   GET  /api/health
+[2026-02-05 15:29:47] INFO:   GET  /api/employees
+[2026-02-05 15:29:47] INFO:   GET  /api/departments
+[2026-02-05 15:29:47] INFO:   GET  /api/schedules
+[2026-02-05 15:29:47] INFO:   POST /api/import/upload
+[2026-02-05 15:29:47] INFO:   POST /api/import/recalculate
+[2026-02-05 15:29:47] INFO:   GET  /api/settings/calculation
+[2026-02-05 15:29:47] INFO:   GET  /api/violations/summary
+[2026-02-05 15:29:47] INFO:   POST /api/violations/calculate
+[2026-02-05 15:29:49] INFO: Running database migrations...
+[2026-02-05 15:29:49] INFO: Initializing database connection | {"path":"C:\\Users\\Kamoliddin\\Documents\\GitHub\\Employee-Churn-Prediction\\hr-analytics\\server\\data\\hr_analytics.db"}
+[2026-02-05 15:29:49] INFO: Database connection established successfully
+[2026-02-05 15:29:49] INFO: Starting database migrations...
+[2026-02-05 15:29:49] DEBUG: Migration 1/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 2/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 3/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 4/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 5/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 6/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 7/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 8/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 9/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 10/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 11/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 12/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 13/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 14/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 15/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 16/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 17/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 18/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 19/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 20/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 21/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 22/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 23/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 24/25 completed
+[2026-02-05 15:29:49] DEBUG: Migration 25/25 completed
+[2026-02-05 15:29:49] INFO: All 25 migrations completed successfully
+[2026-02-05 15:29:49] INFO: 🚀 HR Analytics API server started | {"port":3001,"environment":"development","url":"http://localhost:3001"}
+[2026-02-05 15:29:49] INFO: Available endpoints:
+[2026-02-05 15:29:49] INFO:   GET  /api/health
+[2026-02-05 15:29:49] INFO:   GET  /api/employees
+[2026-02-05 15:29:49] INFO:   GET  /api/departments
+[2026-02-05 15:29:49] INFO:   GET  /api/schedules
+[2026-02-05 15:29:49] INFO:   POST /api/import/upload
+[2026-02-05 15:29:49] INFO:   POST /api/import/recalculate
+[2026-02-05 15:29:49] INFO:   GET  /api/settings/calculation
+[2026-02-05 15:29:49] INFO:   GET  /api/violations/summary
+[2026-02-05 15:29:49] INFO:   POST /api/violations/calculate
+[2026-02-05 15:30:17] INFO: Running database migrations...
+[2026-02-05 15:30:17] INFO: Initializing database connection | {"path":"C:\\Users\\Kamoliddin\\Documents\\GitHub\\Employee-Churn-Prediction\\hr-analytics\\server\\data\\hr_analytics.db"}
+[2026-02-05 15:30:17] INFO: Database connection established successfully
+[2026-02-05 15:30:17] INFO: Starting database migrations...
+[2026-02-05 15:30:17] DEBUG: Migration 1/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 2/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 3/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 4/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 5/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 6/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 7/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 8/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 9/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 10/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 11/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 12/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 13/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 14/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 15/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 16/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 17/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 18/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 19/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 20/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 21/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 22/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 23/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 24/25 completed
+[2026-02-05 15:30:17] DEBUG: Migration 25/25 completed
+[2026-02-05 15:30:17] INFO: All 25 migrations completed successfully
+[2026-02-05 15:30:17] INFO: 🚀 HR Analytics API server started | {"port":3001,"environment":"development","url":"http://localhost:3001"}
+[2026-02-05 15:30:17] INFO: Available endpoints:
+[2026-02-05 15:30:17] INFO:   GET  /api/health
+[2026-02-05 15:30:17] INFO:   GET  /api/employees
+[2026-02-05 15:30:17] INFO:   GET  /api/departments
+[2026-02-05 15:30:17] INFO:   GET  /api/schedules
+[2026-02-05 15:30:17] INFO:   POST /api/import/upload
+[2026-02-05 15:30:17] INFO:   POST /api/import/recalculate
+[2026-02-05 15:30:17] INFO:   GET  /api/settings/calculation
+[2026-02-05 15:30:17] INFO:   GET  /api/violations/summary
+[2026-02-05 15:30:17] INFO:   POST /api/violations/calculate
+[2026-02-05 15:31:25] INFO: Running database migrations...
+[2026-02-05 15:31:25] INFO: Initializing database connection | {"path":"C:\\Users\\Kamoliddin\\Documents\\GitHub\\Employee-Churn-Prediction\\hr-analytics\\server\\data\\hr_analytics.db"}
+[2026-02-05 15:31:25] INFO: Database connection established successfully
+[2026-02-05 15:31:25] INFO: Starting database migrations...
+[2026-02-05 15:31:25] DEBUG: Migration 1/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 2/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 3/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 4/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 5/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 6/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 7/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 8/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 9/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 10/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 11/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 12/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 13/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 14/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 15/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 16/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 17/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 18/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 19/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 20/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 21/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 22/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 23/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 24/25 completed
+[2026-02-05 15:31:25] DEBUG: Migration 25/25 completed
+[2026-02-05 15:31:25] INFO: All 25 migrations completed successfully
+[2026-02-05 15:31:25] INFO: 🚀 HR Analytics API server started | {"port":3001,"environment":"development","url":"http://localhost:3001"}
+[2026-02-05 15:31:25] INFO: Available endpoints:
+[2026-02-05 15:31:25] INFO:   GET  /api/health
+[2026-02-05 15:31:25] INFO:   GET  /api/employees
+[2026-02-05 15:31:25] INFO:   GET  /api/departments
+[2026-02-05 15:31:25] INFO:   GET  /api/schedules
+[2026-02-05 15:31:25] INFO:   POST /api/import/upload
+[2026-02-05 15:31:25] INFO:   POST /api/import/recalculate
+[2026-02-05 15:31:25] INFO:   GET  /api/settings/calculation
+[2026-02-05 15:31:25] INFO:   GET  /api/violations/summary
+[2026-02-05 15:31:25] INFO:   POST /api/violations/calculate
+[2026-02-05 15:31:42] INFO: Running database migrations...
+[2026-02-05 15:31:42] INFO: Initializing database connection | {"path":"C:\\Users\\Kamoliddin\\Documents\\GitHub\\Employee-Churn-Prediction\\hr-analytics\\server\\data\\hr_analytics.db"}
+[2026-02-05 15:31:42] INFO: Database connection established successfully
+[2026-02-05 15:31:42] INFO: Starting database migrations...
+[2026-02-05 15:31:42] DEBUG: Migration 1/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 2/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 3/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 4/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 5/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 6/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 7/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 8/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 9/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 10/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 11/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 12/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 13/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 14/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 15/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 16/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 17/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 18/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 19/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 20/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 21/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 22/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 23/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 24/25 completed
+[2026-02-05 15:31:42] DEBUG: Migration 25/25 completed
+[2026-02-05 15:31:42] INFO: All 25 migrations completed successfully
+[2026-02-05 15:31:42] INFO: 🚀 HR Analytics API server started | {"port":3001,"environment":"development","url":"http://localhost:3001"}
+[2026-02-05 15:31:42] INFO: Available endpoints:
+[2026-02-05 15:31:42] INFO:   GET  /api/health
+[2026-02-05 15:31:42] INFO:   GET  /api/employees
+[2026-02-05 15:31:42] INFO:   GET  /api/departments
+[2026-02-05 15:31:42] INFO:   GET  /api/schedules
+[2026-02-05 15:31:42] INFO:   POST /api/import/upload
+[2026-02-05 15:31:42] INFO:   POST /api/import/recalculate
+[2026-02-05 15:31:42] INFO:   GET  /api/settings/calculation
+[2026-02-05 15:31:42] INFO:   GET  /api/violations/summary
+[2026-02-05 15:31:42] INFO:   POST /api/violations/calculate
+[2026-02-05 15:32:27] INFO: Running database migrations...
+[2026-02-05 15:32:27] INFO: Initializing database connection | {"path":"C:\\Users\\Kamoliddin\\Documents\\GitHub\\Employee-Churn-Prediction\\hr-analytics\\server\\data\\hr_analytics.db"}
+[2026-02-05 15:32:27] INFO: Database connection established successfully
+[2026-02-05 15:32:27] INFO: Starting database migrations...
+[2026-02-05 15:32:27] DEBUG: Migration 1/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 2/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 3/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 4/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 5/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 6/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 7/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 8/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 9/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 10/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 11/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 12/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 13/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 14/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 15/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 16/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 17/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 18/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 19/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 20/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 21/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 22/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 23/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 24/25 completed
+[2026-02-05 15:32:27] DEBUG: Migration 25/25 completed
+[2026-02-05 15:32:27] INFO: All 25 migrations completed successfully
+[2026-02-05 15:32:27] INFO: 🚀 HR Analytics API server started | {"port":3001,"environment":"development","url":"http://localhost:3001"}
+[2026-02-05 15:32:27] INFO: Available endpoints:
+[2026-02-05 15:32:27] INFO:   GET  /api/health
+[2026-02-05 15:32:27] INFO:   GET  /api/employees
+[2026-02-05 15:32:27] INFO:   GET  /api/departments
+[2026-02-05 15:32:27] INFO:   GET  /api/schedules
+[2026-02-05 15:32:27] INFO:   POST /api/import/upload
+[2026-02-05 15:32:27] INFO:   POST /api/import/recalculate
+[2026-02-05 15:32:27] INFO:   GET  /api/settings/calculation
+[2026-02-05 15:32:27] INFO:   GET  /api/violations/summary
+[2026-02-05 15:32:27] INFO:   POST /api/violations/calculate
+[2026-02-05 15:33:25] INFO: Generating compensation template | {"context":"CompensationAPI"}
+[2026-02-05 15:33:25] INFO: Template generated successfully | {"context":"CompensationAPI"}
+[2026-02-05 15:33:25] INFO: GET /template | {"status":200,"duration":"24ms"}
+[2026-02-05 15:33:34] INFO: Running database migrations...
+[2026-02-05 15:33:34] INFO: Initializing database connection | {"path":"C:\\Users\\Kamoliddin\\Documents\\GitHub\\Employee-Churn-Prediction\\hr-analytics\\server\\data\\hr_analytics.db"}
+[2026-02-05 15:33:34] INFO: Database connection established successfully
+[2026-02-05 15:33:34] INFO: Starting database migrations...
+[2026-02-05 15:33:34] DEBUG: Migration 1/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 2/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 3/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 4/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 5/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 6/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 7/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 8/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 9/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 10/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 11/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 12/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 13/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 14/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 15/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 16/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 17/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 18/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 19/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 20/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 21/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 22/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 23/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 24/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 25/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 26/27 completed
+[2026-02-05 15:33:34] DEBUG: Migration 27/27 completed
+[2026-02-05 15:33:34] INFO: All 27 migrations completed successfully
+[2026-02-05 15:33:34] INFO: 🚀 HR Analytics API server started | {"port":3001,"environment":"development","url":"http://localhost:3001"}
+[2026-02-05 15:33:34] INFO: Available endpoints:
+[2026-02-05 15:33:34] INFO:   GET  /api/health
+[2026-02-05 15:33:34] INFO:   GET  /api/employees
+[2026-02-05 15:33:34] INFO:   GET  /api/departments
+[2026-02-05 15:33:34] INFO:   GET  /api/schedules
+[2026-02-05 15:33:34] INFO:   POST /api/import/upload
+[2026-02-05 15:33:34] INFO:   POST /api/import/recalculate
+[2026-02-05 15:33:34] INFO:   GET  /api/settings/calculation
+[2026-02-05 15:33:34] INFO:   GET  /api/violations/summary
+[2026-02-05 15:33:34] INFO:   POST /api/violations/calculate
+[2026-02-05 15:34:27] INFO: Starting import | {"context":"ImportAPI","fileName":"Monthly Check In&Out_2026-01-01_2026-01-31.xlsx","size":17905,"userFileType":"checkinout"}
+[2026-02-05 15:34:27] INFO: Starting Excel parse | {"context":"ExcelParser"}
+[2026-02-05 15:34:27] INFO: Found time period in row 7 | {"context":"ExcelParser","startYear":2026,"startMonth":1,"endYear":2026,"endMonth":1}
+[2026-02-05 15:34:27] DEBUG: Found header row | {"context":"ExcelParser","row":7,"valA":"name","valB":"id","valC":"department"}
+[2026-02-05 15:34:27] INFO: Header row found | {"context":"ExcelParser","headerRowIndex":7}
+[2026-02-05 15:34:27] INFO: Detected file type from title: checkinout | {"context":"ExcelParser","value":"monthly check in&out report"}
+[2026-02-05 15:34:27] INFO: Detected file type | {"context":"ExcelParser","fileType":"checkinout","sampleCount":50}
+[2026-02-05 15:34:27] INFO: Excel parse completed | {"context":"ExcelParser","employeeCount":75,"dateColumns":22,"fileType":"checkinout","errors":0,"warnings":0}
+[2026-02-05 15:34:27] INFO: Using file type | {"context":"ImportAPI","detected":"checkinout","userSpecified":"checkinout","effective":"checkinout"}
+[2026-02-05 15:34:27] INFO: Import completed | {"context":"ImportAPI","importId":5,"newEmployees":0,"updatedRecords":828,"totalEmployees":75,"dateColumns":22,"fileType":"checkinout"}
+[2026-02-05 15:34:27] INFO: POST /upload | {"status":200,"duration":"137ms"}
+[2026-02-05 15:35:05] INFO: Starting import | {"context":"ImportAPI","fileName":"Monthly Check In&Out_2026-01-01_2026-01-31.xlsx","size":17905,"userFileType":"checkinout"}
+[2026-02-05 15:35:05] INFO: Starting Excel parse | {"context":"ExcelParser"}
+[2026-02-05 15:35:05] INFO: Found time period in row 7 | {"context":"ExcelParser","startYear":2026,"startMonth":1,"endYear":2026,"endMonth":1}
+[2026-02-05 15:35:05] DEBUG: Found header row | {"context":"ExcelParser","row":7,"valA":"name","valB":"id","valC":"department"}
+[2026-02-05 15:35:05] INFO: Header row found | {"context":"ExcelParser","headerRowIndex":7}
+[2026-02-05 15:35:05] INFO: Detected file type from title: checkinout | {"context":"ExcelParser","value":"monthly check in&out report"}
+[2026-02-05 15:35:05] INFO: Detected file type | {"context":"ExcelParser","fileType":"checkinout","sampleCount":50}
+[2026-02-05 15:35:05] INFO: Excel parse completed | {"context":"ExcelParser","employeeCount":75,"dateColumns":22,"fileType":"checkinout","errors":0,"warnings":0}
+[2026-02-05 15:35:05] INFO: Using file type | {"context":"ImportAPI","detected":"checkinout","userSpecified":"checkinout","effective":"checkinout"}
+[2026-02-05 15:35:06] INFO: Import completed | {"context":"ImportAPI","importId":6,"newEmployees":0,"updatedRecords":828,"totalEmployees":75,"dateColumns":22,"fileType":"checkinout"}
+[2026-02-05 15:35:06] INFO: POST /upload | {"status":200,"duration":"117ms"}
+[2026-02-05 15:36:02] INFO: Starting import | {"context":"ImportAPI","fileName":"Monthly Check In&Out_2026-01-01_2026-01-31.xlsx","size":17905,"userFileType":"checkinout"}
+[2026-02-05 15:36:02] INFO: Starting Excel parse | {"context":"ExcelParser"}
+[2026-02-05 15:36:02] INFO: Found time period in row 7 | {"context":"ExcelParser","startYear":2026,"startMonth":1,"endYear":2026,"endMonth":1}
+[2026-02-05 15:36:02] DEBUG: Found header row | {"context":"ExcelParser","row":7,"valA":"name","valB":"id","valC":"department"}
+[2026-02-05 15:36:02] INFO: Header row found | {"context":"ExcelParser","headerRowIndex":7}
+[2026-02-05 15:36:02] INFO: Detected file type from title: checkinout | {"context":"ExcelParser","value":"monthly check in&out report"}
+[2026-02-05 15:36:02] INFO: Detected file type | {"context":"ExcelParser","fileType":"checkinout","sampleCount":50}
+[2026-02-05 15:36:02] INFO: Excel parse completed | {"context":"ExcelParser","employeeCount":75,"dateColumns":22,"fileType":"checkinout","errors":0,"warnings":0}
+[2026-02-05 15:36:02] INFO: Using file type | {"context":"ImportAPI","detected":"checkinout","userSpecified":"checkinout","effective":"checkinout"}
+[2026-02-05 15:36:02] INFO: Import completed | {"context":"ImportAPI","importId":7,"newEmployees":0,"updatedRecords":828,"totalEmployees":75,"dateColumns":22,"fileType":"checkinout"}
+[2026-02-05 15:36:02] INFO: POST /upload | {"status":200,"duration":"130ms"}
+[2026-02-05 15:36:33] INFO: Starting import | {"context":"ImportAPI","fileName":"Monthly Check In&Out_2026-01-01_2026-01-31.xlsx","size":17905,"userFileType":"checkinout"}
+[2026-02-05 15:36:33] INFO: Starting Excel parse | {"context":"ExcelParser"}
+[2026-02-05 15:36:33] INFO: Found time period in row 7 | {"context":"ExcelParser","startYear":2026,"startMonth":1,"endYear":2026,"endMonth":1}
+[2026-02-05 15:36:33] DEBUG: Found header row | {"context":"ExcelParser","row":7,"valA":"name","valB":"id","valC":"department"}
+[2026-02-05 15:36:33] INFO: Header row found | {"context":"ExcelParser","headerRowIndex":7}
+[2026-02-05 15:36:33] INFO: Detected file type from title: checkinout | {"context":"ExcelParser","value":"monthly check in&out report"}
+[2026-02-05 15:36:33] INFO: Detected file type | {"context":"ExcelParser","fileType":"checkinout","sampleCount":50}
+[2026-02-05 15:36:33] INFO: Excel parse completed | {"context":"ExcelParser","employeeCount":75,"dateColumns":22,"fileType":"checkinout","errors":0,"warnings":0}
+[2026-02-05 15:36:33] INFO: Using file type | {"context":"ImportAPI","detected":"checkinout","userSpecified":"checkinout","effective":"checkinout"}
+[2026-02-05 15:36:34] INFO: Import completed | {"context":"ImportAPI","importId":8,"newEmployees":0,"updatedRecords":828,"totalEmployees":75,"dateColumns":22,"fileType":"checkinout"}
+[2026-02-05 15:36:34] INFO: POST /upload | {"status":200,"duration":"101ms"}
+[2026-02-05 15:41:56] INFO: Starting import | {"context":"ImportAPI","fileName":"Monthly Details_2026-01-01_2026-01-31.xlsx","size":13268,"userFileType":"details"}
+[2026-02-05 15:41:56] INFO: Starting Excel parse | {"context":"ExcelParser"}
+[2026-02-05 15:41:56] INFO: Found time period in row 7 | {"context":"ExcelParser","startYear":2026,"startMonth":1,"endYear":2026,"endMonth":1}
+[2026-02-05 15:41:56] DEBUG: Found header row | {"context":"ExcelParser","row":7,"valA":"name","valB":"id","valC":"department"}
+[2026-02-05 15:41:56] INFO: Header row found | {"context":"ExcelParser","headerRowIndex":7}
+[2026-02-05 15:41:56] INFO: Detected file type from title: details | {"context":"ExcelParser","value":"monthly details"}
+[2026-02-05 15:41:56] INFO: Detected file type | {"context":"ExcelParser","fileType":"details","sampleCount":50}
+[2026-02-05 15:41:56] INFO: Excel parse completed | {"context":"ExcelParser","employeeCount":75,"dateColumns":22,"fileType":"details","errors":0,"warnings":0}
+[2026-02-05 15:41:56] INFO: Using file type | {"context":"ImportAPI","detected":"details","userSpecified":"details","effective":"details"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] WARN: Invalid status code detected, defaulting to NS | {"context":"ExcelParser","original":"-","normalized":"-"}
+[2026-02-05 15:41:56] INFO: Import completed | {"context":"ImportAPI","importId":9,"newEmployees":0,"updatedRecords":1650,"totalEmployees":75,"dateColumns":22,"fileType":"details"}
+[2026-02-05 15:41:56] INFO: POST /upload | {"status":200,"duration":"190ms"}
+[2026-02-05 15:43:29] INFO: Running database migrations...
+[2026-02-05 15:43:29] INFO: Initializing database connection | {"path":"C:\\Users\\Kamoliddin\\Documents\\GitHub\\Employee-Churn-Prediction\\hr-analytics\\server\\data\\hr_analytics.db"}
+[2026-02-05 15:43:29] INFO: Database connection established successfully
+[2026-02-05 15:43:29] INFO: Starting database migrations...
+[2026-02-05 15:43:29] DEBUG: Migration 1/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 2/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 3/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 4/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 5/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 6/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 7/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 8/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 9/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 10/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 11/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 12/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 13/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 14/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 15/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 16/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 17/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 18/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 19/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 20/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 21/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 22/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 23/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 24/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 25/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 26/27 completed
+[2026-02-05 15:43:29] DEBUG: Migration 27/27 completed
+[2026-02-05 15:43:29] INFO: All 27 migrations completed successfully
+[2026-02-05 15:43:29] INFO: 🚀 HR Analytics API server started | {"port":3001,"environment":"development","url":"http://localhost:3001"}
+[2026-02-05 15:43:29] INFO: Available endpoints:
+[2026-02-05 15:43:29] INFO:   GET  /api/health
+[2026-02-05 15:43:29] INFO:   GET  /api/employees
+[2026-02-05 15:43:29] INFO:   GET  /api/departments
+[2026-02-05 15:43:29] INFO:   GET  /api/schedules
+[2026-02-05 15:43:29] INFO:   POST /api/import/upload
+[2026-02-05 15:43:29] INFO:   POST /api/import/recalculate
+[2026-02-05 15:43:29] INFO:   GET  /api/settings/calculation
+[2026-02-05 15:43:29] INFO:   GET  /api/violations/summary
+[2026-02-05 15:43:29] INFO:   POST /api/violations/calculate
+[2026-02-05 15:44:06] INFO: Starting import | {"context":"ImportAPI","fileName":"Monthly Details_2026-01-01_2026-01-31.xlsx","size":13268,"userFileType":"checkinout"}
+[2026-02-05 15:44:06] INFO: Starting Excel parse | {"context":"ExcelParser"}
+[2026-02-05 15:44:06] INFO: Found time period in row 7 | {"context":"ExcelParser","startYear":2026,"startMonth":1,"endYear":2026,"endMonth":1}
+[2026-02-05 15:44:06] DEBUG: Found header row | {"context":"ExcelParser","row":7,"valA":"name","valB":"id","valC":"department"}
+[2026-02-05 15:44:06] INFO: Header row found | {"context":"ExcelParser","headerRowIndex":7}
+[2026-02-05 15:44:06] INFO: Detected file type from title: details | {"context":"ExcelParser","value":"monthly details"}
+[2026-02-05 15:44:06] INFO: Detected file type | {"context":"ExcelParser","fileType":"details","sampleCount":50}
+[2026-02-05 15:44:06] INFO: Excel parse completed | {"context":"ExcelParser","employeeCount":75,"dateColumns":22,"fileType":"details","errors":0,"warnings":0}
+[2026-02-05 15:44:06] INFO: Using file type | {"context":"ImportAPI","detected":"details","userSpecified":"checkinout","effective":"checkinout"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"E"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"LE"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"E"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"E"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"E"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"E"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"E"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"E"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"E"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"E"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"E"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"E"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"E"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"E"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"E"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"E"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"A"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"L"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:06] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:07] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:07] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:44:07] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:07] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:07] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:07] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:07] WARN: Unable to parse time value | {"context":"ExcelParser","value":"W"}
+[2026-02-05 15:44:07] WARN: Unable to parse time value | {"context":"ExcelParser","value":"NS"}
+[2026-02-05 15:47:57] INFO: Running database migrations...
+[2026-02-05 15:47:57] INFO: Initializing database connection | {"path":"C:\\Users\\Kamoliddin\\Documents\\GitHub\\Employee-Churn-Prediction\\hr-analytics\\server\\data\\hr_analytics.db"}
+[2026-02-05 15:47:57] INFO: Database connection established successfully
+[2026-02-05 15:47:57] INFO: Starting database migrations...
+[2026-02-05 15:47:57] DEBUG: Migration 1/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 2/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 3/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 4/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 5/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 6/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 7/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 8/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 9/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 10/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 11/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 12/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 13/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 14/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 15/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 16/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 17/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 18/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 19/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 20/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 21/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 22/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 23/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 24/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 25/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 26/27 completed
+[2026-02-05 15:47:57] DEBUG: Migration 27/27 completed
+[2026-02-05 15:47:57] INFO: All 27 migrations completed successfully
+[2026-02-05 15:47:57] INFO: 🚀 HR Analytics API server started | {"port":3001,"environment":"development","url":"http://localhost:3001"}
+[2026-02-05 15:47:57] INFO: Available endpoints:
+[2026-02-05 15:47:57] INFO:   GET  /api/health
+[2026-02-05 15:47:57] INFO:   GET  /api/employees
+[2026-02-05 15:47:57] INFO:   GET  /api/departments
+[2026-02-05 15:47:57] INFO:   GET  /api/schedules
+[2026-02-05 15:47:57] INFO:   POST /api/import/upload
+[2026-02-05 15:47:57] INFO:   POST /api/import/recalculate
+[2026-02-05 15:47:57] INFO:   GET  /api/settings/calculation
+[2026-02-05 15:47:57] INFO:   GET  /api/violations/summary
+[2026-02-05 15:47:57] INFO:   POST /api/violations/calculate
+[2026-02-05 15:48:07] INFO: Compensation records fetched | {"context":"CompensationAPI","count":0,"year":"2026","month":"2"}
+[2026-02-05 15:48:07] INFO: GET / | {"status":304,"duration":"2ms","query":{"year":"2026","month":"2"}}
+[2026-02-05 15:48:07] INFO: Compensation records fetched | {"context":"CompensationAPI","count":0,"year":"2026","month":"2"}
+[2026-02-05 15:48:07] INFO: GET / | {"status":304,"duration":"1ms","query":{"year":"2026","month":"2"}}
+[2026-02-05 15:48:08] INFO: Generating compensation template with employee data | {"context":"CompensationAPI"}
+[2026-02-05 15:48:08] ERROR: Failed to generate template | {"context":"CompensationAPI","error":{"code":"SQLITE_ERROR"}}
+[2026-02-05 15:48:08] INFO: GET /template | {"status":500,"duration":"7ms"}
+[2026-02-05 15:48:45] INFO: Generating compensation template with employee data | {"context":"CompensationAPI"}
+[2026-02-05 15:48:45] ERROR: Failed to generate template | {"context":"CompensationAPI","error":{"code":"SQLITE_ERROR"}}
+[2026-02-05 15:48:45] INFO: GET /template | {"status":500,"duration":"1ms"}
+[2026-02-05 15:49:52] INFO: GET / | {"status":200,"duration":"1ms"}
+[2026-02-05 15:49:52] INFO: GET / | {"status":304,"duration":"1ms"}
+[2026-02-05 15:49:52] INFO: GET / | {"status":304,"duration":"1ms"}
+[2026-02-05 15:49:52] INFO: GET / | {"status":304,"duration":"1ms"}
+[2026-02-05 15:49:52] INFO: GET / | {"status":304,"duration":"1ms","query":{"limit":"1000"}}
+[2026-02-05 15:49:52] INFO: GET / | {"status":304,"duration":"1ms","query":{"limit":"1000"}}
+[2026-02-05 15:49:52] INFO: GET /exceptions/list | {"status":304,"duration":"1ms"}
+[2026-02-05 15:49:52] INFO: GET /exceptions/list | {"status":304,"duration":"1ms"}
+[2026-02-05 15:49:52] INFO: GET /calculation | {"status":304,"duration":"0ms"}
+[2026-02-05 15:49:52] INFO: GET /calculation | {"status":304,"duration":"0ms"}
+[2026-02-05 15:49:52] INFO: GET / | {"status":304,"duration":"1ms"}
+[2026-02-05 15:49:52] INFO: GET / | {"status":304,"duration":"1ms"}
+[2026-02-05 15:49:52] INFO: GET /report | {"status":304,"duration":"2ms","query":{"year":"2026","month":"2","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 15:49:52] INFO: GET /report | {"status":304,"duration":"1ms","query":{"year":"2026","month":"2","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 15:49:57] INFO: GET /report | {"status":304,"duration":"1ms","query":{"year":"2026","month":"1","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 15:50:01] INFO: GET /report | {"status":200,"duration":"0ms","query":{"year":"2026","month":"1","departmentId":"1","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 15:50:06] INFO: Running database migrations...
+[2026-02-05 15:50:06] INFO: Initializing database connection | {"path":"C:\\Users\\Kamoliddin\\Documents\\GitHub\\Employee-Churn-Prediction\\hr-analytics\\server\\data\\hr_analytics.db"}
+[2026-02-05 15:50:06] INFO: Database connection established successfully
+[2026-02-05 15:50:06] INFO: Starting database migrations...
+[2026-02-05 15:50:06] DEBUG: Migration 1/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 2/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 3/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 4/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 5/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 6/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 7/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 8/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 9/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 10/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 11/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 12/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 13/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 14/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 15/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 16/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 17/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 18/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 19/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 20/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 21/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 22/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 23/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 24/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 25/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 26/27 completed
+[2026-02-05 15:50:06] DEBUG: Migration 27/27 completed
+[2026-02-05 15:50:06] INFO: All 27 migrations completed successfully
+[2026-02-05 15:50:06] INFO: 🚀 HR Analytics API server started | {"port":3001,"environment":"development","url":"http://localhost:3001"}
+[2026-02-05 15:50:06] INFO: Available endpoints:
+[2026-02-05 15:50:06] INFO:   GET  /api/health
+[2026-02-05 15:50:06] INFO:   GET  /api/employees
+[2026-02-05 15:50:06] INFO:   GET  /api/departments
+[2026-02-05 15:50:06] INFO:   GET  /api/schedules
+[2026-02-05 15:50:06] INFO:   POST /api/import/upload
+[2026-02-05 15:50:06] INFO:   POST /api/import/recalculate
+[2026-02-05 15:50:06] INFO:   GET  /api/settings/calculation
+[2026-02-05 15:50:06] INFO:   GET  /api/violations/summary
+[2026-02-05 15:50:06] INFO:   POST /api/violations/calculate
+[2026-02-05 15:50:11] INFO: GET / | {"status":200,"duration":"2ms"}
+[2026-02-05 15:50:11] INFO: GET / | {"status":304,"duration":"0ms"}
+[2026-02-05 15:50:11] INFO: GET / | {"status":304,"duration":"1ms"}
+[2026-02-05 15:50:11] INFO: GET / | {"status":304,"duration":"0ms"}
+[2026-02-05 15:50:11] INFO: GET / | {"status":304,"duration":"1ms","query":{"limit":"1000"}}
+[2026-02-05 15:50:11] INFO: GET / | {"status":304,"duration":"1ms","query":{"limit":"1000"}}
+[2026-02-05 15:50:11] INFO: GET /exceptions/list | {"status":304,"duration":"1ms"}
+[2026-02-05 15:50:11] INFO: GET /exceptions/list | {"status":304,"duration":"0ms"}
+[2026-02-05 15:50:11] INFO: GET /calculation | {"status":304,"duration":"1ms"}
+[2026-02-05 15:50:11] INFO: GET /calculation | {"status":304,"duration":"0ms"}
+[2026-02-05 15:50:36] INFO: GET / | {"status":304,"duration":"0ms"}
+[2026-02-05 15:50:36] INFO: GET / | {"status":304,"duration":"1ms"}
+[2026-02-05 15:50:36] INFO: GET /report | {"status":304,"duration":"1ms","query":{"year":"2026","month":"2","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 15:50:36] INFO: GET /report | {"status":304,"duration":"0ms","query":{"year":"2026","month":"2","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 15:50:38] INFO: GET /report | {"status":200,"duration":"1ms","query":{"year":"2026","month":"2","departmentId":"1","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 15:50:41] INFO: GET /report | {"status":304,"duration":"1ms","query":{"year":"2026","month":"1","departmentId":"1","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 15:51:09] INFO: GET /report | {"status":200,"duration":"0ms","query":{"year":"2026","month":"1","departmentId":"5","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 15:51:16] INFO: GET /report | {"status":200,"duration":"0ms","query":{"year":"2026","month":"1","departmentId":"5","sortBy":"late_count","sortOrder":"desc"}}
+[2026-02-05 15:51:47] INFO: Compensation records fetched | {"context":"CompensationAPI","count":0,"year":"2026","month":"2"}
+[2026-02-05 15:51:47] INFO: GET / | {"status":304,"duration":"1ms","query":{"year":"2026","month":"2"}}
+[2026-02-05 15:51:47] INFO: Compensation records fetched | {"context":"CompensationAPI","count":0,"year":"2026","month":"2"}
+[2026-02-05 15:51:47] INFO: GET / | {"status":304,"duration":"0ms","query":{"year":"2026","month":"2"}}
+[2026-02-05 15:51:51] INFO: GET / | {"status":304,"duration":"1ms"}
+[2026-02-05 15:51:51] INFO: GET / | {"status":304,"duration":"1ms"}
+[2026-02-05 15:51:51] INFO: GET / | {"status":304,"duration":"0ms"}
+[2026-02-05 15:51:51] INFO: GET / | {"status":304,"duration":"0ms"}
+[2026-02-05 15:51:51] INFO: GET / | {"status":304,"duration":"1ms","query":{"limit":"1000"}}
+[2026-02-05 15:51:51] INFO: GET / | {"status":304,"duration":"1ms","query":{"limit":"1000"}}
+[2026-02-05 15:51:51] INFO: GET /exceptions/list | {"status":304,"duration":"0ms"}
+[2026-02-05 15:51:51] INFO: GET /exceptions/list | {"status":304,"duration":"1ms"}
+[2026-02-05 15:51:51] INFO: GET /calculation | {"status":304,"duration":"1ms"}
+[2026-02-05 15:51:51] INFO: GET /calculation | {"status":304,"duration":"0ms"}
+[2026-02-05 15:51:51] INFO: GET / | {"status":304,"duration":"0ms"}
+[2026-02-05 15:51:51] INFO: GET / | {"status":304,"duration":"1ms"}
+[2026-02-05 15:51:51] INFO: GET /report | {"status":304,"duration":"1ms","query":{"year":"2026","month":"2","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 15:51:51] INFO: GET /report | {"status":304,"duration":"1ms","query":{"year":"2026","month":"2","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 15:51:52] INFO: Compensation records fetched | {"context":"CompensationAPI","count":0,"year":"2026","month":"2"}
+[2026-02-05 15:51:52] INFO: GET / | {"status":304,"duration":"1ms","query":{"year":"2026","month":"2"}}
+[2026-02-05 15:51:52] INFO: Compensation records fetched | {"context":"CompensationAPI","count":0,"year":"2026","month":"2"}
+[2026-02-05 15:51:52] INFO: GET / | {"status":304,"duration":"1ms","query":{"year":"2026","month":"2"}}
+[2026-02-05 15:51:53] INFO: Compensation records fetched | {"context":"CompensationAPI","count":0,"year":"2026","month":"2"}
+[2026-02-05 15:51:53] INFO: GET / | {"status":304,"duration":"0ms","query":{"year":"2026","month":"2"}}
+[2026-02-05 15:51:53] INFO: Compensation records fetched | {"context":"CompensationAPI","count":0,"year":"2026","month":"2"}
+[2026-02-05 15:51:53] INFO: GET / | {"status":304,"duration":"0ms","query":{"year":"2026","month":"2"}}
+[2026-02-05 15:52:10] INFO: GET / | {"status":304,"duration":"1ms"}
+[2026-02-05 15:52:10] INFO: GET / | {"status":304,"duration":"0ms"}
+[2026-02-05 15:52:10] INFO: GET /report | {"status":304,"duration":"1ms","query":{"year":"2026","month":"2","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 15:52:10] INFO: GET /report | {"status":304,"duration":"1ms","query":{"year":"2026","month":"2","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 15:52:14] INFO: GET /report | {"status":304,"duration":"1ms","query":{"year":"2026","month":"1","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 15:52:21] INFO: GET /report | {"status":200,"duration":"0ms","query":{"year":"2026","month":"1","departmentId":"2","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 15:52:29] INFO: GET /report | {"status":200,"duration":"0ms","query":{"year":"2026","month":"1","departmentId":"11","sortBy":"violation_count","sortOrder":"desc"}}
+[2026-02-05 15:53:12] INFO: Compensation records fetched | {"context":"CompensationAPI","count":0,"year":"2026","month":"2"}
+[2026-02-05 15:53:12] INFO: GET / | {"status":304,"duration":"1ms","query":{"year":"2026","month":"2"}}
+[2026-02-05 15:53:12] INFO: Compensation records fetched | {"context":"CompensationAPI","count":0,"year":"2026","month":"2"}
+[2026-02-05 15:53:12] INFO: GET / | {"status":304,"duration":"1ms","query":{"year":"2026","month":"2"}}
+[2026-02-05 15:53:13] INFO: Generating compensation template with employee data | {"context":"CompensationAPI"}
+[2026-02-05 15:53:13] ERROR: Failed to generate template | {"context":"CompensationAPI","error":{"code":"SQLITE_ERROR"}}
+[2026-02-05 15:53:13] INFO: GET /template | {"status":500,"duration":"1ms"}
+[2026-02-05 15:55:33] INFO: Compensation records fetched | {"context":"CompensationAPI","count":0,"year":"2026","month":"2"}
+[2026-02-05 15:55:33] INFO: GET / | {"status":304,"duration":"1ms","query":{"year":"2026","month":"2"}}
+[2026-02-05 15:55:33] INFO: Compensation records fetched | {"context":"CompensationAPI","count":0,"year":"2026","month":"2"}
+[2026-02-05 15:55:33] INFO: GET / | {"status":304,"duration":"1ms","query":{"year":"2026","month":"2"}}
+[2026-02-05 15:55:34] INFO: Generating compensation template with employee data | {"context":"CompensationAPI"}
+[2026-02-05 15:55:34] ERROR: Failed to generate template | {"context":"CompensationAPI","error":{"code":"SQLITE_ERROR"}}
+[2026-02-05 15:55:34] INFO: GET /template | {"status":500,"duration":"1ms"}

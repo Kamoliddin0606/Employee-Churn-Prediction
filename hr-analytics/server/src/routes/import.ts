@@ -20,7 +20,8 @@ import {
     parseTimeValue,
     calculateLateMinutes,
     calculateEarlyLeaveMinutes,
-    calculateTotalWorkMinutes
+    calculateTotalWorkMinutes,
+    validateStatusCode
 } from '../services/excelParser';
 import { recalculateTimeRecords } from '../services/scheduleResolver';
 
@@ -302,8 +303,8 @@ router.post('/upload', upload.single('file'), async (req: Request, res: Response
                     const schedule = getEffectiveSchedule(db, employeeId, departmentId, date);
 
                     if (effectiveFileType === 'details') {
-                        // Insert/update attendance record
-                        const statusCode = value.toUpperCase();
+                        // Validate and normalize status code
+                        const statusCode = validateStatusCode(value);
                         const isViolation = ['L', 'E', 'LE', 'A'].includes(statusCode);
 
                         const upsertStmt = db.prepare(`

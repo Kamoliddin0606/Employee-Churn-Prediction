@@ -197,7 +197,36 @@ const migrations: string[] = [
   `INSERT OR IGNORE INTO calculation_settings (id, level) VALUES (1, 'full')`,
 
   // ---------------------------------------------------------------------------
-  // Migration 14: Create indexes for better query performance
+  // Migration 14: Create employee_compensation table
+  // Stores monthly KPI and salary data for penalty calculations
+  // ---------------------------------------------------------------------------
+  `CREATE TABLE IF NOT EXISTS employee_compensation (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    employee_id INTEGER NOT NULL,
+    year INTEGER NOT NULL,
+    month INTEGER NOT NULL CHECK(month >= 1 AND month <= 12),
+    
+    -- Compensation details
+    base_salary REAL NOT NULL CHECK(base_salary >= 0),
+    kpi_amount REAL NOT NULL CHECK(kpi_amount >= 0),
+    total_salary REAL GENERATED ALWAYS AS (base_salary + kpi_amount) STORED,
+    
+    -- Additional fields for future use
+    bonus REAL DEFAULT 0 CHECK(bonus >= 0),
+    deductions REAL DEFAULT 0 CHECK(deductions >= 0),
+    notes TEXT,
+    
+    -- Audit timestamps
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now')),
+    
+    -- Constraints
+    UNIQUE(employee_id, year, month),
+    FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE CASCADE
+  )`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 15: Create indexes for better query performance
   // ---------------------------------------------------------------------------
   `CREATE INDEX IF NOT EXISTS idx_employees_department ON employees(department_id)`,
   `CREATE INDEX IF NOT EXISTS idx_employees_external_id ON employees(external_id)`,
@@ -207,7 +236,13 @@ const migrations: string[] = [
   `CREATE INDEX IF NOT EXISTS idx_attendance_records_date ON attendance_records(date)`,
   `CREATE INDEX IF NOT EXISTS idx_work_schedules_target ON work_schedules(target_type, target_id)`,
   `CREATE INDEX IF NOT EXISTS idx_schedule_exceptions_date ON schedule_exceptions(date)`,
-  `CREATE INDEX IF NOT EXISTS idx_violation_summary_employee ON violation_summary(employee_id, year, month)`
+  `CREATE INDEX IF NOT EXISTS idx_violation_summary_employee ON violation_summary(employee_id, year, month)`,
+  `CREATE INDEX IF NOT EXISTS idx_compensation_employee ON employee_compensation(employee_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_compensation_period ON employee_compensation(year, month)`,
+
+  // Performance indexes for year/month queries
+  `CREATE INDEX IF NOT EXISTS idx_time_records_year_month ON time_records(strftime('%Y-%m', date))`,
+  `CREATE INDEX IF NOT EXISTS idx_attendance_records_year_month ON attendance_records(strftime('%Y-%m', date))`
 ];
 
 // =============================================================================

@@ -11,7 +11,8 @@ import {
   X,
   Globe,
   Clock,
-  AlertTriangle
+  AlertTriangle,
+  DollarSign
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
 import { Button } from './components/ui/button';
@@ -29,6 +30,7 @@ import { AdminPanel } from './components/AdminPanel';
 import { StatusLegend } from './components/StatusLegend';
 import ScheduleManager from './components/ScheduleManager';
 import ViolationReport from './components/ViolationReport';
+import CompensationManager from './components/CompensationManager';
 import { useStore } from './store/useStore';
 import { useLanguage, languageNames, languageFlags, Language } from './i18n';
 
@@ -53,6 +55,7 @@ function App() {
     { id: 'import', label: t.nav.import, icon: Upload },
     { id: 'schedules', label: 'Jadvallar', icon: Clock },
     { id: 'violations', label: 'Buzilishlar', icon: AlertTriangle },
+    { id: 'compensation', label: 'KPI va Maosh', icon: DollarSign },
     { id: 'admin', label: t.nav.settings, icon: Settings },
   ];
 
@@ -181,6 +184,10 @@ function App() {
 
           <TabsContent value="violations" className="animate-fade-in">
             <ViolationReport />
+          </TabsContent>
+
+          <TabsContent value="compensation" className="animate-fade-in">
+            <CompensationManager />
           </TabsContent>
 
           <TabsContent value="admin" className="animate-fade-in">

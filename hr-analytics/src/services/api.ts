@@ -156,6 +156,28 @@ export interface ImportResult {
  */
 export type CalculationLevel = 'organization' | 'department' | 'employee' | 'full';
 
+/**
+ * Employee compensation from API
+ * Monthly KPI and salary data
+ */
+export interface EmployeeCompensation {
+    id: number;
+    employeeId: number;
+    employeeName?: string;
+    employeeExternalId?: string;
+    departmentName?: string;
+    year: number;
+    month: number;
+    baseSalary: number;
+    kpiAmount: number;
+    totalSalary: number;
+    bonus: number;
+    deductions: number;
+    notes: string | null;
+    createdAt: string;
+    updatedAt: string;
+}
+
 // =============================================================================
 // HTTP HELPER
 // =============================================================================
@@ -640,6 +662,124 @@ export const violationsApi = {
 };
 
 // =============================================================================
+// COMPENSATION API
+// =============================================================================
+
+/**
+ * Compensation API client
+ * Handles employee KPI and salary data management
+ */
+export const compensationApi = {
+    /**
+     * Download Excel template for compensation import
+     */
+    async downloadTemplate(): Promise<void> {
+        try {
+            const response = await fetch(`${API_BASE_URL}/compensation/template`);
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'KPI_Maosh_Shablon.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Failed to download template:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Import compensation data from Excel file
+     * 
+     * @param file - Excel file
+     * @param year - Target year
+     * @param month - Target month (1-12)
+     */
+    async import(file: File, year: number, month: number): Promise<ApiResponse<{
+        imported: number;
+        updated: number;
+        errors: string[];
+    }>> {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('year', String(year));
+        formData.append('month', String(month));
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/compensation/import`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                return {
+                    success: false,
+                    error: data.error || `HTTP Error: ${response.status}`,
+                };
+            }
+
+            return data;
+        } catch (error) {
+            console.error('Import failed:', error);
+            return {
+                success: false,
+                error: error instanceof Error ? error.message : 'Network error',
+            };
+        }
+    },
+
+    /**
+     * Get compensation records with optional filtering
+     * 
+     * @param params - Filter parameters (year, month)
+     */
+    async getAll(params?: {
+        year?: number;
+        month?: number;
+    }): Promise<ApiResponse<EmployeeCompensation[]>> {
+        const searchParams = new URLSearchParams();
+        if (params?.year) searchParams.set('year', String(params.year));
+        if (params?.month) searchParams.set('month', String(params.month));
+
+        const query = searchParams.toString();
+        return request(`/compensation${query ? `?${query}` : ''}`);
+    },
+
+    /**
+     * Update a compensation record
+     * 
+     * @param id - Compensation record ID
+     * @param data - Updated data
+     */
+    async update(id: number, data: {
+        baseSalary: number;
+        kpiAmount: number;
+        notes?: string;
+    }): Promise<ApiResponse<void>> {
+        return request(`/compensation/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+        });
+    },
+
+    /**
+     * Delete a compensation record
+     * 
+     * @param id - Compensation record ID
+     */
+    async delete(id: number): Promise<ApiResponse<void>> {
+        return request(`/compensation/${id}`, {
+            method: 'DELETE',
+        });
+    },
+};
+
+// =============================================================================
 // EXPORT ALL APIs
 // =============================================================================
 
@@ -650,6 +790,7 @@ export const api = {
     import: importApi,
     settings: settingsApi,
     violations: violationsApi,
+    compensation: compensationApi,
 };
 
 export default api;

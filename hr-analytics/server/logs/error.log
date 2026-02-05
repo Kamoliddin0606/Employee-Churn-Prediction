@@ -4,3 +4,9 @@
 [2026-02-05 12:48:57] ERROR: Import failed | {"context":"ImportAPI","error":{"code":"SQLITE_CONSTRAINT_CHECK"}}
 [2026-02-05 12:49:12] ERROR: Transaction rolled back due to error | {"error":{"code":"SQLITE_CONSTRAINT_CHECK"}}
 [2026-02-05 12:49:12] ERROR: Import failed | {"context":"ImportAPI","error":{"code":"SQLITE_CONSTRAINT_CHECK"}}
+[2026-02-05 15:48:08] ERROR: Failed to generate template | {"context":"CompensationAPI","error":{"code":"SQLITE_ERROR"}}
+[2026-02-05 15:48:45] ERROR: Failed to generate template | {"context":"CompensationAPI","error":{"code":"SQLITE_ERROR"}}
+[2026-02-05 15:53:13] ERROR: Failed to generate template | {"context":"CompensationAPI","error":{"code":"SQLITE_ERROR"}}
+[2026-02-05 15:55:34] ERROR: Failed to generate template | {"context":"CompensationAPI","error":{"code":"SQLITE_ERROR"}}
+[2026-02-05 16:00:32] ERROR: Failed to generate template | {"context":"CompensationAPI","error":{"code":"SQLITE_ERROR"}}
+[2026-02-05 16:01:54] ERROR: Failed to generate template | {"context":"CompensationAPI","error":{"code":"SQLITE_ERROR"}}
