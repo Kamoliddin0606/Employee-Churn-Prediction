@@ -191,6 +191,12 @@ export default function ScheduleManager() {
                 setEmployees(empRes.data.items || []);
             }
 
+            // Load exceptions
+            const exceptionsRes = await schedulesApi.getExceptions();
+            if (exceptionsRes.success && exceptionsRes.data) {
+                setExceptions(exceptionsRes.data);
+            }
+
             // Load calculation settings
             const settingsRes = await settingsApi.getCalculationSettings();
             if (settingsRes.success && settingsRes.data) {
@@ -626,6 +632,115 @@ export default function ScheduleManager() {
     }
 
     // =============================================================================
+    // EXCEPTION HANDLERS
+    // =============================================================================
+
+    /**
+     * Toggle single employee selection for exception
+     */
+    function handleToggleExceptionEmployee(empId: number) {
+        setExceptionEmployeeIds(prev => {
+            const next = new Set(prev);
+            if (next.has(empId)) {
+                next.delete(empId);
+            } else {
+                next.add(empId);
+            }
+            return next;
+        });
+    }
+
+    /**
+     * Click on department - select/deselect all employees for exception
+     */
+    function handleExceptionDeptClick(deptId: number) {
+        const deptEmpIds = employees.filter(e => e.departmentId === deptId).map(e => e.id);
+        const allSelected = deptEmpIds.every(id => exceptionEmployeeIds.has(id));
+
+        setExceptionEmployeeIds(prev => {
+            const next = new Set(prev);
+            if (allSelected) {
+                deptEmpIds.forEach(id => next.delete(id));
+            } else {
+                deptEmpIds.forEach(id => next.add(id));
+            }
+            return next;
+        });
+    }
+
+    /**
+     * Select all employees for exception
+     */
+    function handleExceptionSelectAll() {
+        setExceptionEmployeeIds(new Set(employees.map(e => e.id)));
+    }
+
+    /**
+     * Clear exception employee selection
+     */
+    function handleExceptionClearSelection() {
+        setExceptionEmployeeIds(new Set());
+    }
+
+    /**
+     * Create exception for selected employees and dates
+     */
+    async function handleCreateException() {
+        if (exceptionEmployeeIds.size === 0) {
+            showMessage('error', 'Xodimlarni tanlang');
+            return;
+        }
+        if (exceptionDates.length === 0) {
+            showMessage('error', 'Sanani tanlang');
+            return;
+        }
+
+        setSaving(true);
+        try {
+            // Create exception for each date
+            for (const date of exceptionDates) {
+                await schedulesApi.createException({
+                    type: exceptionForm.type,
+                    employeeIds: [...exceptionEmployeeIds],
+                    date,
+                    workStart: exceptionForm.isWorkDay ? exceptionForm.workStart : undefined,
+                    workEnd: exceptionForm.isWorkDay ? exceptionForm.workEnd : undefined,
+                    reason: exceptionForm.reason,
+                });
+            }
+
+            showMessage('success', `${exceptionDates.length} ta sana uchun istisno yaratildi`);
+            loadData();
+            setExceptionEmployeeIds(new Set());
+            setExceptionDates([]);
+        } catch {
+            showMessage('error', 'Istisno yaratishda xatolik');
+        } finally {
+            setSaving(false);
+        }
+    }
+
+    /**
+     * Delete an exception
+     */
+    async function handleDeleteException(id: number) {
+        if (!confirm('Istisnoni o\'chirmoqchimisiz?')) return;
+
+        setSaving(true);
+        try {
+            const res = await schedulesApi.deleteException(id);
+            if (res.success) {
+                showMessage('success', 'Istisno o\'chirildi');
+                loadData();
+            } else {
+                showMessage('error', res.error || 'O\'chirishda xatolik');
+            }
+        } finally {
+            setSaving(false);
+        }
+    }
+
+    // =============================================================================
     // RENDER
     // =============================================================================
 
@@ -715,6 +830,15 @@ export default function ScheduleManager() {
                             }`}
                     >
                         Xodimlar ({employees.length})
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('exceptions')}
+                        className={`py-2 px-4 border-b-2 font-medium text-sm transition-colors ${activeTab === 'exceptions'
+                            ? 'border-orange-500 text-orange-600'
+                            : 'border-transparent text-gray-500 hover:text-gray-700'
+                            }`}
+                    >
+                        Istisnolar ({exceptions.length})
                     </button>
                 </nav>
             </div>
@@ -1160,6 +1284,184 @@ export default function ScheduleManager() {
                                 </button>
                             )}
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Exceptions Tab */}
+            {activeTab === 'exceptions' && (
+                <div className="space-y-6">
+                    {/* Employee Selection + Form */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* Left: Employee Selection */}
+                        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                            <div className="flex justify-between items-center mb-3">
+                                <h3 className="font-medium text-gray-900 dark:text-white">
+                                    Xodimlar: <span className="text-orange-600">{exceptionEmployeeIds.size} tanlangan</span>
+                                </h3>
+                                <div className="flex gap-2">
+                                    <button onClick={handleExceptionSelectAll} className="text-sm px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">Hammasi</button>
+                                    <button onClick={handleExceptionClearSelection} className="text-sm px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">Tozalash</button>
+                                </div>
+                            </div>
+
+                            <div className="max-h-96 overflow-y-auto space-y-2">
+                                {departments.map(dept => {
+                                    const deptEmps = employees.filter(e => e.departmentId === dept.id);
+                                    const selectedCount = deptEmps.filter(e => exceptionEmployeeIds.has(e.id)).length;
+                                    return (
+                                        <div key={dept.id}>
+                                            <button
+                                                onClick={() => handleExceptionDeptClick(dept.id)}
+                                                className={`w-full text-left p-2 rounded mb-1 ${selectedCount === deptEmps.length && deptEmps.length > 0 ? 'bg-orange-100 dark:bg-orange-900/30' : 'bg-gray-100 dark:bg-gray-700'}`}
+                                            >
+                                                📁 {dept.name} ({selectedCount}/{deptEmps.length})
+                                            </button>
+                                            <div className="ml-4 grid grid-cols-2 gap-1">
+                                                {deptEmps.map(emp => (
+                                                    <button
+                                                        key={emp.id}
+                                                        onClick={() => handleToggleExceptionEmployee(emp.id)}
+                                                        className={`text-left text-sm p-1 rounded ${exceptionEmployeeIds.has(emp.id) ? 'bg-orange-500 text-white' : 'bg-gray-50 dark:bg-gray-700/50'}`}
+                                                    >
+                                                        {emp.name}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Right: Exception Form */}
+                        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                            <h3 className="font-medium text-gray-900 dark:text-white mb-3">Istisno Sozlamalari</h3>
+
+                            {/* Date Input */}
+                            <div className="mb-3">
+                                <label className="block text-sm font-medium mb-1">Sana</label>
+                                <input
+                                    type="date"
+                                    value={exceptionDates[0] || ''}
+                                    onChange={e => setExceptionDates(e.target.value ? [e.target.value] : [])}
+                                    className="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600"
+                                />
+                            </div>
+
+                            {/* Type */}
+                            <div className="mb-3">
+                                <label className="block text-sm font-medium mb-1">Turi</label>
+                                <select
+                                    value={exceptionForm.type}
+                                    onChange={e => setExceptionForm({ ...exceptionForm, type: e.target.value as any })}
+                                    className="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600"
+                                >
+                                    <option value="holiday">Bayram</option>
+                                    <option value="sick">Kasallik</option>
+                                    <option value="special">Maxsus</option>
+                                    <option value="off">Dam olish</option>
+                                </select>
+                            </div>
+
+                            {/* Reason */}
+                            <div className="mb-3">
+                                <label className="block text-sm font-medium mb-1">Sabab</label>
+                                <input
+                                    type="text"
+                                    value={exceptionForm.reason}
+                                    onChange={e => setExceptionForm({ ...exceptionForm, reason: e.target.value })}
+                                    className="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600"
+                                    placeholder="Navruz bayrami"
+                                />
+                            </div>
+
+                            {/* Work Day Toggle */}
+                            <div className="mb-3">
+                                <label className="flex items-center gap-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={exceptionForm.isWorkDay}
+                                        onChange={e => setExceptionForm({ ...exceptionForm, isWorkDay: e.target.checked })}
+                                    />
+                                    <span className="text-sm">Maxsus ish vaqti bilan</span>
+                                </label>
+                            </div>
+
+                            {/* Work Hours (if enabled) */}
+                            {exceptionForm.isWorkDay && (
+                                <div className="grid grid-cols-2 gap-2 mb-3">
+                                    <div>
+                                        <label className="block text-xs mb-1">Boshlanish</label>
+                                        <input
+                                            type="time"
+                                            value={exceptionForm.workStart}
+                                            onChange={e => setExceptionForm({ ...exceptionForm, workStart: e.target.value })}
+                                            className="w-full px-2 py-1 border rounded dark:bg-gray-700"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs mb-1">Tugash</label>
+                                        <input
+                                            type="time"
+                                            value={exceptionForm.workEnd}
+                                            onChange={e => setExceptionForm({ ...exceptionForm, workEnd: e.target.value })}
+                                            className="w-full px-2 py-1 border rounded dark:bg-gray-700"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            <button
+                                onClick={handleCreateException}
+                                disabled={saving || exceptionEmployeeIds.size === 0 || exceptionDates.length === 0}
+                                className="w-full px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50"
+                            >
+                                {saving ? 'Saqlanmoqda...' : 'Istisno Yaratish'}
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Exceptions List */}
+                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                        <h3 className="font-medium text-gray-900 dark:text-white mb-3">Mavjud Istisnolar</h3>
+                        {exceptions.length === 0 ? (
+                            <p className="text-gray-500 text-center py-4">Istisnolar yo'q</p>
+                        ) : (
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-sm">
+                                    <thead className="bg-gray-50 dark:bg-gray-700">
+                                        <tr>
+                                            <th className="px-3 py-2 text-left">Sana</th>
+                                            <th className="px-3 py-2 text-left">Turi</th>
+                                            <th className="px-3 py-2 text-left">Xodimlar</th>
+                                            <th className="px-3 py-2 text-left">Vaqt</th>
+                                            <th className="px-3 py-2 text-left">Sabab</th>
+                                            <th className="px-3 py-2"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {exceptions.map(exc => (
+                                            <tr key={exc.id} className="border-t dark:border-gray-700">
+                                                <td className="px-3 py-2">{exc.date}</td>
+                                                <td className="px-3 py-2">{exc.type}</td>
+                                                <td className="px-3 py-2">{exc.employeeIds.length} ta</td>
+                                                <td className="px-3 py-2">{exc.workStart ? `${exc.workStart}-${exc.workEnd}` : 'Dam olish'}</td>
+                                                <td className="px-3 py-2">{exc.reason}</td>
+                                                <td className="px-3 py-2">
+                                                    <button
+                                                        onClick={() => handleDeleteException(exc.id)}
+                                                        className="text-red-600 hover:text-red-800"
+                                                    >
+                                                        ×
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
