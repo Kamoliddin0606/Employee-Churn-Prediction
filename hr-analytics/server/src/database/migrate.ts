@@ -242,7 +242,132 @@ const migrations: string[] = [
 
   // Performance indexes for year/month queries
   `CREATE INDEX IF NOT EXISTS idx_time_records_year_month ON time_records(strftime('%Y-%m', date))`,
-  `CREATE INDEX IF NOT EXISTS idx_attendance_records_year_month ON attendance_records(strftime('%Y-%m', date))`
+  `CREATE INDEX IF NOT EXISTS idx_attendance_records_year_month ON attendance_records(strftime('%Y-%m', date))`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 28: Create penalty_rules table
+  // Configurable penalty rules per month (dynamic thresholds and amounts)
+  // ---------------------------------------------------------------------------
+  `CREATE TABLE IF NOT EXISTS penalty_rules (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    year INTEGER NOT NULL,
+    month INTEGER NOT NULL CHECK(month >= 1 AND month <= 12),
+    level INTEGER NOT NULL CHECK(level >= 1),
+    penalty_type TEXT NOT NULL CHECK(penalty_type IN ('fine', 'kpi_zero', 'termination')),
+    fine_amount REAL DEFAULT 0 CHECK(fine_amount >= 0),
+    kpi_months INTEGER DEFAULT 0 CHECK(kpi_months >= 0),
+    description TEXT,
+    is_active INTEGER NOT NULL DEFAULT 1,
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now')),
+    UNIQUE(year, month, level)
+  )`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 29: Create employee_penalties table
+  // Applied penalties per employee per month
+  // ---------------------------------------------------------------------------
+  `CREATE TABLE IF NOT EXISTS employee_penalties (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    employee_id INTEGER NOT NULL,
+    year INTEGER NOT NULL,
+    month INTEGER NOT NULL CHECK(month >= 1 AND month <= 12),
+    late_count INTEGER NOT NULL DEFAULT 0,
+    total_fine REAL NOT NULL DEFAULT 0 CHECK(total_fine >= 0),
+    kpi_zeroed INTEGER NOT NULL DEFAULT 0,
+    kpi_zeroed_months INTEGER NOT NULL DEFAULT 0,
+    termination_recommended INTEGER NOT NULL DEFAULT 0,
+    notes TEXT,
+    calculated_at TEXT DEFAULT (datetime('now')),
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now')),
+    UNIQUE(employee_id, year, month),
+    FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE CASCADE
+  )`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 30: Create kpi_zero_records table
+  // Tracks KPI zeroing across months (for cross-month penalties)
+  // ---------------------------------------------------------------------------
+  `CREATE TABLE IF NOT EXISTS kpi_zero_records (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    employee_id INTEGER NOT NULL,
+    target_year INTEGER NOT NULL,
+    target_month INTEGER NOT NULL CHECK(target_month >= 1 AND target_month <= 12),
+    source_year INTEGER NOT NULL,
+    source_month INTEGER NOT NULL CHECK(source_month >= 1 AND source_month <= 12),
+    reason TEXT NOT NULL,
+    created_at TEXT DEFAULT (datetime('now')),
+    UNIQUE(employee_id, target_year, target_month, source_year, source_month),
+    FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE CASCADE
+  )`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 31: Create penalty_details table
+  // Itemized penalty breakdown per employee
+  // ---------------------------------------------------------------------------
+  `CREATE TABLE IF NOT EXISTS penalty_details (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    penalty_id INTEGER NOT NULL,
+    level INTEGER NOT NULL,
+    penalty_type TEXT NOT NULL CHECK(penalty_type IN ('fine', 'kpi_zero', 'termination')),
+    amount REAL DEFAULT 0,
+    description TEXT,
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY (penalty_id) REFERENCES employee_penalties(id) ON DELETE CASCADE
+  )`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 32: Create indexes for penalty tables
+  // ---------------------------------------------------------------------------
+  `CREATE INDEX IF NOT EXISTS idx_penalty_rules_period ON penalty_rules(year, month)`,
+  `CREATE INDEX IF NOT EXISTS idx_employee_penalties_employee ON employee_penalties(employee_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_employee_penalties_period ON employee_penalties(year, month)`,
+  `CREATE INDEX IF NOT EXISTS idx_kpi_zero_records_employee ON kpi_zero_records(employee_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_kpi_zero_records_target ON kpi_zero_records(target_year, target_month)`,
+  `CREATE INDEX IF NOT EXISTS idx_penalty_details_penalty ON penalty_details(penalty_id)`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 33: Insert default penalty rules for current year
+  // Default rules: 1-3 = fines, 4 = 1 month KPI, 5 = 2 months KPI, 6+ = termination
+  // ---------------------------------------------------------------------------
+  `INSERT OR IGNORE INTO penalty_rules (year, month, level, penalty_type, fine_amount, kpi_months, description)
+   SELECT 2026, m.month, 1, 'fine', 100000, 0, '1-marta kech qolish jarimasi'
+   FROM (SELECT 1 AS month UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 
+         UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12) m`,
+  
+  `INSERT OR IGNORE INTO penalty_rules (year, month, level, penalty_type, fine_amount, kpi_months, description)
+   SELECT 2026, m.month, 2, 'fine', 150000, 0, '2-marta kech qolish jarimasi'
+   FROM (SELECT 1 AS month UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 
+         UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12) m`,
+
+  `INSERT OR IGNORE INTO penalty_rules (year, month, level, penalty_type, fine_amount, kpi_months, description)
+   SELECT 2026, m.month, 3, 'fine', 200000, 0, '3-marta kech qolish jarimasi'
+   FROM (SELECT 1 AS month UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 
+         UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12) m`,
+
+  `INSERT OR IGNORE INTO penalty_rules (year, month, level, penalty_type, fine_amount, kpi_months, description)
+   SELECT 2026, m.month, 4, 'kpi_zero', 0, 1, '4-marta kech qolish - joriy oy KPI nollanadi'
+   FROM (SELECT 1 AS month UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 
+         UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12) m`,
+
+  `INSERT OR IGNORE INTO penalty_rules (year, month, level, penalty_type, fine_amount, kpi_months, description)
+   SELECT 2026, m.month, 5, 'kpi_zero', 0, 2, '5-marta kech qolish - joriy va keyingi oy KPI nollanadi'
+   FROM (SELECT 1 AS month UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 
+         UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12) m`,
+
+  `INSERT OR IGNORE INTO penalty_rules (year, month, level, penalty_type, fine_amount, kpi_months, description)
+   SELECT 2026, m.month, 6, 'termination', 0, 0, '6+ marta kech qolish - ishdan bo''shatish tavsiyasi'
+   FROM (SELECT 1 AS month UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 
+         UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12) m`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 39: Add violation breakdown columns to employee_penalties
+  // Tracks individual violation counts for reporting
+  // ---------------------------------------------------------------------------
+  `ALTER TABLE employee_penalties ADD COLUMN early_leave_count INTEGER NOT NULL DEFAULT 0`,
+  `ALTER TABLE employee_penalties ADD COLUMN absent_count INTEGER NOT NULL DEFAULT 0`,
+  `ALTER TABLE employee_penalties ADD COLUMN total_violations INTEGER NOT NULL DEFAULT 0`
 ];
 
 // =============================================================================
@@ -264,8 +389,18 @@ export function runMigrations(): void {
       try {
         db.exec(migrations[i]);
         logger.debug(`Migration ${i + 1}/${migrations.length} completed`);
-      } catch (error) {
-        logger.error(`Migration ${i + 1} failed`, { error, sql: migrations[i].substring(0, 100) });
+      } catch (error: unknown) {
+        const sqlError = error as { code?: string; message?: string };
+        const sql = migrations[i];
+        
+        // Skip ALTER TABLE errors if column already exists (duplicate column name)
+        if (sql.includes('ALTER TABLE') && sql.includes('ADD COLUMN') && 
+            sqlError.message?.includes('duplicate column name')) {
+          logger.debug(`Migration ${i + 1}/${migrations.length} skipped (column already exists)`);
+          continue;
+        }
+        
+        logger.error(`Migration ${i + 1} failed`, { error, sql: sql.substring(0, 100) });
         throw error;
       }
     }

@@ -31,6 +31,7 @@ import { StatusLegend } from './components/StatusLegend';
 import ScheduleManager from './components/ScheduleManager';
 import ViolationReport from './components/ViolationReport';
 import CompensationManager from './components/CompensationManager';
+import PenaltyManager from './components/PenaltyManager';
 import { useStore } from './store/useStore';
 import { useLanguage, languageNames, languageFlags, Language } from './i18n';
 
@@ -56,6 +57,7 @@ function App() {
     { id: 'schedules', label: 'Jadvallar', icon: Clock },
     { id: 'violations', label: 'Buzilishlar', icon: AlertTriangle },
     { id: 'compensation', label: 'KPI va Maosh', icon: DollarSign },
+    { id: 'penalties', label: 'Jarimalar', icon: AlertTriangle },
     { id: 'admin', label: t.nav.settings, icon: Settings },
   ];
 
@@ -188,6 +190,10 @@ function App() {
 
           <TabsContent value="compensation" className="animate-fade-in">
             <CompensationManager />
+          </TabsContent>
+
+          <TabsContent value="penalties" className="animate-fade-in">
+            <PenaltyManager />
           </TabsContent>
 
           <TabsContent value="admin" className="animate-fade-in">

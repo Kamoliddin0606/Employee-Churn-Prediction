@@ -30,6 +30,7 @@ import importRouter from './routes/import';
 import settingsRouter from './routes/settings';
 import violationsRouter from './routes/violations';
 import compensationRouter from './routes/compensation';
+import penaltiesRouter from './routes/penalties';
 
 // =============================================================================
 // SERVER CONFIGURATION
@@ -119,6 +120,7 @@ app.use('/api/import', importRouter);
 app.use('/api/settings', settingsRouter);
 app.use('/api/violations', violationsRouter);
 app.use('/api/compensation', compensationRouter);
+app.use('/api/penalties', penaltiesRouter);
 
 // =============================================================================
 // ERROR HANDLING
@@ -186,6 +188,8 @@ async function startServer(): Promise<void> {
             logger.info('  GET  /api/settings/calculation');
             logger.info('  GET  /api/violations/summary');
             logger.info('  POST /api/violations/calculate');
+            logger.info('  GET  /api/penalties');
+            logger.info('  POST /api/penalties/calculate');
         });
     } catch (error) {
         logger.error('Failed to start server', { error });

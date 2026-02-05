@@ -225,6 +225,134 @@ export interface EmployeeCompensation {
 }
 
 // =============================================================================
+// PENALTY SYSTEM TYPES
+// =============================================================================
+
+/**
+ * Penalty type enumeration
+ * Defines the type of penalty applied based on violation count
+ */
+export type PenaltyType = 'fine' | 'kpi_zero' | 'termination';
+
+/**
+ * PenaltyRule entity
+ * Configurable penalty rules per month
+ * 
+ * Rules are applied based on violation level (1st, 2nd, 3rd late, etc.)
+ * Each month can have different penalty amounts and thresholds
+ * 
+ * @property level - Violation count threshold (1, 2, 3, 4, 5, 6+)
+ * @property penaltyType - Type of penalty (fine, kpi_zero, termination)
+ * @property fineAmount - Monetary penalty amount (for 'fine' type)
+ * @property kpiMonths - Number of months KPI zeroed (for 'kpi_zero' type)
+ */
+export interface PenaltyRule {
+    id: number;
+    year: number;
+    month: number;           // 1-12
+    level: number;           // 1, 2, 3, 4, 5, 6+
+    penaltyType: PenaltyType;
+    fineAmount: number;      // Jarima summasi (so'm)
+    kpiMonths: number;       // KPI nollanadigan oylar soni
+    description: string | null;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+}
+
+/**
+ * EmployeePenalty entity
+ * Applied penalties per employee per month
+ * 
+ * Calculated based on ViolationSummary.lateCount and PenaltyRules
+ * 
+ * @property lateCount - Number of times late this month
+ * @property totalFine - Total monetary penalty amount
+ * @property kpiZeroed - Whether KPI was zeroed this month
+ * @property kpiZeroedMonths - Number of months KPI affected
+ * @property terminationRecommended - Whether termination is recommended
+ */
+export interface EmployeePenalty {
+    id: number;
+    employeeId: number;
+    year: number;
+    month: number;           // 1-12
+    lateCount: number;       // Kech qolishlar soni
+    totalFine: number;       // Jami jarima summasi
+    kpiZeroed: boolean;      // KPI nollandi-mi?
+    kpiZeroedMonths: number; // Necha oylik KPI nollandi
+    terminationRecommended: boolean; // Ishdan bo'shatish tavsiyasi
+    notes: string | null;
+    calculatedAt: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+/**
+ * KpiZeroRecord entity
+ * Tracks KPI zeroing across months for cross-month penalties
+ * 
+ * When 5th late occurs in January, KPI is zeroed for Jan AND Feb.
+ * This table tracks which months were affected and why.
+ * 
+ * @property targetYear/Month - The month where KPI is zeroed
+ * @property sourceYear/Month - The month that caused the zeroing
+ */
+export interface KpiZeroRecord {
+    id: number;
+    employeeId: number;
+    targetYear: number;      // KPI nollanadigan yil
+    targetMonth: number;     // KPI nollanadigan oy
+    sourceYear: number;      // Sabab bo'lgan yil
+    sourceMonth: number;     // Sabab bo'lgan oy
+    reason: string;          // Nollash sababi
+    createdAt: string;
+}
+
+/**
+ * PenaltyDetail entity
+ * Itemized penalty breakdown per employee
+ * 
+ * Shows each individual penalty applied (1st late fine, 2nd late fine, etc.)
+ */
+export interface PenaltyDetail {
+    id: number;
+    penaltyId: number;       // Reference to employee_penalties
+    level: number;           // Which violation level (1, 2, 3...)
+    penaltyType: PenaltyType;
+    amount: number;          // Fine amount or 0 for non-fine penalties
+    description: string | null;
+    createdAt: string;
+}
+
+/**
+ * Penalty calculation result
+ * Returned by PenaltyService after calculating penalties
+ * 
+ * Now includes breakdown of all violation types:
+ * - lateCount: number of late arrivals
+ * - earlyLeaveCount: number of early leaves
+ * - absentCount: number of absences
+ * - totalViolations: sum of all violations (used for penalty calculation)
+ */
+export interface PenaltyCalculationResult {
+    employeeId: number;
+    employeeName: string;
+    year: number;
+    month: number;
+    lateCount: number;           // Kech kelishlar soni
+    earlyLeaveCount: number;     // Erta ketishlar soni
+    absentCount: number;         // Kelmaganlar soni
+    totalViolations: number;     // Jami buzilishlar (late + early + absent)
+    fines: Array<{ level: number; amount: number; description: string }>;
+    totalFine: number;
+    kpiZeroed: boolean;
+    kpiZeroedMonths: number;
+    terminationRecommended: boolean;
+    preZeroedKpi: boolean;       // KPI was already zeroed from previous month
+}
+
+// =============================================================================
 // API TYPES
 // =============================================================================
 
