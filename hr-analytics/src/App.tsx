@@ -12,7 +12,8 @@ import {
   Globe,
   Clock,
   AlertTriangle,
-  DollarSign
+  DollarSign,
+  Database
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
 import { Button } from './components/ui/button';
@@ -32,6 +33,8 @@ import ScheduleManager from './components/ScheduleManager';
 import ViolationReport from './components/ViolationReport';
 import CompensationManager from './components/CompensationManager';
 import PenaltyManager from './components/PenaltyManager';
+import MissingTimeSettings from './components/MissingTimeSettings';
+import DatabaseExplorer from './components/DatabaseExplorer';
 import { useStore } from './store/useStore';
 import { useLanguage, languageNames, languageFlags, Language } from './i18n';
 
@@ -58,6 +61,8 @@ function App() {
     { id: 'violations', label: 'Buzilishlar', icon: AlertTriangle },
     { id: 'compensation', label: 'KPI va Maosh', icon: DollarSign },
     { id: 'penalties', label: 'Jarimalar', icon: AlertTriangle },
+    { id: 'missing-time', label: 'Yo\'q Vaqt', icon: Clock },
+    { id: 'db-explorer', label: 'DB Explorer', icon: Database },
     { id: 'admin', label: t.nav.settings, icon: Settings },
   ];
 
@@ -194,6 +199,14 @@ function App() {
 
           <TabsContent value="penalties" className="animate-fade-in">
             <PenaltyManager />
+          </TabsContent>
+
+          <TabsContent value="missing-time" className="animate-fade-in">
+            <MissingTimeSettings />
+          </TabsContent>
+
+          <TabsContent value="db-explorer" className="animate-fade-in">
+            <DatabaseExplorer />
           </TabsContent>
 
           <TabsContent value="admin" className="animate-fade-in">

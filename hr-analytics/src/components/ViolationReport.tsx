@@ -70,6 +70,8 @@ export default function ViolationReport() {
             earlyLeaveCount: number;
             absentCount: number;
             violationCount: number;
+            notAtWorkplaceCount?: number;
+            notAtWorkplaceMinutes?: number;
         };
         employeeCount: number;
     } | null>(null);
@@ -292,6 +294,13 @@ export default function ViolationReport() {
                         <div className="text-lg font-bold text-yellow-700">{formatMinutes(report.totals.totalEarlyLeaveMinutes)}</div>
                         <div className="text-sm text-gray-500 dark:text-gray-400">Erta ketish vaqti</div>
                     </div>
+                    {/* Not-at-workplace card - only show if there's data */}
+                    {(report.totals.notAtWorkplaceCount ?? 0) > 0 && (
+                        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border-l-4 border-purple-500">
+                            <div className="text-2xl font-bold text-purple-600">{report.totals.notAtWorkplaceCount}</div>
+                            <div className="text-sm text-gray-500 dark:text-gray-400">Ish joyida bo'lmagan</div>
+                        </div>
+                    )}
                 </div>
             )}
 

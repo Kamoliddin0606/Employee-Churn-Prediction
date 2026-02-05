@@ -24,6 +24,7 @@ import {
     validateStatusCode
 } from '../services/excelParser';
 import { recalculateTimeRecords } from '../services/scheduleResolver';
+import { resolveMissingTime } from '../services/missingTimeResolver';
 
 // Create router instance
 const router = Router();
@@ -320,47 +321,79 @@ router.post('/upload', upload.single('file'), async (req: Request, res: Response
                         updatedRecords++;
 
                     } else {
-                        // Parse time value
+                        // Parse time value from Excel cell
                         const timeValue = parseTimeValue(value);
 
-                        if (timeValue.isValid && (timeValue.checkIn || timeValue.checkOut)) {
-                            // Calculate late/early based on schedule
-                            const lateMinutes = schedule.isWorkDay
-                                ? calculateLateMinutes(timeValue.checkIn, schedule.workStart, schedule.lateTolerance)
-                                : 0;
+                        // Process valid time values (including missing check-in/check-out)
+                        if (timeValue.isValid) {
+                            // =============================================================
+                            // MISSING TIME RESOLUTION
+                            // =============================================================
+                            // Use MissingTimeResolver to handle NULL check-in/check-out
+                            // based on employee/department/organization settings
+                            // 
+                            // Settings Types:
+                            //   Type 1: Yo'q vaqt = to'liq ishlanmagan kun (Full Absent)
+                            //   Type 2: Avtomatik to'ldirish (Auto-fill with penalty)
+                            // =============================================================
+                            
+                            const resolvedTime = resolveMissingTime(
+                                employeeId,
+                                date,
+                                timeValue.checkIn,
+                                timeValue.checkOut,
+                                schedule
+                            );
 
-                            const earlyLeaveMinutes = schedule.isWorkDay
-                                ? calculateEarlyLeaveMinutes(timeValue.checkOut, schedule.workEnd)
-                                : 0;
-
-                            const totalWorkMinutes = calculateTotalWorkMinutes(timeValue.checkIn, timeValue.checkOut);
-
-                            // Insert/update time record
+                            // Insert/update time record with resolved values
+                            // Includes new columns for tracking auto-filled times
                             const upsertStmt = db.prepare(`
                 INSERT INTO time_records (
                   employee_id, date, check_in, check_out,
-                  late_minutes, early_leave_minutes, total_work_minutes, import_id
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                  late_minutes, early_leave_minutes, total_work_minutes, import_id,
+                  is_auto_filled, missing_type, original_check_in, original_check_out
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(employee_id, date) DO UPDATE SET
                   check_in = excluded.check_in,
                   check_out = excluded.check_out,
                   late_minutes = excluded.late_minutes,
                   early_leave_minutes = excluded.early_leave_minutes,
                   total_work_minutes = excluded.total_work_minutes,
-                  import_id = excluded.import_id
+                  import_id = excluded.import_id,
+                  is_auto_filled = excluded.is_auto_filled,
+                  missing_type = excluded.missing_type,
+                  original_check_in = excluded.original_check_in,
+                  original_check_out = excluded.original_check_out
               `);
 
                             upsertStmt.run(
                                 employeeId,
                                 date,
-                                timeValue.checkIn,
-                                timeValue.checkOut,
-                                lateMinutes,
-                                earlyLeaveMinutes,
-                                totalWorkMinutes,
-                                importId
+                                resolvedTime.checkIn,           // May be auto-filled
+                                resolvedTime.checkOut,          // May be auto-filled
+                                resolvedTime.lateMinutes,
+                                resolvedTime.earlyLeaveMinutes,
+                                resolvedTime.totalWorkMinutes,
+                                importId,
+                                resolvedTime.isAutoFilled ? 1 : 0,
+                                resolvedTime.missingType,       // 'check_in', 'check_out', 'both', or null
+                                timeValue.checkIn,              // Original value (preserves NULL)
+                                timeValue.checkOut              // Original value (preserves NULL)
                             );
                             updatedRecords++;
+
+                            // Log if auto-fill was applied
+                            if (resolvedTime.isAutoFilled) {
+                                log.debug('Auto-filled missing time', {
+                                    employeeId,
+                                    date,
+                                    missingType: resolvedTime.missingType,
+                                    originalCheckIn: timeValue.checkIn,
+                                    originalCheckOut: timeValue.checkOut,
+                                    resolvedCheckIn: resolvedTime.checkIn,
+                                    resolvedCheckOut: resolvedTime.checkOut
+                                });
+                            }
                         }
                     }
                 }

@@ -26,6 +26,7 @@ const log = createContextLogger('ViolationCalculator');
 
 /**
  * Time record from database
+ * Extended with missing time tracking fields
  */
 interface TimeRecordRow {
     id: number;
@@ -33,6 +34,10 @@ interface TimeRecordRow {
     date: string;
     check_in: string | null;
     check_out: string | null;
+    late_minutes: number;
+    early_leave_minutes: number;
+    is_auto_filled: number;      // 1 if time was auto-filled
+    missing_type: string | null;  // 'check_in', 'check_out', 'both', or null
 }
 
 /**
@@ -47,6 +52,7 @@ interface AttendanceRow {
 
 /**
  * Calculation result for one employee's month
+ * Extended with not-at-workplace tracking for missing time handling
  */
 interface MonthlyViolationResult {
     totalLateMinutes: number;
@@ -55,11 +61,26 @@ interface MonthlyViolationResult {
     earlyLeaveCount: number;
     absentCount: number;
     violationCount: number;
+    // Not-at-workplace tracking (Type 2 settings - both check_in and check_out missing)
+    notAtWorkplaceCount: number;   // Days when employee was not at workplace
+    notAtWorkplaceMinutes: number; // Total minutes of not-at-workplace time
 }
 
 // =============================================================================
 // HELPER FUNCTIONS
 // =============================================================================
+
+/**
+ * Parse time string to minutes from midnight
+ * Converts "HH:MM" format to total minutes for calculations
+ * 
+ * @param time - Time string in "HH:MM" format
+ * @returns Total minutes from midnight
+ */
+function timeToMinutes(time: string): number {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
+}
 
 /**
  * Calculate late minutes based on schedule
@@ -154,8 +175,10 @@ export function calculateEmployeeMonthlyViolations(
     const endDate = `${year}-${month.toString().padStart(2, '0')}-${lastDay}`;
 
     // Get time records for this employee and month
+    // Include missing time tracking fields for not-at-workplace calculation
     const timeRecordStmt = db.prepare(`
-    SELECT id, employee_id, date, check_in, check_out
+    SELECT id, employee_id, date, check_in, check_out,
+           late_minutes, early_leave_minutes, is_auto_filled, missing_type
     FROM time_records
     WHERE employee_id = ? AND date >= ? AND date <= ?
     ORDER BY date
@@ -172,14 +195,16 @@ export function calculateEmployeeMonthlyViolations(
 
     const absentRecords = attendanceStmt.all(employeeId, startDate, endDate) as AttendanceRow[];
 
-    // Initialize result
+    // Initialize result with not-at-workplace tracking
     const result: MonthlyViolationResult = {
         totalLateMinutes: 0,
         totalEarlyLeaveMinutes: 0,
         lateCount: 0,
         earlyLeaveCount: 0,
         absentCount: absentRecords.length,
-        violationCount: 0
+        violationCount: 0,
+        notAtWorkplaceCount: 0,
+        notAtWorkplaceMinutes: 0
     };
 
     // Process each time record
@@ -190,23 +215,49 @@ export function calculateEmployeeMonthlyViolations(
         // Skip non-work days
         if (!schedule.isWorkDay) continue;
 
-        // Calculate late minutes
-        const lateMinutes = calculateLateMinutes(
-            record.check_in,
-            schedule.workStart,
-            schedule.lateTolerance
-        );
+        // =================================================================
+        // NOT-AT-WORKPLACE TRACKING
+        // =================================================================
+        // If missing_type is 'both', employee was not at workplace
+        // This happens when both check_in and check_out were missing
+        // and Type 2 settings were applied (auto-fill with penalty)
+        // =================================================================
+        if (record.missing_type === 'both') {
+            result.notAtWorkplaceCount++;
+            // Calculate full work day minutes for not-at-workplace
+            const workStartMinutes = timeToMinutes(schedule.workStart);
+            const workEndMinutes = timeToMinutes(schedule.workEnd);
+            result.notAtWorkplaceMinutes += (workEndMinutes - workStartMinutes);
+        }
+
+        // Use pre-calculated late/early minutes from import if available
+        // Otherwise calculate based on check-in/check-out times
+        let lateMinutes = 0;
+        let earlyMinutes = 0;
+
+        if (record.is_auto_filled && record.late_minutes !== undefined) {
+            // Use pre-calculated values from import (already processed by MissingTimeResolver)
+            lateMinutes = record.late_minutes;
+            earlyMinutes = record.early_leave_minutes;
+        } else {
+            // Calculate late minutes
+            lateMinutes = calculateLateMinutes(
+                record.check_in,
+                schedule.workStart,
+                schedule.lateTolerance
+            );
+
+            // Calculate early leave minutes
+            earlyMinutes = calculateEarlyLeaveMinutes(
+                record.check_out,
+                schedule.workEnd
+            );
+        }
 
         if (lateMinutes > 0) {
             result.totalLateMinutes += lateMinutes;
             result.lateCount++;
         }
-
-        // Calculate early leave minutes
-        const earlyMinutes = calculateEarlyLeaveMinutes(
-            record.check_out,
-            schedule.workEnd
-        );
 
         if (earlyMinutes > 0) {
             result.totalEarlyLeaveMinutes += earlyMinutes;
@@ -214,8 +265,9 @@ export function calculateEmployeeMonthlyViolations(
         }
     }
 
-    // Total violation count
-    result.violationCount = result.lateCount + result.earlyLeaveCount + result.absentCount;
+    // Total violation count (includes not-at-workplace)
+    result.violationCount = result.lateCount + result.earlyLeaveCount + 
+                           result.absentCount + result.notAtWorkplaceCount;
 
     return result;
 }

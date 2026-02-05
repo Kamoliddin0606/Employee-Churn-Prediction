@@ -136,6 +136,9 @@ export interface ViolationSummary {
     violationCount: number;
     calculationLevel: string;
     calculatedAt: string;
+    // Not-at-workplace tracking (Type 2 settings)
+    notAtWorkplaceCount?: number;   // Days when employee was not at workplace
+    notAtWorkplaceMinutes?: number; // Total minutes of not-at-workplace time
 }
 
 /**
@@ -646,6 +649,8 @@ export const violationsApi = {
             earlyLeaveCount: number;
             absentCount: number;
             violationCount: number;
+            notAtWorkplaceCount?: number;
+            notAtWorkplaceMinutes?: number;
         };
         employeeCount: number;
     }>> {

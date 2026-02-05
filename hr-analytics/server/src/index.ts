@@ -31,6 +31,8 @@ import settingsRouter from './routes/settings';
 import violationsRouter from './routes/violations';
 import compensationRouter from './routes/compensation';
 import penaltiesRouter from './routes/penalties';
+import missingTimeSettingsRouter from './routes/missingTimeSettings';
+import dbExplorerRouter from './routes/dbExplorer';
 
 // =============================================================================
 // SERVER CONFIGURATION
@@ -121,6 +123,8 @@ app.use('/api/settings', settingsRouter);
 app.use('/api/violations', violationsRouter);
 app.use('/api/compensation', compensationRouter);
 app.use('/api/penalties', penaltiesRouter);
+app.use('/api/missing-time-settings', missingTimeSettingsRouter);
+app.use('/api/db-explorer', dbExplorerRouter);
 
 // =============================================================================
 // ERROR HANDLING

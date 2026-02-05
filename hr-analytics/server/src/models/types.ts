@@ -57,6 +57,81 @@ export interface Employee {
  */
 export type ScheduleTargetType = 'organization' | 'department' | 'employee';
 
+// =============================================================================
+// MISSING TIME HANDLING TYPES
+// =============================================================================
+
+/**
+ * Missing time type indicator
+ * Tracks which time value was originally missing before auto-fill
+ * 
+ * @value 'check_in' - Kirish vaqti yo'q edi
+ * @value 'check_out' - Chiqish vaqti yo'q edi
+ * @value 'both' - Ikkala vaqt ham yo'q edi (ish joyida bo'lmagan)
+ */
+export type MissingType = 'check_in' | 'check_out' | 'both';
+
+/**
+ * Missing time handling type
+ * Defines how missing check-in/check-out times should be processed
+ * 
+ * @value 1 - Yo'q vaqt = to'liq ishlanmagan kun (Full Absent)
+ *            Kirish/chiqish yo'q bo'lsa, to'liq ish vaqti kech qolish sifatida yoziladi
+ * @value 2 - Avtomatik to'ldirish (Auto-fill with penalty)
+ *            Kirish yo'q: jadval + penalty minutes
+ *            Chiqish yo'q: jadval - penalty minutes
+ */
+export type MissingTimeHandlingType = 1 | 2;
+
+/**
+ * MissingTimeSettings entity
+ * Configures how missing check-in/check-out times are handled
+ * 
+ * Priority resolution: Employee > Department > Organization
+ * Settings cascade down - employee settings override department,
+ * department settings override organization
+ * 
+ * @property targetType - Level at which setting applies
+ * @property targetId - ID of the target entity (org_id, dept_id, or employee_id)
+ * @property handlingType - How to handle missing times (1 or 2)
+ * @property missingCheckinPenaltyMinutes - Minutes to add when check_in missing (Type 2)
+ * @property missingCheckoutPenaltyMinutes - Minutes to subtract when check_out missing (Type 2)
+ */
+export interface MissingTimeSettings {
+    id: number;
+    targetType: ScheduleTargetType;
+    targetId: number;
+    handlingType: MissingTimeHandlingType;
+    missingCheckinPenaltyMinutes: number;  // Type 2: kirish yo'q bo'lsa qo'shiladigan minut
+    missingCheckoutPenaltyMinutes: number; // Type 2: chiqish yo'q bo'lsa ayiriladigan minut
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+}
+
+/**
+ * Resolved missing time result
+ * Contains the processed time values after applying missing time rules
+ * 
+ * @property checkIn - Resolved check-in time (may be auto-filled)
+ * @property checkOut - Resolved check-out time (may be auto-filled)
+ * @property isAutoFilled - True if any time was auto-filled
+ * @property missingType - Which time was originally missing (null if none)
+ * @property lateMinutes - Calculated late minutes
+ * @property earlyLeaveMinutes - Calculated early leave minutes
+ * @property notAtWorkplaceMinutes - Minutes not at workplace (Type 2, both missing)
+ */
+export interface ResolvedMissingTime {
+    checkIn: string | null;
+    checkOut: string | null;
+    isAutoFilled: boolean;
+    missingType: MissingType | null;
+    lateMinutes: number;
+    earlyLeaveMinutes: number;
+    notAtWorkplaceMinutes: number;
+    totalWorkMinutes: number;
+}
+
 /**
  * WorkSchedule entity
  * Defines work hours and work days for organization, department, or employee
@@ -106,6 +181,11 @@ export interface ScheduleException {
 /**
  * TimeRecord entity
  * Daily check-in/check-out record from terminal
+ * 
+ * Extended fields for missing time handling:
+ * - isAutoFilled: true if check_in or check_out was auto-filled based on settings
+ * - missingType: which time was originally missing ('check_in', 'check_out', 'both', or null)
+ * - originalCheckIn/Out: preserves the original NULL value before auto-fill
  */
 export interface TimeRecord {
     id: number;
@@ -118,11 +198,20 @@ export interface TimeRecord {
     totalWorkMinutes: number; // Total minutes worked
     importId: number;        // Reference to import history
     createdAt: string;
+    // Missing time handling fields
+    isAutoFilled: boolean;   // True if time was auto-filled by missing time rules
+    missingType: MissingType | null; // Which time was originally missing
+    originalCheckIn: string | null;  // Original check_in before auto-fill (preserves NULL)
+    originalCheckOut: string | null; // Original check_out before auto-fill (preserves NULL)
 }
 
 /**
  * ViolationSummary entity
  * Monthly aggregated violation statistics per employee
+ * 
+ * Extended fields for not-at-workplace tracking:
+ * - notAtWorkplaceCount: Number of days when both check_in and check_out were missing
+ * - notAtWorkplaceMinutes: Total minutes of not-at-workplace time
  */
 export interface ViolationSummary {
     id: number;
@@ -134,9 +223,12 @@ export interface ViolationSummary {
     lateCount: number;       // Number of days late
     earlyLeaveCount: number; // Number of days left early
     absentCount: number;     // Number of absent days
-    violationCount: number;  // Total violations (late + early + absent)
+    violationCount: number;  // Total violations (late + early + absent + notAtWorkplace)
     calculationLevel: CalculationLevel;
     calculatedAt: string;
+    // Not-at-workplace tracking (Type 2 settings)
+    notAtWorkplaceCount: number;   // Days when both check_in and check_out missing
+    notAtWorkplaceMinutes: number; // Total minutes of not-at-workplace time
 }
 
 /**

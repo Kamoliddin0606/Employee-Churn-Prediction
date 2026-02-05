@@ -367,7 +367,74 @@ const migrations: string[] = [
   // ---------------------------------------------------------------------------
   `ALTER TABLE employee_penalties ADD COLUMN early_leave_count INTEGER NOT NULL DEFAULT 0`,
   `ALTER TABLE employee_penalties ADD COLUMN absent_count INTEGER NOT NULL DEFAULT 0`,
-  `ALTER TABLE employee_penalties ADD COLUMN total_violations INTEGER NOT NULL DEFAULT 0`
+  `ALTER TABLE employee_penalties ADD COLUMN total_violations INTEGER NOT NULL DEFAULT 0`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 40: Create missing_time_settings table
+  // Configures how missing check-in/check-out times are handled
+  // 
+  // Handling Types:
+  //   Type 1: Yo'q vaqt = to'liq ishlanmagan kun (full absent)
+  //           Kirish/chiqish yo'q bo'lsa, kun ishlanmagan hisoblanadi
+  //           va to'liq ish vaqti kech qolish sifatida yoziladi
+  //   
+  //   Type 2: Avtomatik to'ldirish (auto-fill with penalty)
+  //           Kirish yo'q bo'lsa: jadval_vaqti + penalty_minutes
+  //           Chiqish yo'q bo'lsa: jadval_vaqti - penalty_minutes
+  //           Ikkalasi yo'q bo'lsa: ish joyida bo'lmagan (not_at_workplace)
+  //
+  // Priority: employee > department > organization (cascading resolution)
+  // ---------------------------------------------------------------------------
+  `CREATE TABLE IF NOT EXISTS missing_time_settings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    target_type TEXT NOT NULL CHECK(target_type IN ('organization', 'department', 'employee')),
+    target_id INTEGER NOT NULL,
+    handling_type INTEGER NOT NULL DEFAULT 1 CHECK(handling_type IN (1, 2)),
+    missing_checkin_penalty_minutes INTEGER NOT NULL DEFAULT 60,
+    missing_checkout_penalty_minutes INTEGER NOT NULL DEFAULT 120,
+    is_active INTEGER NOT NULL DEFAULT 1,
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now')),
+    UNIQUE(target_type, target_id)
+  )`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 41: Create index for missing_time_settings
+  // Optimizes priority-based lookups
+  // ---------------------------------------------------------------------------
+  `CREATE INDEX IF NOT EXISTS idx_missing_time_settings_target 
+   ON missing_time_settings(target_type, target_id)`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 42: Add columns to time_records for tracking auto-filled times
+  // These columns preserve original NULL values and track auto-fill status
+  // ---------------------------------------------------------------------------
+  `ALTER TABLE time_records ADD COLUMN is_auto_filled INTEGER DEFAULT 0`,
+  `ALTER TABLE time_records ADD COLUMN missing_type TEXT CHECK(missing_type IN ('check_in', 'check_out', 'both', NULL))`,
+  `ALTER TABLE time_records ADD COLUMN original_check_in TEXT`,
+  `ALTER TABLE time_records ADD COLUMN original_check_out TEXT`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 43: Add not_at_workplace columns to violation_summary
+  // Tracks separate statistics for employees who were not at workplace
+  // (both check_in and check_out missing on work days)
+  // ---------------------------------------------------------------------------
+  `ALTER TABLE violation_summary ADD COLUMN not_at_workplace_count INTEGER DEFAULT 0`,
+  `ALTER TABLE violation_summary ADD COLUMN not_at_workplace_minutes INTEGER DEFAULT 0`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 44: Add not_at_workplace_count to employee_penalties
+  // For penalty calculation to include not_at_workplace violations
+  // ---------------------------------------------------------------------------
+  `ALTER TABLE employee_penalties ADD COLUMN not_at_workplace_count INTEGER DEFAULT 0`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 45: Insert default organization-level missing time setting
+  // Default: Type 1 (full absent when check-in/check-out missing)
+  // ---------------------------------------------------------------------------
+  `INSERT OR IGNORE INTO missing_time_settings 
+   (target_type, target_id, handling_type, missing_checkin_penalty_minutes, missing_checkout_penalty_minutes)
+   VALUES ('organization', 1, 1, 60, 120)`
 ];
 
 // =============================================================================
