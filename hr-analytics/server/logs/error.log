@@ -33,3 +33,4 @@
 [2026-02-06 07:31:11] ERROR: Migration 67 failed | {"error":{},"sql":"INSERT OR IGNORE INTO settings (key, value, description) \n   VALUES ('lunch_break_minutes', '60', 'T"}
 [2026-02-06 07:33:27] ERROR: Migration 67 failed | {"error":{},"sql":"INSERT OR IGNORE INTO settings (key, value, description) VALUES ('lunch_break_minutes', '60', 'Lunch"}
 [2026-02-06 07:34:48] ERROR: Migration 67 failed | {"error":{},"sql":"INSERT OR IGNORE INTO settings (key, value, description) VALUES ('lunch_break_minutes', '60', 'Lunch"}
+[2026-02-06 13:40:08] ERROR: Failed to generate employees template | {"context":"ImportAPI","error":{}}

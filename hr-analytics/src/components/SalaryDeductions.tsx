@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Calculator, DollarSign, TrendingDown, Users } from 'lucide-react';
+import { Calculator, DollarSign, TrendingDown, Users, Download } from 'lucide-react';
 import { api, SalaryDeduction } from '../services/api';
 import DataTable, { Column } from './ui/DataTable';
 
@@ -127,6 +127,52 @@ export default function SalaryDeductions() {
 
     function formatCurrency(amount: number): string {
         return new Intl.NumberFormat('uz-UZ').format(Math.round(amount)) + ' so\'m';
+    }
+
+    /**
+     * Export salary deductions to Excel
+     * Downloads a beautifully formatted Excel file with summary and detailed data
+     */
+    async function handleExportToExcel() {
+        try {
+            const response = await fetch(
+                `http://${window.location.hostname}:3001/api/salary-deductions/export?year=${selectedYear}&month=${selectedMonth}`
+            );
+
+            if (!response.ok) {
+                const error = await response.json();
+                showMessage('error', error.error || 'Excel faylni yuklashda xatolik');
+                return;
+            }
+
+            // Get filename from Content-Disposition header
+            const contentDisposition = response.headers.get('Content-Disposition');
+            const monthName = MONTHS.find(m => m.value === selectedMonth)?.label || selectedMonth;
+            let filename = `Maosh_Ushlab_Qolish_${monthName}_${selectedYear}.xlsx`;
+            
+            if (contentDisposition) {
+                const filenameMatch = contentDisposition.match(/filename="(.+)"/i);
+                if (filenameMatch) {
+                    filename = filenameMatch[1];
+                }
+            }
+
+            // Download file
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+
+            showMessage('success', '✅ Excel fayl muvaffaqiyatli yuklandi');
+        } catch (error) {
+            console.error('Export error:', error);
+            showMessage('error', 'Excel faylni yuklashda xatolik yuz berdi');
+        }
     }
 
     // =============================================================================
@@ -416,12 +462,21 @@ export default function SalaryDeductions() {
                 </div>
             )}
 
-            {/* Calculate Button */}
-            <div className="flex justify-end">
+            {/* Action Buttons */}
+            <div className="flex justify-end gap-3">
+                <button
+                    onClick={handleExportToExcel}
+                    disabled={deductions.length === 0}
+                    className="px-5 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    title="Excel ga export qilish"
+                >
+                    <Download className="w-5 h-5" />
+                    Excel ga yuklash
+                </button>
                 <button
                     onClick={handleCalculate}
                     disabled={calculating}
-                    className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 flex items-center gap-2 disabled:opacity-50"
+                    className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 flex items-center gap-2 disabled:opacity-50 transition-colors"
                 >
                     <Calculator className="w-5 h-5" />
                     {calculating ? 'Hisoblanmoqda...' : 'Hisoblash'}

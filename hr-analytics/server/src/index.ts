@@ -35,6 +35,7 @@ import missingTimeSettingsRouter from './routes/missingTimeSettings';
 import dbExplorerRouter from './routes/dbExplorer';
 import timeRecordsRouter from './routes/timeRecords';
 import salaryDeductionsRouter from './routes/salaryDeductions';
+import dashboardRouter from './routes/dashboard';
 
 // =============================================================================
 // SERVER CONFIGURATION
@@ -129,6 +130,7 @@ app.use('/api/missing-time-settings', missingTimeSettingsRouter);
 app.use('/api/db-explorer', dbExplorerRouter);
 app.use('/api/time-records', timeRecordsRouter);
 app.use('/api/salary-deductions', salaryDeductionsRouter);
+app.use('/api/dashboard', dashboardRouter);
 
 // =============================================================================
 // ERROR HANDLING

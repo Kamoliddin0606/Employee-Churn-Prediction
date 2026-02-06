@@ -177,8 +177,8 @@ function App() {
           </button>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-4">
+        {/* Navigation - Custom scrollbar: hidden but functional */}
+        <nav className="flex-1 overflow-y-auto py-4 scrollbar-hide">
           {navGroups.map((group) => (
             <div key={group.id} className="mb-4">
               {!sidebarCollapsed && (
@@ -213,40 +213,10 @@ function App() {
           ))}
         </nav>
 
-        {/* Sidebar Footer */}
+        {/* Sidebar Footer - Removed language/theme switchers, moved to top-right */}
         <div className="border-t p-4">
-          <div className={`flex ${sidebarCollapsed ? 'flex-col gap-2' : 'items-center justify-between'}`}>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <Globe className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {languages.map((lang) => (
-                  <DropdownMenuItem
-                    key={lang}
-                    onClick={() => setLanguage(lang)}
-                    className={language === lang ? 'bg-accent' : ''}
-                  >
-                    <span className="mr-2">{languageFlags[lang]}</span>
-                    {languageNames[lang]}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className="rounded-full"
-            >
-              {theme === 'dark' ? (
-                <Sun className="h-4 w-4" />
-              ) : (
-                <Moon className="h-4 w-4" />
-              )}
-            </Button>
+          <div className="text-xs text-center text-muted-foreground">
+            {!sidebarCollapsed && <span>Gloriya Global</span>}
           </div>
         </div>
       </aside>
@@ -345,12 +315,50 @@ function App() {
           )}
         </header>
 
-        {/* Page Header - Fixed */}
+        {/* Page Header - Fixed with Language/Theme Switchers */}
         <div className="hidden lg:block border-b bg-background px-6 py-4 flex-shrink-0">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            {currentGroup && <span>{currentGroup.label}</span>}
-            {currentGroup && currentItem && <span>/</span>}
-            {currentItem && <span className="text-foreground font-medium">{currentItem.label}</span>}
+          <div className="flex items-center justify-between">
+            {/* Breadcrumb */}
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              {currentGroup && <span>{currentGroup.label}</span>}
+              {currentGroup && currentItem && <span>/</span>}
+              {currentItem && <span className="text-foreground font-medium">{currentItem.label}</span>}
+            </div>
+            
+            {/* Language and Theme Switchers - Top Right */}
+            <div className="flex items-center gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full h-9 w-9">
+                    <Globe className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {languages.map((lang) => (
+                    <DropdownMenuItem
+                      key={lang}
+                      onClick={() => setLanguage(lang)}
+                      className={language === lang ? 'bg-accent' : ''}
+                    >
+                      <span className="mr-2">{languageFlags[lang]}</span>
+                      {languageNames[lang]}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleTheme}
+                className="rounded-full h-9 w-9"
+              >
+                {theme === 'dark' ? (
+                  <Sun className="h-4 w-4" />
+                ) : (
+                  <Moon className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
           </div>
         </div>
 
