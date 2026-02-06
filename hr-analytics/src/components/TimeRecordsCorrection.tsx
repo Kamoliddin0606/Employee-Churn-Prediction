@@ -96,7 +96,7 @@ export default function TimeRecordsCorrection() {
                 ...(departmentId && { departmentId: departmentId.toString() })
             });
 
-            const response = await fetch(`http://localhost:3001/api/time-records/export-template?${params}`);
+            const response = await fetch(`http://${window.location.hostname}:3001/api/time-records/export-template?${params}`);
             
             if (!response.ok) {
                 throw new Error('Export xatolik');
@@ -153,7 +153,7 @@ export default function TimeRecordsCorrection() {
             formData.append('startDate', startDate);
             formData.append('endDate', endDate);
 
-            const response = await fetch('http://localhost:3001/api/time-records/preview-corrections', {
+            const response = await fetch(`http://${window.location.hostname}:3001/api/time-records/preview-corrections`, {
                 method: 'POST',
                 body: formData
             });
@@ -185,7 +185,7 @@ export default function TimeRecordsCorrection() {
 
         try {
             setApplying(true);
-            const response = await fetch('http://localhost:3001/api/time-records/apply-corrections', {
+            const response = await fetch(`http://${window.location.hostname}:3001/api/time-records/apply-corrections`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

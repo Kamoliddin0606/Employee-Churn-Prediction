@@ -44,7 +44,7 @@ import salaryDeductionsRouter from './routes/salaryDeductions';
  * Server port
  * Can be overridden with PORT environment variable
  */
-const PORT = process.env.PORT || 3001;
+const PORT = Number(process.env.PORT) || 3001;
 
 /**
  * Express application instance
@@ -60,7 +60,7 @@ const app: Express = express();
  * Allows requests from frontend development server
  */
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'],
+    origin: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
@@ -184,11 +184,11 @@ async function startServer(): Promise<void> {
         runMigrations();
 
         // Start Express server
-        app.listen(PORT, () => {
+        app.listen(PORT, '0.0.0.0', () => {
             logger.info(`🚀 HR Analytics API server started`, {
                 port: PORT,
                 environment: process.env.NODE_ENV || 'development',
-                url: `http://localhost:${PORT}`
+                url: `http://0.0.0.0:${PORT}`
             });
             logger.info('Available endpoints:');
             logger.info('  GET  /api/health');

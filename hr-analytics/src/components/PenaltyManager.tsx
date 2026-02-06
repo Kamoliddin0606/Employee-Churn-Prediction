@@ -28,14 +28,15 @@ import {
     ChevronUp,
     Copy,
     Save,
-    RefreshCw
+    RefreshCw,
+    Download
 } from 'lucide-react';
 
 // =============================================================================
 // CONSTANTS
 // =============================================================================
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = `http://${window.location.hostname}:3001/api`;
 
 /**
  * Month names in Uzbek
@@ -370,6 +371,48 @@ export default function PenaltyManager() {
         return new Intl.NumberFormat('uz-UZ').format(amount) + ' so\'m';
     }
 
+    /**
+     * Export penalties to Excel
+     */
+    async function handleExportToExcel() {
+        try {
+            const response = await fetch(
+                `${API_BASE_URL}/penalties/export?year=${selectedYear}&month=${selectedMonth}`
+            );
+
+            if (!response.ok) {
+                showMessage('error', 'Excel faylni yuklashda xatolik');
+                return;
+            }
+
+            // Get filename from Content-Disposition header
+            const contentDisposition = response.headers.get('Content-Disposition');
+            let filename = `Jarimalar_${MONTHS.find(m => m.value === selectedMonth)?.label}_${selectedYear}.xlsx`;
+            
+            if (contentDisposition) {
+                const filenameMatch = contentDisposition.match(/filename="(.+)"/i);
+                if (filenameMatch) {
+                    filename = filenameMatch[1];
+                }
+            }
+
+            // Download file
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+
+            showMessage('success', 'Excel fayl muvaffaqiyatli yuklandi');
+        } catch (error) {
+            showMessage('error', 'Excel faylni yuklashda xatolik');
+        }
+    }
+
     // =========================================================================
     // FILTERING AND SORTING
     // =========================================================================
@@ -677,6 +720,15 @@ export default function PenaltyManager() {
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                         />
+                        <button
+                            onClick={handleExportToExcel}
+                            disabled={penalties.length === 0}
+                            className="px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            title="Excel ga export qilish"
+                        >
+                            <Download className="w-5 h-5" />
+                            Excel
+                        </button>
                         <button
                             onClick={handleCalculatePenalties}
                             disabled={calculating}

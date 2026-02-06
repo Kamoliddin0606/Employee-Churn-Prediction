@@ -21,6 +21,7 @@
  */
 
 import { Router, Request, Response } from 'express';
+import ExcelJS from 'exceljs';
 import { createContextLogger } from '../utils/logger';
 import {
     getPenaltyRules,
@@ -390,6 +391,236 @@ router.get('/summary', (req: Request, res: Response) => {
         res.status(500).json({
             success: false,
             error: 'Statistikani yuklashda xatolik'
+        });
+    }
+});
+
+// =============================================================================
+// GET /api/penalties/export - Export Penalties to Excel
+// =============================================================================
+
+/**
+ * Export penalties report to Excel file
+ * 
+ * Query parameters:
+ * - year: Required
+ * - month: Required
+ */
+router.get('/export', async (req: Request, res: Response) => {
+    try {
+        const { year, month } = req.query;
+
+        if (!year || !month) {
+            return res.status(400).json({
+                success: false,
+                error: 'year va month kerak'
+            });
+        }
+
+        const yearNum = parseInt(year as string);
+        const monthNum = parseInt(month as string);
+
+        // Get penalties data
+        const penalties = getAppliedPenalties(yearNum, monthNum);
+        const summary = getPenaltySummary(yearNum, monthNum);
+
+        // Create workbook
+        const workbook = new ExcelJS.Workbook();
+        workbook.creator = 'HR Analytics System';
+        workbook.created = new Date();
+
+        // Month names in Uzbek
+        const monthNames = [
+            'Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun',
+            'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'
+        ];
+
+        const monthName = monthNames[monthNum - 1];
+
+        // Add worksheet
+        const worksheet = workbook.addWorksheet(`Jarimalar ${monthName} ${yearNum}`);
+
+        // Set column widths
+        worksheet.columns = [
+            { key: 'no', width: 5 },
+            { key: 'employeeName', width: 30 },
+            { key: 'departmentName', width: 25 },
+            { key: 'absentMinutes', width: 15 },
+            { key: 'kpiAmount', width: 15 },
+            { key: 'kpiResult', width: 15 },
+            { key: 'lateCount', width: 12 },
+            { key: 'earlyLeaveCount', width: 12 },
+            { key: 'absentCount', width: 12 },
+            { key: 'totalViolations', width: 12 },
+            { key: 'totalFine', width: 18 },
+            { key: 'kpiStatus', width: 15 },
+            { key: 'status', width: 20 },
+        ];
+
+        // Add title
+        worksheet.mergeCells('A1:M1');
+        const titleCell = worksheet.getCell('A1');
+        titleCell.value = `JARIMALAR HISOBOTI - ${monthName.toUpperCase()} ${yearNum}`;
+        titleCell.font = { size: 16, bold: true };
+        titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+        titleCell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFE67E22' }
+        };
+        worksheet.getRow(1).height = 30;
+
+        // Add summary
+        worksheet.mergeCells('A2:D2');
+        worksheet.getCell('A2').value = `Jami xodimlar: ${summary.totalEmployees}`;
+        worksheet.mergeCells('E2:G2');
+        worksheet.getCell('E2').value = `Jarimali xodimlar: ${summary.employeesWithFines}`;
+        worksheet.mergeCells('H2:J2');
+        worksheet.getCell('H2').value = `Jami jarima: ${summary.totalFineAmount.toLocaleString('uz-UZ')} so'm`;
+        worksheet.mergeCells('K2:M2');
+        worksheet.getCell('K2').value = `KPI nollangan: ${summary.kpiZeroedCount}`;
+        
+        worksheet.getRow(2).eachCell((cell) => {
+            cell.font = { bold: true };
+            cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'FFF3F4F6' }
+            };
+        });
+        worksheet.getRow(2).height = 25;
+
+        // Add empty row
+        worksheet.addRow([]);
+
+        // Add headers
+        const headerRow = worksheet.addRow([
+            '№',
+            'Xodim',
+            'Bo\'lim',
+            'Kelmagan (daq)',
+            'KPI Miqdori',
+            'KPI Natija',
+            'Kech qolish',
+            'Erta ketish',
+            'Kelmagan',
+            'Jami buzilish',
+            'Jarima summasi',
+            'KPI holati',
+            'Status'
+        ]);
+
+        headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+        headerRow.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FF2C3E50' }
+        };
+        headerRow.alignment = { horizontal: 'center', vertical: 'middle' };
+        headerRow.height = 25;
+
+        // Add data rows
+        penalties.forEach((penalty, index) => {
+            const row = worksheet.addRow({
+                no: index + 1,
+                employeeName: penalty.employeeName,
+                departmentName: penalty.departmentName,
+                absentMinutes: penalty.absentTotalMinutes || 0,
+                kpiAmount: penalty.kpiAmount || 0,
+                kpiResult: penalty.kpiResult || 0,
+                lateCount: penalty.lateCount,
+                earlyLeaveCount: penalty.earlyLeaveCount,
+                absentCount: penalty.absentCount,
+                totalViolations: penalty.totalViolations,
+                totalFine: penalty.totalFine,
+                kpiStatus: penalty.kpiZeroed ? `${penalty.kpiZeroedMonths} oy` : '-',
+                status: penalty.terminationRecommended ? 'Ishdan bo\'shatish' : 
+                        penalty.totalViolations === 0 ? 'Yaxshi' : 'Jarima'
+            });
+
+            // Format numbers
+            row.getCell('absentMinutes').numFmt = '#,##0';
+            row.getCell('kpiAmount').numFmt = '#,##0';
+            row.getCell('kpiResult').numFmt = '#,##0';
+            row.getCell('totalFine').numFmt = '#,##0 "so\'m"';
+
+            // Color coding for status
+            const statusCell = row.getCell('status');
+            if (penalty.terminationRecommended) {
+                statusCell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'FFFECACA' }
+                };
+                statusCell.font = { color: { argb: 'FF991B1B' }, bold: true };
+            } else if (penalty.totalViolations === 0) {
+                statusCell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'FFD1FAE5' }
+                };
+                statusCell.font = { color: { argb: 'FF065F46' } };
+            } else if (penalty.totalFine > 0) {
+                statusCell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'FFFEF3C7' }
+                };
+                statusCell.font = { color: { argb: 'FF92400E' } };
+            }
+
+            // KPI status coloring
+            const kpiCell = row.getCell('kpiStatus');
+            if (penalty.kpiZeroed) {
+                kpiCell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'FFE9D5FF' }
+                };
+                kpiCell.font = { color: { argb: 'FF6B21A8' }, bold: true };
+            }
+
+            // Alignment
+            row.alignment = { vertical: 'middle' };
+            row.getCell('no').alignment = { horizontal: 'center', vertical: 'middle' };
+            row.getCell('lateCount').alignment = { horizontal: 'center', vertical: 'middle' };
+            row.getCell('earlyLeaveCount').alignment = { horizontal: 'center', vertical: 'middle' };
+            row.getCell('absentCount').alignment = { horizontal: 'center', vertical: 'middle' };
+            row.getCell('totalViolations').alignment = { horizontal: 'center', vertical: 'middle' };
+            row.getCell('kpiStatus').alignment = { horizontal: 'center', vertical: 'middle' };
+            row.getCell('status').alignment = { horizontal: 'center', vertical: 'middle' };
+        });
+
+        // Add borders to all cells
+        worksheet.eachRow((row, rowNumber) => {
+            if (rowNumber > 2) {
+                row.eachCell((cell) => {
+                    cell.border = {
+                        top: { style: 'thin' },
+                        left: { style: 'thin' },
+                        bottom: { style: 'thin' },
+                        right: { style: 'thin' }
+                    };
+                });
+            }
+        });
+
+        // Set response headers
+        const filename = `Jarimalar_${monthName}_${yearNum}.xlsx`;
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+
+        // Write to response
+        await workbook.xlsx.write(res);
+        
+        log.info('Penalties exported to Excel', { year: yearNum, month: monthNum, count: penalties.length });
+        
+        res.end();
+    } catch (error) {
+        log.error('Failed to export penalties to Excel', { error });
+        res.status(500).json({
+            success: false,
+            error: 'Excel faylni yaratishda xatolik'
         });
     }
 });

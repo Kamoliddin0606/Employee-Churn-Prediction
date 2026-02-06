@@ -380,6 +380,8 @@ export interface EmployeePenalty {
     totalFine: number;       // Jami jarima summasi
     kpiZeroed: boolean;      // KPI nollandi-mi?
     kpiZeroedMonths: number; // Necha oylik KPI nollandi
+    kpiCarriedFromPrev: number; // O'tgan oydan ko'chirilgan KPI
+    kpiResult: number;       // KPI natijasi
     terminationRecommended: boolean; // Ishdan bo'shatish tavsiyasi
     notes: string | null;
     calculatedAt: string;

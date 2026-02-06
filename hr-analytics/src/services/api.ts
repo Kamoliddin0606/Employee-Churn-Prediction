@@ -17,9 +17,22 @@
 
 /**
  * Backend API base URL
- * Uses environment variable or defaults to localhost
+ * Uses environment variable or dynamically determines based on current host
+ * This allows the app to work from both localhost and network IP addresses
  */
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const getApiBaseUrl = () => {
+    // If environment variable is set, use it
+    if (import.meta.env.VITE_API_URL) {
+        return import.meta.env.VITE_API_URL;
+    }
+    
+    // Otherwise, use current hostname with port 3001
+    // This makes it work from both localhost and network IP (e.g., 192.168.0.101)
+    const hostname = window.location.hostname;
+    return `http://${hostname}:3001/api`;
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // =============================================================================
 // TYPE DEFINITIONS
