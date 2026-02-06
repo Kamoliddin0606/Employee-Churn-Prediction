@@ -29,3 +29,7 @@
 [2026-02-05 23:32:58] ERROR: Failed to rollback transaction | {"rollbackError":{}}
 [2026-02-05 23:32:58] ERROR: Transaction failed | {"error":{}}
 [2026-02-05 23:32:58] ERROR: Import failed | {"context":"ImportAPI","error":{}}
+[2026-02-06 07:23:40] ERROR: Migration 67 failed | {"error":{},"sql":"INSERT OR IGNORE INTO settings (key, value, description) \n   VALUES ('lunch_break_minutes', '60', 'T"}
+[2026-02-06 07:31:11] ERROR: Migration 67 failed | {"error":{},"sql":"INSERT OR IGNORE INTO settings (key, value, description) \n   VALUES ('lunch_break_minutes', '60', 'T"}
+[2026-02-06 07:33:27] ERROR: Migration 67 failed | {"error":{},"sql":"INSERT OR IGNORE INTO settings (key, value, description) VALUES ('lunch_break_minutes', '60', 'Lunch"}
+[2026-02-06 07:34:48] ERROR: Migration 67 failed | {"error":{},"sql":"INSERT OR IGNORE INTO settings (key, value, description) VALUES ('lunch_break_minutes', '60', 'Lunch"}

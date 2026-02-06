@@ -494,7 +494,67 @@ const migrations: string[] = [
   // Stores total minutes of absent days based on employee schedule
   // Calculated as: sum of (work_hours * 60) for each absent day
   // ---------------------------------------------------------------------------
-  `ALTER TABLE violation_summary ADD COLUMN absent_total_minutes INTEGER DEFAULT 0`
+  `ALTER TABLE violation_summary ADD COLUMN absent_total_minutes INTEGER DEFAULT 0`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 55: Create settings table
+  // General application settings stored as key-value pairs
+  // ---------------------------------------------------------------------------
+  `CREATE TABLE IF NOT EXISTS settings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    key TEXT NOT NULL UNIQUE,
+    value TEXT NOT NULL,
+    description TEXT,
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now'))
+  )`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 56: Create salary_deductions table
+  // Tracks salary deductions based on violations (late, early leave, absent)
+  // Calculates deduction amount based on work minutes and base salary
+  // ---------------------------------------------------------------------------
+  `CREATE TABLE IF NOT EXISTS salary_deductions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    employee_id INTEGER NOT NULL,
+    year INTEGER NOT NULL,
+    month INTEGER NOT NULL,
+    
+    -- Base data
+    base_salary REAL NOT NULL,
+    work_days_count INTEGER NOT NULL,
+    daily_work_minutes INTEGER NOT NULL,
+    monthly_work_minutes INTEGER NOT NULL,
+    
+    -- Violations
+    late_minutes INTEGER DEFAULT 0,
+    early_leave_minutes INTEGER DEFAULT 0,
+    absent_minutes INTEGER DEFAULT 0,
+    total_violation_minutes INTEGER DEFAULT 0,
+    
+    -- Calculations
+    minute_rate REAL NOT NULL,
+    calculated_deduction REAL DEFAULT 0,
+    max_deduction_percent REAL NOT NULL,
+    max_deduction_amount REAL NOT NULL,
+    final_deduction REAL DEFAULT 0,
+    
+    -- Result
+    final_salary REAL NOT NULL,
+    
+    -- Metadata
+    lunch_break_minutes INTEGER DEFAULT 60,
+    calculated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (employee_id) REFERENCES employees(id),
+    UNIQUE(employee_id, year, month)
+  )`,
+
+  // Migration 57: Add lunch_break_minutes setting
+  `INSERT OR IGNORE INTO settings (key, value, description) VALUES ('lunch_break_minutes', '60', 'Lunch break minutes')`,
+
+  // Migration 58: Add max_salary_deduction_percent setting
+  `INSERT OR IGNORE INTO settings (key, value, description) VALUES ('max_salary_deduction_percent', '30', 'Max deduction percent')`
 ];
 
 // =============================================================================
@@ -527,7 +587,12 @@ export function runMigrations(): void {
           continue;
         }
         
-        logger.error(`Migration ${i + 1} failed`, { error, sql: sql.substring(0, 100) });
+        logger.error(`Migration ${i + 1} failed`, { 
+          error, 
+          errorMessage: sqlError.message,
+          errorCode: sqlError.code,
+          sql: sql 
+        });
         throw error;
       }
     }

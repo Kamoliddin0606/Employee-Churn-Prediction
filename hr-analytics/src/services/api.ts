@@ -916,6 +916,79 @@ export const missingTimeSettingsApi = {
 };
 
 // =============================================================================
+// SALARY DEDUCTIONS API
+// =============================================================================
+
+export interface SalaryDeduction {
+    employeeId: number;
+    year: number;
+    month: number;
+    baseSalary: number;
+    workDaysCount: number;
+    dailyWorkMinutes: number;
+    monthlyWorkMinutes: number;
+    lateMinutes: number;
+    earlyLeaveMinutes: number;
+    absentMinutes: number;
+    totalViolationMinutes: number;
+    minuteRate: number;
+    calculatedDeduction: number;
+    maxDeductionPercent: number;
+    maxDeductionAmount: number;
+    finalDeduction: number;
+    finalSalary: number;
+    lunchBreakMinutes: number;
+    employeeName?: string;
+    departmentName?: string;
+    kpiAmount: number;
+    kpiResult: number;
+    totalWithKpi: number;
+}
+
+export const salaryDeductionsApi = {
+    /**
+     * Get salary deductions for a specific month
+     */
+    getDeductions(params: {
+        year: number;
+        month: number;
+    }): Promise<ApiResponse<SalaryDeduction[]>> {
+        const searchParams = new URLSearchParams();
+        searchParams.set('year', String(params.year));
+        searchParams.set('month', String(params.month));
+        return request(`/salary-deductions?${searchParams.toString()}`);
+    },
+
+    /**
+     * Calculate salary deductions for a month
+     */
+    calculate(params: {
+        year: number;
+        month: number;
+        employeeId?: number;
+    }): Promise<ApiResponse<any>> {
+        return request('/salary-deductions/calculate', {
+            method: 'POST',
+            body: JSON.stringify(params)
+        });
+    },
+
+    /**
+     * Preview salary deduction calculation for an employee
+     */
+    preview(params: {
+        employeeId: number;
+        year: number;
+        month: number;
+    }): Promise<ApiResponse<SalaryDeduction>> {
+        const searchParams = new URLSearchParams();
+        searchParams.set('year', String(params.year));
+        searchParams.set('month', String(params.month));
+        return request(`/salary-deductions/preview/${params.employeeId}?${searchParams.toString()}`);
+    }
+};
+
+// =============================================================================
 // EXPORT ALL APIs
 // =============================================================================
 
@@ -928,6 +1001,7 @@ export const api = {
     violations: violationsApi,
     compensation: compensationApi,
     missingTimeSettings: missingTimeSettingsApi,
+    salaryDeductions: salaryDeductionsApi,
 };
 
 export default api;

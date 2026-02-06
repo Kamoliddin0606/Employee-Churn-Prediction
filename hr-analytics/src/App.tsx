@@ -41,6 +41,7 @@ import DatabaseExplorer from './components/DatabaseExplorer';
 import EmployeeStatusManager from './components/EmployeeStatusManager';
 import DatabaseManager from './components/DatabaseManager';
 import TimeRecordsCorrection from './components/TimeRecordsCorrection';
+import SalaryDeductions from './components/SalaryDeductions';
 import { useStore } from './store/useStore';
 import { useLanguage, languageNames, languageFlags, Language } from './i18n';
 
@@ -116,6 +117,7 @@ function App() {
       label: 'Moliya',
       items: [
         { id: 'compensation', label: 'KPI va Maosh', icon: DollarSign },
+        { id: 'salary-deductions', label: 'Maosh Ushlab Qolish', icon: DollarSign },
       ]
     },
     {
@@ -396,6 +398,10 @@ function App() {
 
           <TabsContent value="compensation" className="animate-fade-in">
             <CompensationManager />
+          </TabsContent>
+
+          <TabsContent value="salary-deductions" className="animate-fade-in">
+            <SalaryDeductions />
           </TabsContent>
 
           <TabsContent value="penalties" className="animate-fade-in">

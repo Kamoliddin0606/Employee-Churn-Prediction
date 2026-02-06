@@ -30338,3 +30338,54 @@
 [2026-02-06 02:45:01] DEBUG: Resolving schedule | {"context":"ScheduleResolver","employeeId":615,"date":"2026-01-21","dayOfWeek":3}
 [2026-02-06 02:45:01] DEBUG: Employee schedule lookup | {"context":"ScheduleResolver","employeeId":615,"date":"2026-01-21","hasAnySchedule":false,"foundValidSchedule":false}
 [2026-02-06 02:45:01] DEBUG: Department schedule lookup | {"context":"ScheduleResolver","employeeId":615,"departmentId":111,"date":"2026-01-21","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Resolving schedule | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-12","dayOfWeek":1}
+[2026-02-06 07:43:01] DEBUG: Employee schedule lookup | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-12","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Department schedule lookup | {"context":"ScheduleResolver","employeeId":31,"departmentId":8,"date":"2026-01-12","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Schedule for date | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-12","isWorkDay":true,"workStart":"09:00","workEnd":"18:00"}
+[2026-02-06 07:43:01] DEBUG: Missing time(s) - counted as absent | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-12","checkIn":null,"checkOut":null,"absentMinutes":540}
+[2026-02-06 07:43:01] DEBUG: Resolving schedule | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-13","dayOfWeek":2}
+[2026-02-06 07:43:01] DEBUG: Employee schedule lookup | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-13","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Department schedule lookup | {"context":"ScheduleResolver","employeeId":31,"departmentId":8,"date":"2026-01-13","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Schedule for date | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-13","isWorkDay":true,"workStart":"09:00","workEnd":"18:00"}
+[2026-02-06 07:43:01] DEBUG: Missing time(s) - counted as absent | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-13","checkIn":null,"checkOut":null,"absentMinutes":540}
+[2026-02-06 07:43:01] DEBUG: Resolving schedule | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-14","dayOfWeek":3}
+[2026-02-06 07:43:01] DEBUG: Employee schedule lookup | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-14","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Department schedule lookup | {"context":"ScheduleResolver","employeeId":31,"departmentId":8,"date":"2026-01-14","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Schedule for date | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-14","isWorkDay":true,"workStart":"09:00","workEnd":"18:00"}
+[2026-02-06 07:43:01] DEBUG: Missing time(s) - counted as absent | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-14","checkIn":null,"checkOut":null,"absentMinutes":540}
+[2026-02-06 07:43:01] DEBUG: Resolving schedule | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-15","dayOfWeek":4}
+[2026-02-06 07:43:01] DEBUG: Employee schedule lookup | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-15","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Department schedule lookup | {"context":"ScheduleResolver","employeeId":31,"departmentId":8,"date":"2026-01-15","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Schedule for date | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-15","isWorkDay":true,"workStart":"09:00","workEnd":"18:00"}
+[2026-02-06 07:43:01] DEBUG: Missing time(s) - counted as absent | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-15","checkIn":null,"checkOut":null,"absentMinutes":540}
+[2026-02-06 07:43:01] DEBUG: Resolving schedule | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-16","dayOfWeek":5}
+[2026-02-06 07:43:01] DEBUG: Employee schedule lookup | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-16","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Department schedule lookup | {"context":"ScheduleResolver","employeeId":31,"departmentId":8,"date":"2026-01-16","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Schedule for date | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-16","isWorkDay":true,"workStart":"09:00","workEnd":"18:00"}
+[2026-02-06 07:43:01] DEBUG: Missing time(s) - counted as absent | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-16","checkIn":null,"checkOut":null,"absentMinutes":540}
+[2026-02-06 07:43:01] DEBUG: Resolving schedule | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-17","dayOfWeek":6}
+[2026-02-06 07:43:01] DEBUG: Employee schedule lookup | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-17","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Department schedule lookup | {"context":"ScheduleResolver","employeeId":31,"departmentId":8,"date":"2026-01-17","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Schedule for date | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-17","isWorkDay":false,"workStart":"09:00","workEnd":"18:00"}
+[2026-02-06 07:43:01] DEBUG: Skipping non-work day | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-17"}
+[2026-02-06 07:43:01] DEBUG: Resolving schedule | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-18","dayOfWeek":7}
+[2026-02-06 07:43:01] DEBUG: Employee schedule lookup | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-18","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Department schedule lookup | {"context":"ScheduleResolver","employeeId":31,"departmentId":8,"date":"2026-01-18","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Schedule for date | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-18","isWorkDay":false,"workStart":"09:00","workEnd":"18:00"}
+[2026-02-06 07:43:01] DEBUG: Skipping non-work day | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-18"}
+[2026-02-06 07:43:01] DEBUG: Resolving schedule | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-19","dayOfWeek":1}
+[2026-02-06 07:43:01] DEBUG: Employee schedule lookup | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-19","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Department schedule lookup | {"context":"ScheduleResolver","employeeId":31,"departmentId":8,"date":"2026-01-19","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Schedule for date | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-19","isWorkDay":true,"workStart":"09:00","workEnd":"18:00"}
+[2026-02-06 07:43:01] DEBUG: Missing time(s) - counted as absent | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-19","checkIn":null,"checkOut":null,"absentMinutes":540}
+[2026-02-06 07:43:01] DEBUG: Resolving schedule | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-20","dayOfWeek":2}
+[2026-02-06 07:43:01] DEBUG: Employee schedule lookup | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-20","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Department schedule lookup | {"context":"ScheduleResolver","employeeId":31,"departmentId":8,"date":"2026-01-20","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Schedule for date | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-20","isWorkDay":true,"workStart":"09:00","workEnd":"18:00"}
+[2026-02-06 07:43:01] DEBUG: Missing time(s) - counted as absent | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-20","checkIn":null,"checkOut":null,"absentMinutes":540}
+[2026-02-06 07:43:01] DEBUG: Resolving schedule | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-21","dayOfWeek":3}
+[2026-02-06 07:43:01] DEBUG: Employee schedule lookup | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-21","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Department schedule lookup | {"context":"ScheduleResolver","employeeId":31,"departmentId":8,"date":"2026-01-21","hasAnySchedule":false,"foundValidSchedule":false}
+[2026-02-06 07:43:01] DEBUG: Schedule for date | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-21","isWorkDay":true,"workStart":"09:00","workEnd":"18:00"}
+[2026-02-06 07:43:01] DEBUG: Missing time(s) - counted as absent | {"context":"ViolationCalculator","employeeId":31,"date":"2026-01-21","checkIn":null,"checkOut":null,"absentMinutes":540}
+[2026-02-06 07:43:01] DEBUG: Resolving schedule | {"context":"ScheduleResolver","employeeId":31,"date":"2026-01-22","dayOfWeek":4}

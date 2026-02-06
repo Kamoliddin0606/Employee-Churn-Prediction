@@ -8,7 +8,8 @@ import {
   FileSpreadsheet,
   Calendar,
   Users,
-  Loader2
+  Loader2,
+  Settings as SettingsIcon
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
@@ -42,6 +43,11 @@ export function AdminPanel() {
     imports: number;
     uniqueDates: number;
   } | null>(null);
+  
+  // Salary deduction settings
+  const [lunchBreakMinutes, setLunchBreakMinutes] = useState<number>(60);
+  const [maxDeductionPercent, setMaxDeductionPercent] = useState<number>(30);
+  const [savingSettings, setSavingSettings] = useState(false);
 
   const {
     employees,
@@ -64,8 +70,53 @@ export function AdminPanel() {
     }
   };
 
+  // Fetch salary deduction settings
+  const fetchSalarySettings = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/settings`);
+      const result = await response.json();
+      if (result.success && result.data) {
+        const lunchSetting = result.data.find((s: any) => s.key === 'lunch_break_minutes');
+        const maxDeductionSetting = result.data.find((s: any) => s.key === 'max_salary_deduction_percent');
+        
+        if (lunchSetting) setLunchBreakMinutes(parseInt(lunchSetting.value));
+        if (maxDeductionSetting) setMaxDeductionPercent(parseFloat(maxDeductionSetting.value));
+      }
+    } catch (error) {
+      console.error('Failed to fetch salary settings:', error);
+    }
+  };
+
+  // Save salary deduction settings
+  const handleSaveSettings = async () => {
+    setSavingSettings(true);
+    try {
+      // Update lunch break minutes
+      await fetch(`${API_BASE}/settings/lunch_break_minutes`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: lunchBreakMinutes.toString() })
+      });
+
+      // Update max deduction percent
+      await fetch(`${API_BASE}/settings/max_salary_deduction_percent`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: maxDeductionPercent.toString() })
+      });
+
+      alert('Sozlamalar saqlandi!');
+    } catch (error) {
+      console.error('Failed to save settings:', error);
+      alert('Sozlamalarni saqlashda xatolik');
+    } finally {
+      setSavingSettings(false);
+    }
+  };
+
   useEffect(() => {
     fetchDbStats();
+    fetchSalarySettings();
   }, []);
 
   const handleClearData = async () => {
@@ -279,6 +330,67 @@ export function AdminPanel() {
               ))}
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <SettingsIcon className="h-5 w-5" />
+            Maosh Hisoblash Sozlamalari
+          </CardTitle>
+          <CardDescription>
+            Maoshdan ushlab qolish hisob-kitoblari uchun sozlamalar
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                Tushlik vaqti (daqiqalarda)
+              </label>
+              <input
+                type="number"
+                min="0"
+                max="120"
+                value={lunchBreakMinutes}
+                onChange={(e) => setLunchBreakMinutes(Number(e.target.value))}
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+              />
+              <p className="text-xs text-muted-foreground">
+                Kunlik ish vaqtidan ayriladigan tushlik vaqti (default: 60 daqiqa)
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                Maksimal ushlab qolish (%)
+              </label>
+              <input
+                type="number"
+                min="0"
+                max="100"
+                step="0.1"
+                value={maxDeductionPercent}
+                onChange={(e) => setMaxDeductionPercent(Number(e.target.value))}
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+              />
+              <p className="text-xs text-muted-foreground">
+                Oylikdan maksimal ushlab qolinishi mumkin bo'lgan foiz (default: 30%)
+              </p>
+            </div>
+          </div>
+
+          <div className="flex justify-end">
+            <Button onClick={handleSaveSettings} disabled={savingSettings}>
+              {savingSettings ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <SettingsIcon className="h-4 w-4 mr-2" />
+              )}
+              {savingSettings ? 'Saqlanmoqda...' : 'Sozlamalarni Saqlash'}
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
