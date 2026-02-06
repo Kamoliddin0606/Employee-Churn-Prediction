@@ -434,7 +434,60 @@ const migrations: string[] = [
   // ---------------------------------------------------------------------------
   `INSERT OR IGNORE INTO missing_time_settings 
    (target_type, target_id, handling_type, missing_checkin_penalty_minutes, missing_checkout_penalty_minutes)
-   VALUES ('organization', 1, 1, 60, 120)`
+   VALUES ('organization', 1, 1, 60, 120)`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 46: Add valid_from column to missing_time_settings
+  // Allows settings to have a start date for when they become effective
+  // NULL means the setting applies from the beginning of time
+  // ---------------------------------------------------------------------------
+  `ALTER TABLE missing_time_settings ADD COLUMN valid_from TEXT`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 47: Create optimized index for missing_time_settings lookup
+  // Supports efficient date-based priority resolution queries
+  // ---------------------------------------------------------------------------
+  `CREATE INDEX IF NOT EXISTS idx_missing_time_settings_lookup 
+   ON missing_time_settings(target_type, target_id, valid_from DESC)`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 48: Add is_active column to employees table
+  // Allows deactivating employees without deleting them
+  // Inactive employees are excluded from all calculations and reports
+  // ---------------------------------------------------------------------------
+  `ALTER TABLE employees ADD COLUMN is_active INTEGER NOT NULL DEFAULT 1`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 49: Add deactivated_at column to employees table
+  // Tracks when an employee was deactivated for audit purposes
+  // ---------------------------------------------------------------------------
+  `ALTER TABLE employees ADD COLUMN deactivated_at TEXT`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 50: Add deactivation_reason column to employees table
+  // Stores the reason for deactivation (e.g., "Ishdan bo'shagan", "Ta'tilga chiqqan")
+  // ---------------------------------------------------------------------------
+  `ALTER TABLE employees ADD COLUMN deactivation_reason TEXT`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 51: Create index for is_active column
+  // Optimizes filtering active/inactive employees
+  // ---------------------------------------------------------------------------
+  `CREATE INDEX IF NOT EXISTS idx_employees_is_active ON employees(is_active)`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 52: Add kpi_carried_from_prev column to employee_penalties
+  // Tracks KPI months carried over from previous month
+  // ---------------------------------------------------------------------------
+  `ALTER TABLE employee_penalties ADD COLUMN kpi_carried_from_prev INTEGER DEFAULT 0`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 53: Add kpi_result column to employee_penalties
+  // Stores calculated KPI result after applying penalties
+  // If kpi_zeroed = 1, kpi_result = 0
+  // Otherwise kpi_result = max(0, kpi_amount - total_fine)
+  // ---------------------------------------------------------------------------
+  `ALTER TABLE employee_penalties ADD COLUMN kpi_result REAL DEFAULT 0`
 ];
 
 // =============================================================================

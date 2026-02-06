@@ -20,7 +20,7 @@ import path from 'path';
 
 import { logger } from './utils/logger';
 import { runMigrations } from './database/migrate';
-import { closeDatabase } from './database/connection';
+import { closeDatabase, initDatabase } from './database/connection';
 
 // Import routes
 import employeesRouter from './routes/employees';
@@ -33,6 +33,7 @@ import compensationRouter from './routes/compensation';
 import penaltiesRouter from './routes/penalties';
 import missingTimeSettingsRouter from './routes/missingTimeSettings';
 import dbExplorerRouter from './routes/dbExplorer';
+import timeRecordsRouter from './routes/timeRecords';
 
 // =============================================================================
 // SERVER CONFIGURATION
@@ -125,6 +126,7 @@ app.use('/api/compensation', compensationRouter);
 app.use('/api/penalties', penaltiesRouter);
 app.use('/api/missing-time-settings', missingTimeSettingsRouter);
 app.use('/api/db-explorer', dbExplorerRouter);
+app.use('/api/time-records', timeRecordsRouter);
 
 // =============================================================================
 // ERROR HANDLING
@@ -171,6 +173,10 @@ app.use((error: Error, req: Request, res: Response, _next: NextFunction) => {
  */
 async function startServer(): Promise<void> {
     try {
+        // Initialize database first
+        logger.info('Initializing database...');
+        await initDatabase();
+        
         // Run database migrations
         logger.info('Running database migrations...');
         runMigrations();

@@ -88,3 +88,32 @@
     transform: translateX(0);
   }
 }
+
+/* Scrollable table container */
+.table-container {
+  @apply overflow-auto max-h-[calc(100vh-300px)];
+}
+
+/* Custom scrollbar styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-muted rounded;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground/30 rounded hover:bg-muted-foreground/50;
+}
+
+/* Sticky table header */
+.sticky-header thead {
+  @apply sticky top-0 z-10 bg-background;
+}
+
+/* Full height content */
+.full-height-content {
+  @apply h-[calc(100vh-200px)] overflow-y-auto;
+}

@@ -323,6 +323,81 @@ router.post('/query', async (req: Request, res: Response) => {
 });
 
 // =============================================================================
+// POST /api/db-explorer/truncate/:tableName
+// =============================================================================
+
+/**
+ * Truncate (clear all data from) a specific table
+ * Protected tables cannot be truncated
+ * 
+ * @param tableName - Name of the table to truncate
+ * @returns Success status and deleted row count
+ */
+router.post('/truncate/:tableName', async (req: Request, res: Response) => {
+    try {
+        const { tableName } = req.params;
+
+        // List of protected tables that cannot be truncated
+        const protectedTables = ['organizations', 'calculation_settings'];
+        
+        if (protectedTables.includes(tableName)) {
+            return res.status(403).json({
+                success: false,
+                error: `"${tableName}" jadvali himoyalangan va tozalab bo'lmaydi`
+            });
+        }
+
+        const db = getDatabase();
+
+        // Check if table exists
+        const tableExists = db.prepare(`
+            SELECT name FROM sqlite_master 
+            WHERE type = 'table' AND name = ?
+        `).get(tableName);
+
+        if (!tableExists) {
+            return res.status(404).json({
+                success: false,
+                error: `"${tableName}" jadvali topilmadi`
+            });
+        }
+
+        // Get current row count
+        const countResult = db.prepare(`SELECT COUNT(*) as count FROM "${tableName}"`).get() as { count: number };
+        const deletedCount = countResult.count;
+
+        // Delete all rows
+        db.prepare(`DELETE FROM "${tableName}"`).run();
+
+        // Reset auto-increment counter if applicable
+        try {
+            db.prepare(`DELETE FROM sqlite_sequence WHERE name = ?`).run(tableName);
+        } catch {
+            // sqlite_sequence may not exist for all tables
+        }
+
+        log.info('Table truncated', { tableName, deletedCount });
+
+        return res.json({
+            success: true,
+            data: {
+                tableName,
+                deletedCount
+            },
+            message: `"${tableName}" jadvalidan ${deletedCount} ta yozuv o'chirildi`
+        });
+
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        log.error('Error truncating table', { error: errorMessage, tableName: req.params.tableName });
+        return res.status(500).json({
+            success: false,
+            error: `Jadvalni tozalashda xatolik: ${errorMessage}`
+        });
+    }
+});
+
+// =============================================================================
 // EXPORT
 // =============================================================================
 

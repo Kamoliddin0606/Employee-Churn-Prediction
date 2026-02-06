@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Trash2, 
   RotateCcw, 
@@ -7,7 +7,8 @@ import {
   Database,
   FileSpreadsheet,
   Calendar,
-  Users
+  Users,
+  Loader2
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
@@ -25,11 +26,22 @@ import { useStore } from '../store/useStore';
 import { format } from 'date-fns';
 import { useLanguage } from '../i18n';
 
+const API_BASE = 'http://localhost:3001/api';
+
 export function AdminPanel() {
   const { t } = useLanguage();
   const [showClearDialog, setShowClearDialog] = useState(false);
   const [showRollbackDialog, setShowRollbackDialog] = useState(false);
   const [selectedRollbackId, setSelectedRollbackId] = useState<string | null>(null);
+  const [isResetting, setIsResetting] = useState(false);
+  const [dbStats, setDbStats] = useState<{
+    employees: number;
+    departments: number;
+    timeRecords: number;
+    attendanceRecords: number;
+    imports: number;
+    uniqueDates: number;
+  } | null>(null);
 
   const {
     employees,
@@ -39,9 +51,48 @@ export function AdminPanel() {
     rollbackImport
   } = useStore();
 
-  const handleClearData = () => {
-    clearAllData();
-    setShowClearDialog(false);
+  // Fetch database stats from backend
+  const fetchDbStats = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/settings/stats`);
+      const result = await response.json();
+      if (result.success) {
+        setDbStats(result.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch DB stats:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDbStats();
+  }, []);
+
+  const handleClearData = async () => {
+    setIsResetting(true);
+    try {
+      const response = await fetch(`${API_BASE}/settings/reset`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const result = await response.json();
+      
+      if (result.success) {
+        // Also clear frontend state
+        clearAllData();
+        // Refresh stats
+        await fetchDbStats();
+        alert("Barcha ma'lumotlar muvaffaqiyatli o'chirildi!");
+      } else {
+        alert(`Xatolik: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Reset failed:', error);
+      alert("Server bilan bog'lanishda xatolik yuz berdi");
+    } finally {
+      setIsResetting(false);
+      setShowClearDialog(false);
+    }
   };
 
   const handleRollback = () => {
@@ -52,12 +103,13 @@ export function AdminPanel() {
     }
   };
 
+  // Use backend stats if available, fallback to frontend state
   const stats = {
-    totalEmployees: employees.length,
-    totalRecords: attendance.length,
-    totalImports: importHistory.length,
-    uniqueDates: [...new Set(attendance.map(a => a.date))].length,
-    // Status code breakdown
+    totalEmployees: dbStats?.employees ?? employees.length,
+    totalRecords: dbStats?.timeRecords ?? attendance.length,
+    totalImports: dbStats?.imports ?? importHistory.length,
+    uniqueDates: dbStats?.uniqueDates ?? [...new Set(attendance.map(a => a.date))].length,
+    // Status code breakdown (frontend only for now)
     statusCounts: {
       W: attendance.filter(a => a.statusCode === 'W').length,
       L: attendance.filter(a => a.statusCode === 'L').length,
@@ -274,12 +326,16 @@ export function AdminPanel() {
                   </ul>
                 </div>
                 <DialogFooter>
-                  <Button variant="outline" onClick={() => setShowClearDialog(false)}>
+                  <Button variant="outline" onClick={() => setShowClearDialog(false)} disabled={isResetting}>
                     {t.common.cancel}
                   </Button>
-                  <Button variant="destructive" onClick={handleClearData}>
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    {t.admin.yesDelete}
+                  <Button variant="destructive" onClick={handleClearData} disabled={isResetting}>
+                    {isResetting ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Trash2 className="h-4 w-4 mr-2" />
+                    )}
+                    {isResetting ? "O'chirilmoqda..." : t.admin.yesDelete}
                   </Button>
                 </DialogFooter>
               </DialogContent>

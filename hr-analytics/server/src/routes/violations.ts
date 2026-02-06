@@ -205,8 +205,8 @@ router.get('/report', (req: Request, res: Response) => {
         const sortBy = req.query.sortBy as string || 'violation_count';
         const sortOrder = req.query.sortOrder as string || 'desc';
 
-        // Build query
-        let whereClause = 'WHERE vs.year = ? AND vs.month = ?';
+        // Build query - only active employees
+        let whereClause = 'WHERE vs.year = ? AND vs.month = ? AND e.is_active = 1';
         const params: (number | string)[] = [year, month];
 
         if (departmentId) {

@@ -14,7 +14,8 @@
 
 import { getDatabase } from '../database/connection';
 import { createContextLogger } from '../utils/logger';
-import { getEffectiveSchedule } from './scheduleResolver';
+import { getEffectiveSchedule, clearScheduleCache } from './scheduleResolver';
+import { resolveMissingTime } from './missingTimeResolver';
 import type { ViolationSummary, CalculationLevel } from '../models/types';
 
 // Create context-specific logger
@@ -186,22 +187,13 @@ export function calculateEmployeeMonthlyViolations(
 
     const timeRecords = timeRecordStmt.all(employeeId, startDate, endDate) as TimeRecordRow[];
 
-    // Get attendance records for absent days
-    const attendanceStmt = db.prepare(`
-    SELECT employee_id, date, status_code, is_violation
-    FROM attendance_records
-    WHERE employee_id = ? AND date >= ? AND date <= ? AND status_code = 'A'
-  `);
-
-    const absentRecords = attendanceStmt.all(employeeId, startDate, endDate) as AttendanceRow[];
-
-    // Initialize result with not-at-workplace tracking
+    // Initialize result - all counts will be calculated from time_records only
     const result: MonthlyViolationResult = {
         totalLateMinutes: 0,
         totalEarlyLeaveMinutes: 0,
         lateCount: 0,
         earlyLeaveCount: 0,
-        absentCount: absentRecords.length,
+        absentCount: 0,  // Will be calculated from time_records
         violationCount: 0,
         notAtWorkplaceCount: 0,
         notAtWorkplaceMinutes: 0
@@ -212,62 +204,80 @@ export function calculateEmployeeMonthlyViolations(
         // Get effective schedule based on level
         const schedule = getScheduleByLevel(employeeId, record.date, level);
 
-        // Skip non-work days
-        if (!schedule.isWorkDay) continue;
+        log.debug('Schedule for date', {
+            employeeId,
+            date: record.date,
+            isWorkDay: schedule.isWorkDay,
+            workStart: schedule.workStart,
+            workEnd: schedule.workEnd
+        });
 
-        // =================================================================
-        // NOT-AT-WORKPLACE TRACKING
-        // =================================================================
-        // If missing_type is 'both', employee was not at workplace
-        // This happens when both check_in and check_out were missing
-        // and Type 2 settings were applied (auto-fill with penalty)
-        // =================================================================
-        if (record.missing_type === 'both') {
-            result.notAtWorkplaceCount++;
-            // Calculate full work day minutes for not-at-workplace
-            const workStartMinutes = timeToMinutes(schedule.workStart);
-            const workEndMinutes = timeToMinutes(schedule.workEnd);
-            result.notAtWorkplaceMinutes += (workEndMinutes - workStartMinutes);
+        // Skip non-work days
+        if (!schedule.isWorkDay) {
+            log.debug('Skipping non-work day', { employeeId, date: record.date });
+            continue;
         }
 
-        // Use pre-calculated late/early minutes from import if available
-        // Otherwise calculate based on check-in/check-out times
-        let lateMinutes = 0;
-        let earlyMinutes = 0;
-
-        if (record.is_auto_filled && record.late_minutes !== undefined) {
-            // Use pre-calculated values from import (already processed by MissingTimeResolver)
-            lateMinutes = record.late_minutes;
-            earlyMinutes = record.early_leave_minutes;
-        } else {
-            // Calculate late minutes
-            lateMinutes = calculateLateMinutes(
+        // =================================================================
+        // SIMPLE RULE: Both check_in AND check_out must be present
+        // =================================================================
+        // If BOTH check_in and check_out are NOT NULL:
+        //   - Calculate late and early leave
+        // Otherwise (one or both are NULL):
+        //   - Count as absent
+        // =================================================================
+        
+        // Check if both times are present
+        const hasBothTimes = record.check_in !== null && record.check_out !== null;
+        
+        if (hasBothTimes) {
+            // Both times present - calculate late and early leave
+            const lateMinutes = calculateLateMinutes(
                 record.check_in,
                 schedule.workStart,
                 schedule.lateTolerance
             );
 
-            // Calculate early leave minutes
-            earlyMinutes = calculateEarlyLeaveMinutes(
+            const earlyMinutes = calculateEarlyLeaveMinutes(
                 record.check_out,
                 schedule.workEnd
             );
-        }
 
-        if (lateMinutes > 0) {
-            result.totalLateMinutes += lateMinutes;
-            result.lateCount++;
-        }
+            // Count late if there are late minutes
+            if (lateMinutes > 0) {
+                result.totalLateMinutes += lateMinutes;
+                result.lateCount++;
+            }
 
-        if (earlyMinutes > 0) {
-            result.totalEarlyLeaveMinutes += earlyMinutes;
-            result.earlyLeaveCount++;
+            // Count early leave if there are early leave minutes
+            if (earlyMinutes > 0) {
+                result.totalEarlyLeaveMinutes += earlyMinutes;
+                result.earlyLeaveCount++;
+            }
+
+            log.debug('Both times present - calculated late/early', {
+                employeeId,
+                date: record.date,
+                checkIn: record.check_in,
+                checkOut: record.check_out,
+                lateMinutes,
+                earlyMinutes
+            });
+        } else {
+            // One or both times missing - count as absent
+            result.absentCount++;
+            
+            log.debug('Missing time(s) - counted as absent', {
+                employeeId,
+                date: record.date,
+                checkIn: record.check_in,
+                checkOut: record.check_out
+            });
         }
     }
 
-    // Total violation count (includes not-at-workplace)
-    result.violationCount = result.lateCount + result.earlyLeaveCount + 
-                           result.absentCount + result.notAtWorkplaceCount;
+    // Total violation count = late + early + absent
+    result.violationCount = result.lateCount + result.earlyLeaveCount + result.absentCount;
 
     return result;
 }
@@ -275,105 +285,25 @@ export function calculateEmployeeMonthlyViolations(
 /**
  * Get schedule based on calculation level
  * 
+ * Uses getEffectiveSchedule for all levels to ensure:
+ * - valid_from/valid_to dates are properly checked
+ * - Priority order is maintained (employee > department > organization)
+ * - Schedule exceptions are respected
+ * 
  * @param employeeId - Employee ID
- * @param date - Date string
- * @param level - Calculation level
+ * @param date - Date string (YYYY-MM-DD)
+ * @param level - Calculation level (currently all levels use full resolution)
+ * @returns Schedule with work times, tolerance, and work day status
  */
 function getScheduleByLevel(
     employeeId: number,
     date: string,
     level: CalculationLevel
 ): { workStart: string; workEnd: string; lateTolerance: number; isWorkDay: boolean } {
-    const db = getDatabase();
-    const dayOfWeek = new Date(date).getDay() || 7; // 1-7 (Mon-Sun)
-
-    // For 'full' level, use the complete priority resolution
-    if (level === 'full') {
-        return getEffectiveSchedule(employeeId, date);
-    }
-
-    // For other levels, get specific schedule type only
-    let targetType: string;
-    let targetId: number;
-
-    if (level === 'organization') {
-        targetType = 'organization';
-        targetId = 1; // Default organization
-    } else if (level === 'department') {
-        // Get employee's department
-        const empStmt = db.prepare('SELECT department_id FROM employees WHERE id = ?');
-        const emp = empStmt.get(employeeId) as { department_id: number } | undefined;
-
-        // Check if department schedule exists
-        const deptScheduleStmt = db.prepare(`
-      SELECT work_start, work_end, late_tolerance, work_days
-      FROM work_schedules
-      WHERE target_type = 'department' AND target_id = ? AND is_active = 1
-    `);
-        const deptSchedule = emp ? deptScheduleStmt.get(emp.department_id) as Record<string, unknown> | undefined : undefined;
-
-        if (deptSchedule) {
-            const workDays = JSON.parse(deptSchedule.work_days as string) as number[];
-            return {
-                workStart: deptSchedule.work_start as string,
-                workEnd: deptSchedule.work_end as string,
-                lateTolerance: deptSchedule.late_tolerance as number,
-                isWorkDay: workDays.includes(dayOfWeek)
-            };
-        }
-
-        // Fall back to organization if no department schedule
-        targetType = 'organization';
-        targetId = 1;
-    } else {
-        // Employee level - check employee schedule first
-        const empScheduleStmt = db.prepare(`
-      SELECT work_start, work_end, late_tolerance, work_days
-      FROM work_schedules
-      WHERE target_type = 'employee' AND target_id = ? AND is_active = 1
-    `);
-        const empSchedule = empScheduleStmt.get(employeeId) as Record<string, unknown> | undefined;
-
-        if (empSchedule) {
-            const workDays = JSON.parse(empSchedule.work_days as string) as number[];
-            return {
-                workStart: empSchedule.work_start as string,
-                workEnd: empSchedule.work_end as string,
-                lateTolerance: empSchedule.late_tolerance as number,
-                isWorkDay: workDays.includes(dayOfWeek)
-            };
-        }
-
-        // Fall back to organization
-        targetType = 'organization';
-        targetId = 1;
-    }
-
-    // Get organization schedule
-    const scheduleStmt = db.prepare(`
-    SELECT work_start, work_end, late_tolerance, work_days
-    FROM work_schedules
-    WHERE target_type = ? AND target_id = ? AND is_active = 1
-  `);
-    const schedule = scheduleStmt.get(targetType, targetId) as Record<string, unknown> | undefined;
-
-    if (schedule) {
-        const workDays = JSON.parse(schedule.work_days as string) as number[];
-        return {
-            workStart: schedule.work_start as string,
-            workEnd: schedule.work_end as string,
-            lateTolerance: schedule.late_tolerance as number,
-            isWorkDay: workDays.includes(dayOfWeek)
-        };
-    }
-
-    // Ultimate fallback
-    return {
-        workStart: '09:00',
-        workEnd: '18:00',
-        lateTolerance: 5,
-        isWorkDay: dayOfWeek >= 1 && dayOfWeek <= 5
-    };
+    // Use getEffectiveSchedule for all levels
+    // This ensures valid_from/valid_to are properly checked
+    // and the correct priority order is maintained
+    return getEffectiveSchedule(employeeId, date);
 }
 
 /**
@@ -391,10 +321,13 @@ export function calculateAllEmployeesMonthlyViolations(
 ): number {
     const db = getDatabase();
 
+    // Clear schedule cache to ensure fresh data
+    clearScheduleCache();
+
     log.info('Starting monthly violation calculation', { year, month, level });
 
-    // Get all employees
-    const employeesStmt = db.prepare('SELECT id FROM employees');
+    // Get all active employees only
+    const employeesStmt = db.prepare('SELECT id FROM employees WHERE is_active = 1');
     const employees = employeesStmt.all() as Array<{ id: number }>;
 
     // Prepare upsert statement
@@ -480,7 +413,7 @@ export function getEmployeeViolationSummary(
     WHERE employee_id = ? AND year = ? AND month = ?
   `);
 
-    return stmt.get(employeeId, year, month) as ViolationSummary | null;
+    return stmt.get(employeeId, year, month) as unknown as ViolationSummary | null;
 }
 
 /**

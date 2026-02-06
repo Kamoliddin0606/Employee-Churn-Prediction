@@ -662,4 +662,189 @@ router.get('/attendance-records', (req: Request, res: Response) => {
     }
 });
 
+// =============================================================================
+// POST /api/import/employees - Import employees from Excel
+// =============================================================================
+
+/**
+ * Import employees with their departments from Excel file
+ * 
+ * Excel format:
+ * | ID | Ism Familya | Bo'lim | Tashkilot (optional) |
+ * 
+ * Creates departments and organizations if they don't exist
+ */
+router.post('/employees', upload.single('file'), async (req: Request, res: Response) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                error: 'Fayl yuklanmadi'
+            });
+        }
+
+        log.info('Starting employees import', {
+            fileName: req.file.originalname,
+            size: req.file.size
+        });
+
+        const db = getDatabase();
+        
+        // Use XLSX directly for simple row parsing
+        const XLSX = await import('xlsx');
+        const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as unknown[][];
+
+        if (rows.length < 2) {
+            return res.status(400).json({
+                success: false,
+                error: 'Fayl bo\'sh yoki noto\'g\'ri formatda'
+            });
+        }
+
+        let newEmployees = 0;
+        let updatedEmployees = 0;
+        let newDepartments = 0;
+        let newOrganizations = 0;
+        const errors: string[] = [];
+
+        // Skip header row
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            if (!row || row.length < 3) continue;
+
+            try {
+                const externalId = String(row[0] || '').trim();
+                const name = String(row[1] || '').trim();
+                const departmentName = String(row[2] || '').trim();
+                const organizationName = row[3] ? String(row[3]).trim() : 'Default Organization';
+
+                if (!externalId || !name || !departmentName) {
+                    errors.push(`Qator ${i + 1}: ID, ism yoki bo'lim yo'q`);
+                    continue;
+                }
+
+                // Get or create organization
+                let orgStmt = db.prepare('SELECT id FROM organizations WHERE name = ?');
+                let org = orgStmt.get(organizationName) as { id: number } | undefined;
+                
+                if (!org) {
+                    const insertOrg = db.prepare('INSERT INTO organizations (name) VALUES (?)');
+                    const result = insertOrg.run(organizationName);
+                    org = { id: Number(result.lastInsertRowid) };
+                    newOrganizations++;
+                }
+
+                // Get or create department
+                let deptStmt = db.prepare('SELECT id FROM departments WHERE name = ? AND organization_id = ?');
+                let dept = deptStmt.get(departmentName, org.id) as { id: number } | undefined;
+                
+                if (!dept) {
+                    const insertDept = db.prepare('INSERT INTO departments (name, organization_id) VALUES (?, ?)');
+                    const result = insertDept.run(departmentName, org.id);
+                    dept = { id: Number(result.lastInsertRowid) };
+                    newDepartments++;
+                }
+
+                // Check if employee exists
+                const empStmt = db.prepare('SELECT id FROM employees WHERE external_id = ?');
+                const existingEmp = empStmt.get(externalId) as { id: number } | undefined;
+
+                if (existingEmp) {
+                    // Update existing employee
+                    const updateStmt = db.prepare(`
+                        UPDATE employees 
+                        SET name = ?, department_id = ?, updated_at = datetime('now')
+                        WHERE id = ?
+                    `);
+                    updateStmt.run(name, dept.id, existingEmp.id);
+                    updatedEmployees++;
+                } else {
+                    // Insert new employee
+                    const insertStmt = db.prepare(`
+                        INSERT INTO employees (external_id, name, department_id, is_active)
+                        VALUES (?, ?, ?, 1)
+                    `);
+                    insertStmt.run(externalId, name, dept.id);
+                    newEmployees++;
+                }
+            } catch (rowError) {
+                errors.push(`Qator ${i + 1}: ${rowError instanceof Error ? rowError.message : 'Xatolik'}`);
+            }
+        }
+
+        log.info('Employees import completed', {
+            newEmployees,
+            updatedEmployees,
+            newDepartments,
+            newOrganizations,
+            errors: errors.length
+        });
+
+        res.json({
+            success: true,
+            data: {
+                newEmployees,
+                updatedEmployees,
+                newDepartments,
+                newOrganizations,
+                totalProcessed: newEmployees + updatedEmployees,
+                errors: errors.slice(0, 10) // Return first 10 errors
+            }
+        });
+    } catch (error) {
+        log.error('Failed to import employees', { error });
+        res.status(500).json({
+            success: false,
+            error: 'Xodimlarni import qilishda xatolik'
+        });
+    }
+});
+
+// =============================================================================
+// GET /api/import/employees/template - Download employees template
+// =============================================================================
+
+router.get('/employees/template', async (req: Request, res: Response) => {
+    try {
+        const ExcelJS = await import('exceljs');
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Xodimlar');
+
+        // Headers
+        worksheet.columns = [
+            { header: 'ID', key: 'id', width: 15 },
+            { header: 'Ism Familya', key: 'name', width: 30 },
+            { header: 'Bo\'lim', key: 'department', width: 25 },
+            { header: 'Tashkilot', key: 'organization', width: 25 },
+        ];
+
+        // Style header row
+        worksheet.getRow(1).font = { bold: true };
+        worksheet.getRow(1).fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFE0E0E0' }
+        };
+
+        // Add sample data
+        worksheet.addRow({ id: '00001', name: 'Ism Familya', department: 'IT', organization: 'Kompaniya nomi' });
+        worksheet.addRow({ id: '00002', name: 'Ism Familya 2', department: 'HR', organization: 'Kompaniya nomi' });
+
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename=Xodimlar_Shablon.xlsx');
+
+        await workbook.xlsx.write(res);
+        res.end();
+    } catch (error) {
+        log.error('Failed to generate employees template', { error });
+        res.status(500).json({
+            success: false,
+            error: 'Shablon yaratishda xatolik'
+        });
+    }
+});
+
 export default router;

@@ -22,6 +22,8 @@ interface ScheduleFormData {
     workEnd: string;
     lateTolerance: number;
     workDays: number[];
+    validFrom: string;  // Amal qilish boshlanish sanasi (YYYY-MM-DD)
+    validTo: string;    // Amal qilish tugash sanasi (YYYY-MM-DD)
 }
 
 /**
@@ -39,6 +41,8 @@ interface DaySchedule {
 interface EmployeeScheduleFormData {
     lateTolerance: number;
     days: Record<number, DaySchedule>; // 1-7 (Monday-Sunday)
+    validFrom: string;  // Amal qilish boshlanish sanasi
+    validTo: string;    // Amal qilish tugash sanasi
 }
 
 const WEEKDAYS = [
@@ -94,6 +98,8 @@ export default function ScheduleManager() {
         workEnd: '18:00',
         lateTolerance: 5,
         workDays: [1, 2, 3, 4, 5],
+        validFrom: '',
+        validTo: '',
     });
 
     // Selected department for editing
@@ -105,6 +111,8 @@ export default function ScheduleManager() {
     const [empSchedule, setEmpSchedule] = useState<EmployeeScheduleFormData>({
         lateTolerance: 5,
         days: createDefaultDaySchedules(),
+        validFrom: '',
+        validTo: '',
     });
 
     // Schedule source indicator
@@ -162,6 +170,8 @@ export default function ScheduleManager() {
                         workEnd: orgSched.workEnd,
                         lateTolerance: orgSched.lateTolerance,
                         workDays: orgSched.workDays,
+                        validFrom: orgSched.validFrom || '',
+                        validTo: orgSched.validTo || '',
                     });
                     // Set default employee schedule from org (per-day basis)
                     const days: Record<number, DaySchedule> = {};
@@ -175,6 +185,8 @@ export default function ScheduleManager() {
                     setEmpSchedule({
                         lateTolerance: orgSched.lateTolerance,
                         days,
+                        validFrom: '',
+                        validTo: '',
                     });
                 }
             }
@@ -234,6 +246,8 @@ export default function ScheduleManager() {
                     workEnd: orgSchedule.workEnd,
                     lateTolerance: orgSchedule.lateTolerance,
                     workDays: orgSchedule.workDays,
+                    validFrom: orgSchedule.validFrom || undefined,
+                    validTo: orgSchedule.validTo || undefined,
                 });
 
                 if (res.success) {
@@ -278,6 +292,8 @@ export default function ScheduleManager() {
                 workEnd: existing.workEnd,
                 lateTolerance: existing.lateTolerance,
                 workDays: existing.workDays,
+                validFrom: existing.validFrom || '',
+                validTo: existing.validTo || '',
             });
         } else {
             // Default to organization schedule
@@ -293,7 +309,14 @@ export default function ScheduleManager() {
             const existing = schedules.find(s => s.targetType === 'department' && s.targetId === selectedDeptId);
 
             if (existing) {
-                const res = await schedulesApi.update(existing.id, deptSchedule);
+                const res = await schedulesApi.update(existing.id, {
+                    workStart: deptSchedule.workStart,
+                    workEnd: deptSchedule.workEnd,
+                    lateTolerance: deptSchedule.lateTolerance,
+                    workDays: deptSchedule.workDays,
+                    validFrom: deptSchedule.validFrom || undefined,
+                    validTo: deptSchedule.validTo || undefined,
+                });
                 if (res.success) {
                     showMessage('success', 'Bo\'lim jadvali saqlandi');
                     loadData();
@@ -304,7 +327,12 @@ export default function ScheduleManager() {
                 const res = await schedulesApi.create({
                     targetType: 'department',
                     targetId: selectedDeptId,
-                    ...deptSchedule,
+                    workStart: deptSchedule.workStart,
+                    workEnd: deptSchedule.workEnd,
+                    lateTolerance: deptSchedule.lateTolerance,
+                    workDays: deptSchedule.workDays,
+                    validFrom: deptSchedule.validFrom || undefined,
+                    validTo: deptSchedule.validTo || undefined,
                 });
                 if (res.success) {
                     showMessage('success', 'Bo\'lim jadvali yaratildi');
@@ -390,6 +418,8 @@ export default function ScheduleManager() {
         return {
             lateTolerance: schedule.lateTolerance,
             days,
+            validFrom: schedule.validFrom || '',
+            validTo: schedule.validTo || '',
         };
     }
 
@@ -568,6 +598,8 @@ export default function ScheduleManager() {
             workEnd,
             lateTolerance: empSchedule.lateTolerance,
             workDays,
+            validFrom: empSchedule.validFrom,
+            validTo: empSchedule.validTo,
         };
 
         try {
@@ -576,14 +608,26 @@ export default function ScheduleManager() {
                 const existing = schedules.find(s => s.targetType === 'employee' && s.targetId === empId);
 
                 if (existing) {
-                    const res = await schedulesApi.update(existing.id, scheduleData);
+                    const res = await schedulesApi.update(existing.id, {
+                        workStart: scheduleData.workStart,
+                        workEnd: scheduleData.workEnd,
+                        lateTolerance: scheduleData.lateTolerance,
+                        workDays: scheduleData.workDays,
+                        validFrom: scheduleData.validFrom || undefined,
+                        validTo: scheduleData.validTo || undefined,
+                    });
                     if (res.success) successCount++;
                     else errorCount++;
                 } else {
                     const res = await schedulesApi.create({
                         targetType: 'employee',
                         targetId: empId,
-                        ...scheduleData,
+                        workStart: scheduleData.workStart,
+                        workEnd: scheduleData.workEnd,
+                        lateTolerance: scheduleData.lateTolerance,
+                        workDays: scheduleData.workDays,
+                        validFrom: scheduleData.validFrom || undefined,
+                        validTo: scheduleData.validTo || undefined,
                     });
                     if (res.success) successCount++;
                     else errorCount++;
@@ -889,7 +933,7 @@ export default function ScheduleManager() {
                         />
                     </div>
 
-                    <div className="mb-6">
+                    <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Ish kunlari
                         </label>
@@ -910,6 +954,34 @@ export default function ScheduleManager() {
                                     {day.label}
                                 </button>
                             ))}
+                        </div>
+                    </div>
+
+                    {/* Amal qilish muddati */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Amal qilish boshlanishi
+                            </label>
+                            <input
+                                type="date"
+                                value={orgSchedule.validFrom}
+                                onChange={e => setOrgSchedule({ ...orgSchedule, validFrom: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                            />
+                            <p className="text-xs text-gray-500 mt-1">Bo'sh = cheksiz o'tmishdan</p>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Amal qilish tugashi
+                            </label>
+                            <input
+                                type="date"
+                                value={orgSchedule.validTo}
+                                onChange={e => setOrgSchedule({ ...orgSchedule, validTo: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                            />
+                            <p className="text-xs text-gray-500 mt-1">Bo'sh = cheksiz kelajakgacha</p>
                         </div>
                     </div>
 
@@ -999,7 +1071,7 @@ export default function ScheduleManager() {
                                     />
                                 </div>
 
-                                <div className="mb-6">
+                                <div className="mb-4">
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                         Ish kunlari
                                     </label>
@@ -1020,6 +1092,32 @@ export default function ScheduleManager() {
                                                 {day.label}
                                             </button>
                                         ))}
+                                    </div>
+                                </div>
+
+                                {/* Amal qilish muddati */}
+                                <div className="grid grid-cols-2 gap-4 mb-6">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            Amal qilish boshlanishi
+                                        </label>
+                                        <input
+                                            type="date"
+                                            value={deptSchedule.validFrom}
+                                            onChange={e => setDeptSchedule({ ...deptSchedule, validFrom: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            Amal qilish tugashi
+                                        </label>
+                                        <input
+                                            type="date"
+                                            value={deptSchedule.validTo}
+                                            onChange={e => setDeptSchedule({ ...deptSchedule, validTo: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                        />
                                     </div>
                                 </div>
 
@@ -1263,6 +1361,32 @@ export default function ScheduleManager() {
                                 onChange={e => setEmpSchedule({ ...empSchedule, lateTolerance: parseInt(e.target.value) || 0 })}
                                 className="w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                             />
+                        </div>
+
+                        {/* Amal qilish muddati */}
+                        <div className="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Amal qilish boshlanishi
+                                </label>
+                                <input
+                                    type="date"
+                                    value={empSchedule.validFrom}
+                                    onChange={e => setEmpSchedule({ ...empSchedule, validFrom: e.target.value })}
+                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Amal qilish tugashi
+                                </label>
+                                <input
+                                    type="date"
+                                    value={empSchedule.validTo}
+                                    onChange={e => setEmpSchedule({ ...empSchedule, validTo: e.target.value })}
+                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                />
+                            </div>
                         </div>
 
                         {/* Action Buttons */}

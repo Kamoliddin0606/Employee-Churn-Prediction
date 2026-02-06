@@ -67,6 +67,7 @@ interface MissingTimeSettingsData {
     missingCheckinPenaltyMinutes: number;
     missingCheckoutPenaltyMinutes: number;
     isActive: boolean;
+    validFrom?: string | null;  // Boshlanish sanasi (YYYY-MM-DD)
     targetName?: string;
 }
 
@@ -133,7 +134,8 @@ const MissingTimeSettings: React.FC = () => {
         targetId: 0,
         handlingType: 1 as HandlingType,
         missingCheckinPenaltyMinutes: 60,
-        missingCheckoutPenaltyMinutes: 120
+        missingCheckoutPenaltyMinutes: 120,
+        validFrom: '' as string  // Boshlanish sanasi (YYYY-MM-DD)
     });
     
     /** Edit mode for existing settings */
@@ -141,7 +143,8 @@ const MissingTimeSettings: React.FC = () => {
     const [editForm, setEditForm] = useState({
         handlingType: 1 as HandlingType,
         missingCheckinPenaltyMinutes: 60,
-        missingCheckoutPenaltyMinutes: 120
+        missingCheckoutPenaltyMinutes: 120,
+        validFrom: '' as string  // Boshlanish sanasi (YYYY-MM-DD)
     });
 
     /** Expanded info panel */
@@ -245,7 +248,8 @@ const MissingTimeSettings: React.FC = () => {
                     targetId: 0,
                     handlingType: 1,
                     missingCheckinPenaltyMinutes: 60,
-                    missingCheckoutPenaltyMinutes: 120
+                    missingCheckoutPenaltyMinutes: 120,
+                    validFrom: ''
                 });
                 await Promise.all([fetchSettings(), fetchAvailableTargets()]);
             } else {
@@ -316,7 +320,8 @@ const MissingTimeSettings: React.FC = () => {
         setEditForm({
             handlingType: setting.handlingType,
             missingCheckinPenaltyMinutes: setting.missingCheckinPenaltyMinutes,
-            missingCheckoutPenaltyMinutes: setting.missingCheckoutPenaltyMinutes
+            missingCheckoutPenaltyMinutes: setting.missingCheckoutPenaltyMinutes,
+            validFrom: (setting as any).validFrom || ''
         });
     };
 
@@ -543,6 +548,22 @@ const MissingTimeSettings: React.FC = () => {
                             </select>
                         </div>
 
+                        {/* Valid From Date */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Boshlanish sanasi
+                            </label>
+                            <input
+                                type="date"
+                                value={newSettings.validFrom}
+                                onChange={(e) => setNewSettings(prev => ({ ...prev, validFrom: e.target.value }))}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            />
+                            <p className="text-xs text-gray-500 mt-1">
+                                Bo'sh qoldirilsa, cheksiz o'tmishdan boshlab amal qiladi
+                            </p>
+                        </div>
+
                         {/* Penalty Minutes (only for Type 2) */}
                         {newSettings.handlingType === 2 && (
                             <>
@@ -654,6 +675,19 @@ const MissingTimeSettings: React.FC = () => {
                                             </select>
                                         </div>
                                         
+                                        {/* Valid From Date */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Boshlanish sanasi
+                                            </label>
+                                            <input
+                                                type="date"
+                                                value={editForm.validFrom}
+                                                onChange={(e) => setEditForm(prev => ({ ...prev, validFrom: e.target.value }))}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
                                         {editForm.handlingType === 2 && (
                                             <>
                                                 <div>

@@ -47,6 +47,9 @@ export interface Employee {
     externalId: string;      // ID from Excel file (e.g., "03765")
     name: string;
     departmentId: number;
+    isActive: boolean;       // Active/Inactive status
+    deactivatedAt: string | null;    // When employee was deactivated
+    deactivationReason: string | null; // Reason for deactivation
     createdAt: string;
     updatedAt: string;
 }
@@ -105,6 +108,7 @@ export interface MissingTimeSettings {
     missingCheckinPenaltyMinutes: number;  // Type 2: kirish yo'q bo'lsa qo'shiladigan minut
     missingCheckoutPenaltyMinutes: number; // Type 2: chiqish yo'q bo'lsa ayiriladigan minut
     isActive: boolean;
+    validFrom: string | null;              // Sozlama qachondan boshlab amal qiladi (NULL = cheksiz o'tmishdan)
     createdAt: string;
     updatedAt: string;
 }
@@ -370,6 +374,9 @@ export interface EmployeePenalty {
     year: number;
     month: number;           // 1-12
     lateCount: number;       // Kech qolishlar soni
+    earlyLeaveCount: number; // Erta ketishlar soni
+    absentCount: number;     // Kelmaganlar soni
+    totalViolations: number; // Jami buzilishlar (late + early + absent)
     totalFine: number;       // Jami jarima summasi
     kpiZeroed: boolean;      // KPI nollandi-mi?
     kpiZeroedMonths: number; // Necha oylik KPI nollandi
@@ -442,6 +449,9 @@ export interface PenaltyCalculationResult {
     kpiZeroedMonths: number;
     terminationRecommended: boolean;
     preZeroedKpi: boolean;       // KPI was already zeroed from previous month
+    kpiCarriedFromPrev: number;  // KPI months carried from previous month
+    kpiAmount: number;           // Base KPI amount from employee_compensation
+    kpiResult: number;           // Calculated KPI result after penalties
 }
 
 // =============================================================================

@@ -34,6 +34,8 @@ const log = createContextLogger('EmployeesAPI');
  * - limit: Items per page (default: 50)
  * - departmentId: Filter by department
  * - search: Search by name or external ID
+ * - isActive: Filter by active status (default: all)
+ * - includeInactive: Include inactive employees (default: false)
  */
 router.get('/', (req: Request, res: Response) => {
     try {
@@ -45,13 +47,28 @@ router.get('/', (req: Request, res: Response) => {
         const offset = (page - 1) * limit;
         const departmentId = req.query.departmentId as string;
         const search = req.query.search as string;
+        const isActive = req.query.isActive as string;
+        const includeInactive = req.query.includeInactive === 'true';
 
         // Build query with optional filters
         let whereClause = '';
         const params: (string | number)[] = [];
 
+        // By default, only show active employees unless includeInactive is true
+        if (!includeInactive) {
+            whereClause = ' WHERE e.is_active = 1';
+        }
+
+        // Filter by specific active status if provided
+        if (isActive !== undefined) {
+            whereClause += whereClause ? ' AND' : ' WHERE';
+            whereClause += ' e.is_active = ?';
+            params.push(isActive === 'true' ? 1 : 0);
+        }
+
         if (departmentId) {
-            whereClause += ' WHERE e.department_id = ?';
+            whereClause += whereClause ? ' AND' : ' WHERE';
+            whereClause += ' e.department_id = ?';
             params.push(parseInt(departmentId));
         }
 
@@ -77,6 +94,9 @@ router.get('/', (req: Request, res: Response) => {
         e.name,
         e.department_id as departmentId,
         d.name as departmentName,
+        e.is_active as isActive,
+        e.deactivated_at as deactivatedAt,
+        e.deactivation_reason as deactivationReason,
         e.created_at as createdAt,
         e.updated_at as updatedAt
       FROM employees e
@@ -128,6 +148,9 @@ router.get('/:id', (req: Request, res: Response) => {
         e.name,
         e.department_id as departmentId,
         d.name as departmentName,
+        e.is_active as isActive,
+        e.deactivated_at as deactivatedAt,
+        e.deactivation_reason as deactivationReason,
         e.created_at as createdAt,
         e.updated_at as updatedAt
       FROM employees e
@@ -268,6 +291,251 @@ router.put('/:id', (req: Request, res: Response) => {
         res.status(500).json({
             success: false,
             error: 'Failed to update employee'
+        });
+    }
+});
+
+// =============================================================================
+// PATCH /api/employees/:id/status - Update employee active status
+// =============================================================================
+
+/**
+ * Activate or deactivate an employee
+ * 
+ * Request body:
+ * - isActive: boolean (required)
+ * - reason: string (optional, for deactivation)
+ */
+router.patch('/:id/status', (req: Request, res: Response) => {
+    try {
+        const db = getDatabase();
+        const { id } = req.params;
+        const { isActive, reason } = req.body;
+
+        if (isActive === undefined) {
+            return res.status(400).json({
+                success: false,
+                error: 'isActive field is required'
+            });
+        }
+
+        // Check if employee exists
+        const existingStmt = db.prepare('SELECT id, name, is_active FROM employees WHERE id = ?');
+        const existing = existingStmt.get(id) as { id: number; name: string; is_active: number } | undefined;
+
+        if (!existing) {
+            return res.status(404).json({
+                success: false,
+                error: 'Employee not found'
+            });
+        }
+
+        const newIsActive = isActive ? 1 : 0;
+
+        if (newIsActive === 1) {
+            // Activating employee
+            const updateStmt = db.prepare(`
+                UPDATE employees 
+                SET is_active = 1,
+                    deactivated_at = NULL,
+                    deactivation_reason = NULL,
+                    updated_at = datetime('now')
+                WHERE id = ?
+            `);
+            updateStmt.run(id);
+            log.info('Employee activated', { id, name: existing.name });
+        } else {
+            // Deactivating employee
+            const updateStmt = db.prepare(`
+                UPDATE employees 
+                SET is_active = 0,
+                    deactivated_at = datetime('now'),
+                    deactivation_reason = ?,
+                    updated_at = datetime('now')
+                WHERE id = ?
+            `);
+            updateStmt.run(reason || null, id);
+            log.info('Employee deactivated', { id, name: existing.name, reason });
+        }
+
+        res.json({
+            success: true,
+            message: isActive ? 'Xodim faollashtirildi' : 'Xodim o\'chirildi'
+        });
+    } catch (error) {
+        log.error('Failed to update employee status', { error, id: req.params.id });
+        res.status(500).json({
+            success: false,
+            error: 'Failed to update employee status'
+        });
+    }
+});
+
+// =============================================================================
+// POST /api/employees/bulk-status - Bulk update employee status
+// =============================================================================
+
+/**
+ * Bulk activate or deactivate employees
+ * 
+ * Request body:
+ * - employeeIds: number[] (required) - list of employee IDs
+ * - isActive: boolean (required)
+ * - reason: string (optional, for deactivation)
+ */
+router.post('/bulk-status', (req: Request, res: Response) => {
+    try {
+        const db = getDatabase();
+        const { employeeIds, isActive, reason } = req.body;
+
+        if (!employeeIds || !Array.isArray(employeeIds) || employeeIds.length === 0) {
+            return res.status(400).json({
+                success: false,
+                error: 'employeeIds array is required'
+            });
+        }
+
+        if (isActive === undefined) {
+            return res.status(400).json({
+                success: false,
+                error: 'isActive field is required'
+            });
+        }
+
+        const newIsActive = isActive ? 1 : 0;
+        let updatedCount = 0;
+
+        if (newIsActive === 1) {
+            // Activating employees
+            const updateStmt = db.prepare(`
+                UPDATE employees 
+                SET is_active = 1,
+                    deactivated_at = NULL,
+                    deactivation_reason = NULL,
+                    updated_at = datetime('now')
+                WHERE id = ?
+            `);
+            for (const empId of employeeIds) {
+                updateStmt.run(empId);
+                updatedCount++;
+            }
+        } else {
+            // Deactivating employees
+            const updateStmt = db.prepare(`
+                UPDATE employees 
+                SET is_active = 0,
+                    deactivated_at = datetime('now'),
+                    deactivation_reason = ?,
+                    updated_at = datetime('now')
+                WHERE id = ?
+            `);
+            for (const empId of employeeIds) {
+                updateStmt.run(reason || null, empId);
+                updatedCount++;
+            }
+        }
+
+        log.info('Bulk employee status updated', { 
+            count: updatedCount, 
+            isActive, 
+            reason 
+        });
+
+        res.json({
+            success: true,
+            data: { updatedCount },
+            message: isActive 
+                ? `${updatedCount} ta xodim faollashtirildi` 
+                : `${updatedCount} ta xodim o'chirildi`
+        });
+    } catch (error) {
+        log.error('Failed to bulk update employee status', { error });
+        res.status(500).json({
+            success: false,
+            error: 'Failed to bulk update employee status'
+        });
+    }
+});
+
+// =============================================================================
+// POST /api/employees/department-status - Update all employees in department
+// =============================================================================
+
+/**
+ * Activate or deactivate all employees in a department
+ * 
+ * Request body:
+ * - departmentId: number (required)
+ * - isActive: boolean (required)
+ * - reason: string (optional, for deactivation)
+ */
+router.post('/department-status', (req: Request, res: Response) => {
+    try {
+        const db = getDatabase();
+        const { departmentId, isActive, reason } = req.body;
+
+        if (!departmentId) {
+            return res.status(400).json({
+                success: false,
+                error: 'departmentId is required'
+            });
+        }
+
+        if (isActive === undefined) {
+            return res.status(400).json({
+                success: false,
+                error: 'isActive field is required'
+            });
+        }
+
+        const newIsActive = isActive ? 1 : 0;
+
+        let updateStmt;
+        if (newIsActive === 1) {
+            updateStmt = db.prepare(`
+                UPDATE employees 
+                SET is_active = 1,
+                    deactivated_at = NULL,
+                    deactivation_reason = NULL,
+                    updated_at = datetime('now')
+                WHERE department_id = ?
+            `);
+            const result = updateStmt.run(departmentId);
+            log.info('Department employees activated', { 
+                departmentId, 
+                count: result.changes 
+            });
+            res.json({
+                success: true,
+                data: { updatedCount: result.changes },
+                message: `${result.changes} ta xodim faollashtirildi`
+            });
+        } else {
+            updateStmt = db.prepare(`
+                UPDATE employees 
+                SET is_active = 0,
+                    deactivated_at = datetime('now'),
+                    deactivation_reason = ?,
+                    updated_at = datetime('now')
+                WHERE department_id = ?
+            `);
+            const result = updateStmt.run(reason || null, departmentId);
+            log.info('Department employees deactivated', { 
+                departmentId, 
+                count: result.changes,
+                reason 
+            });
+            res.json({
+                success: true,
+                data: { updatedCount: result.changes },
+                message: `${result.changes} ta xodim o'chirildi`
+            });
+        }
+    } catch (error) {
+        log.error('Failed to update department employees status', { error });
+        res.status(500).json({
+            success: false,
+            error: 'Failed to update department employees status'
         });
     }
 });

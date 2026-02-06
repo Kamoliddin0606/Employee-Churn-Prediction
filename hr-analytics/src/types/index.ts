@@ -2,6 +2,10 @@ export interface Employee {
   id: string;
   name: string;
   department: string;
+  departmentId?: number;
+  isActive?: boolean;
+  deactivatedAt?: string | null;
+  deactivationReason?: string | null;
 }
 
 // Status codes from the attendance system

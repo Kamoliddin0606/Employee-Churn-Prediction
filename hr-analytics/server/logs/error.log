@@ -10,3 +10,22 @@
 [2026-02-05 15:55:34] ERROR: Failed to generate template | {"context":"CompensationAPI","error":{"code":"SQLITE_ERROR"}}
 [2026-02-05 16:00:32] ERROR: Failed to generate template | {"context":"CompensationAPI","error":{"code":"SQLITE_ERROR"}}
 [2026-02-05 16:01:54] ERROR: Failed to generate template | {"context":"CompensationAPI","error":{"code":"SQLITE_ERROR"}}
+[2026-02-05 22:46:30] ERROR: Import failed | {"context":"ImportAPI","error":{}}
+[2026-02-05 22:47:37] ERROR: Import failed | {"context":"ImportAPI","error":{}}
+[2026-02-05 22:50:27] ERROR: Import failed | {"context":"ImportAPI","error":{}}
+[2026-02-05 22:52:06] ERROR: Import failed | {"context":"ImportAPI","error":{}}
+[2026-02-05 22:56:12] ERROR: Failed to rollback transaction | {"rollbackError":{}}
+[2026-02-05 22:56:12] ERROR: Transaction failed | {"error":{}}
+[2026-02-05 22:56:12] ERROR: Import failed | {"context":"ImportAPI","error":{}}
+[2026-02-05 23:18:47] ERROR: Failed to rollback transaction | {"rollbackError":{}}
+[2026-02-05 23:18:47] ERROR: Transaction failed | {"error":{}}
+[2026-02-05 23:18:47] ERROR: Import failed | {"context":"ImportAPI","error":{}}
+[2026-02-05 23:20:49] ERROR: Failed to rollback transaction | {"rollbackError":{}}
+[2026-02-05 23:20:49] ERROR: Transaction failed | {"error":{}}
+[2026-02-05 23:20:49] ERROR: Import failed | {"context":"ImportAPI","error":{}}
+[2026-02-05 23:24:41] ERROR: Failed to rollback transaction | {"rollbackError":{}}
+[2026-02-05 23:24:41] ERROR: Transaction failed | {"error":{}}
+[2026-02-05 23:24:41] ERROR: Import failed | {"context":"ImportAPI","error":{}}
+[2026-02-05 23:32:58] ERROR: Failed to rollback transaction | {"rollbackError":{}}
+[2026-02-05 23:32:58] ERROR: Transaction failed | {"error":{}}
+[2026-02-05 23:32:58] ERROR: Import failed | {"context":"ImportAPI","error":{}}

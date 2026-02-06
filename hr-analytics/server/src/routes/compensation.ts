@@ -336,10 +336,24 @@ router.post('/import', upload.single('file'), async (req: Request, res: Response
             if (rowNumber === 1) return; // Skip header
 
             try {
+                // Excel columns: 1=ID, 2=Name, 3=Department, 4=KPI, 5=Salary, 6=Notes
                 const id = row.getCell(1).value;
-                const kpi = Number(row.getCell(3).value) || 0;
-                const salary = Number(row.getCell(4).value) || 0;
-                const notes = row.getCell(5).value?.toString() || null;
+                
+                // Parse numbers - remove spaces (thousand separators) and handle text/number formats
+                const kpiRaw = row.getCell(4).value;
+                const salaryRaw = row.getCell(5).value;
+                
+                const parseNumber = (val: unknown): number => {
+                    if (val === null || val === undefined || val === '') return 0;
+                    if (typeof val === 'number') return val;
+                    // Remove all spaces (thousand separators) and convert to number
+                    const cleaned = String(val).replace(/\s/g, '').replace(/,/g, '');
+                    return Number(cleaned) || 0;
+                };
+                
+                const kpi = parseNumber(kpiRaw);
+                const salary = parseNumber(salaryRaw);
+                const notes = row.getCell(6).value?.toString() || null;
 
                 if (!id) {
                     errors.push(`Qator ${rowNumber}: ID yo'q`);

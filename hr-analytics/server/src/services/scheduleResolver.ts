@@ -19,6 +19,7 @@
 
 import { getDatabase } from '../database/connection';
 import { createContextLogger } from '../utils/logger';
+import { resolveMissingTime } from './missingTimeResolver';
 import type { EffectiveSchedule, ScheduleTargetType } from '../models/types';
 
 // Create context-specific logger
@@ -93,6 +94,17 @@ function parseWorkDays(workDaysJson: string): number[] {
     } catch {
         return [1, 2, 3, 4, 5]; // Default Monday-Friday
     }
+}
+
+/**
+ * Convert time string to minutes from midnight
+ * 
+ * @param time - Time string in "HH:MM" format
+ * @returns Total minutes from midnight
+ */
+function timeToMinutes(time: string): number {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
 }
 
 /**
@@ -274,12 +286,22 @@ export function getEffectiveSchedule(employeeId: number, date: string): Effectiv
     if (!employee) {
         log.warn('Employee not found', { employeeId });
         // Return organization default
-        return getOrganizationSchedule(dayOfWeek);
+        return getOrganizationSchedule(dayOfWeek, date);
     }
 
     // ---------------------------------------------------------------------------
     // Step 3: Check employee individual schedule
     // ---------------------------------------------------------------------------
+    
+    // First, check if ANY employee schedule exists (regardless of valid dates)
+    const anyEmpScheduleStmt = db.prepare(`
+    SELECT id FROM work_schedules
+    WHERE target_type = 'employee' AND target_id = ? AND is_active = 1
+    LIMIT 1
+  `);
+    const hasAnyEmpSchedule = !!anyEmpScheduleStmt.get(employeeId);
+
+    // Now check for valid employee schedule for this date
     const empScheduleStmt = db.prepare(`
     SELECT id, target_type, target_id, work_start, work_end, late_tolerance, work_days
     FROM work_schedules
@@ -293,6 +315,14 @@ export function getEffectiveSchedule(employeeId: number, date: string): Effectiv
   `);
 
     const empSchedule = empScheduleStmt.get(employeeId, date, date) as ScheduleRow | undefined;
+
+    log.debug('Employee schedule lookup', { 
+        employeeId, 
+        date, 
+        hasAnySchedule: hasAnyEmpSchedule,
+        foundValidSchedule: !!empSchedule,
+        scheduleId: empSchedule?.id 
+    });
 
     if (empSchedule) {
         const workDays = parseWorkDays(empSchedule.work_days);
@@ -312,9 +342,38 @@ export function getEffectiveSchedule(employeeId: number, date: string): Effectiv
         return result;
     }
 
+    // If employee has a schedule but it's not valid for this date, skip calculation
+    // by returning isWorkDay = false (no violation will be calculated)
+    if (hasAnyEmpSchedule) {
+        log.debug('Employee has schedule but not valid for this date, skipping', { 
+            employeeId, 
+            date 
+        });
+        const result: EffectiveSchedule = {
+            workStart: '09:00',
+            workEnd: '18:00',
+            lateTolerance: 0,
+            isWorkDay: false,  // Mark as non-work day to skip calculation
+            source: 'employee',
+            sourceId: 0
+        };
+        scheduleCache.set(employeeId, date, result);
+        return result;
+    }
+
     // ---------------------------------------------------------------------------
     // Step 4: Check department schedule
     // ---------------------------------------------------------------------------
+    
+    // First, check if ANY department schedule exists (regardless of valid dates)
+    const anyDeptScheduleStmt = db.prepare(`
+    SELECT id FROM work_schedules
+    WHERE target_type = 'department' AND target_id = ? AND is_active = 1
+    LIMIT 1
+  `);
+    const hasAnyDeptSchedule = !!anyDeptScheduleStmt.get(employee.department_id);
+
+    // Now check for valid department schedule for this date
     const deptScheduleStmt = db.prepare(`
     SELECT id, target_type, target_id, work_start, work_end, late_tolerance, work_days
     FROM work_schedules
@@ -328,6 +387,14 @@ export function getEffectiveSchedule(employeeId: number, date: string): Effectiv
   `);
 
     const deptSchedule = deptScheduleStmt.get(employee.department_id, date, date) as ScheduleRow | undefined;
+
+    log.debug('Department schedule lookup', { 
+        employeeId, 
+        departmentId: employee.department_id,
+        date, 
+        hasAnySchedule: hasAnyDeptSchedule,
+        foundValidSchedule: !!deptSchedule 
+    });
 
     if (deptSchedule) {
         const workDays = parseWorkDays(deptSchedule.work_days);
@@ -352,10 +419,30 @@ export function getEffectiveSchedule(employeeId: number, date: string): Effectiv
         return result;
     }
 
+    // If department has a schedule but it's not valid for this date, skip calculation
+    if (hasAnyDeptSchedule) {
+        log.debug('Department has schedule but not valid for this date, skipping', { 
+            employeeId, 
+            departmentId: employee.department_id,
+            date 
+        });
+        const result: EffectiveSchedule = {
+            workStart: '09:00',
+            workEnd: '18:00',
+            lateTolerance: 0,
+            isWorkDay: false,  // Mark as non-work day to skip calculation
+            source: 'department',
+            sourceId: 0
+        };
+        scheduleCache.set(employeeId, date, result);
+        return result;
+    }
+
     // ---------------------------------------------------------------------------
     // Step 5: Fall back to organization default
+    // Only reached if neither employee nor department has ANY schedule defined
     // ---------------------------------------------------------------------------
-    const result = getOrganizationSchedule(dayOfWeek);
+    const result = getOrganizationSchedule(dayOfWeek, date);
     scheduleCache.set(employeeId, date, result);
     return result;
 }
@@ -364,9 +451,10 @@ export function getEffectiveSchedule(employeeId: number, date: string): Effectiv
  * Get organization default schedule
  * 
  * @param dayOfWeek - ISO day of week (1-7)
+ * @param date - Date string (YYYY-MM-DD) for valid_from/valid_to check
  * @returns Organization schedule with work day status
  */
-function getOrganizationSchedule(dayOfWeek: number): EffectiveSchedule {
+function getOrganizationSchedule(dayOfWeek: number, date: string): EffectiveSchedule {
     const db = getDatabase();
 
     const orgScheduleStmt = db.prepare(`
@@ -374,10 +462,13 @@ function getOrganizationSchedule(dayOfWeek: number): EffectiveSchedule {
     FROM work_schedules
     WHERE target_type = 'organization' 
       AND is_active = 1
+      AND (valid_from IS NULL OR valid_from <= ?)
+      AND (valid_to IS NULL OR valid_to >= ?)
+    ORDER BY valid_from DESC
     LIMIT 1
   `);
 
-    const orgSchedule = orgScheduleStmt.get() as ScheduleRow | undefined;
+    const orgSchedule = orgScheduleStmt.get(date, date) as ScheduleRow | undefined;
 
     if (orgSchedule) {
         const workDays = parseWorkDays(orgSchedule.work_days);
@@ -514,7 +605,8 @@ export function calculateViolationMinutes(
 
 /**
  * Recalculate all time records for a date range
- * Updates late_minutes and early_leave_minutes based on current schedule settings
+ * Updates late_minutes, early_leave_minutes, and missing time fields
+ * based on current schedule settings AND missing time rules
  * 
  * @param dateFrom - Start date (YYYY-MM-DD)
  * @param dateTo - End date (YYYY-MM-DD)
@@ -523,13 +615,14 @@ export function calculateViolationMinutes(
 export function recalculateTimeRecords(dateFrom: string, dateTo: string): number {
     const db = getDatabase();
 
-    log.info('Starting time records recalculation', { dateFrom, dateTo });
+    log.info('Starting time records recalculation with missing time rules', { dateFrom, dateTo });
 
-    // Get all time records in date range
+    // Get all time records in date range for active employees only
     const selectStmt = db.prepare(`
-    SELECT id, employee_id, date, check_in, check_out
-    FROM time_records
-    WHERE date >= ? AND date <= ?
+    SELECT tr.id, tr.employee_id, tr.date, tr.check_in, tr.check_out
+    FROM time_records tr
+    JOIN employees e ON tr.employee_id = e.id
+    WHERE tr.date >= ? AND tr.date <= ? AND e.is_active = 1
   `);
 
     const records = selectStmt.all(dateFrom, dateTo) as Array<{
@@ -540,24 +633,103 @@ export function recalculateTimeRecords(dateFrom: string, dateTo: string): number
         check_out: string | null;
     }>;
 
-    // Prepare update statement
+    // Prepare update statement - now includes missing time fields
     const updateStmt = db.prepare(`
     UPDATE time_records
-    SET late_minutes = ?, early_leave_minutes = ?
+    SET late_minutes = ?, 
+        early_leave_minutes = ?,
+        is_auto_filled = ?,
+        missing_type = ?
     WHERE id = ?
   `);
 
     let updatedCount = 0;
 
-    for (const record of records) {
-        const { lateMinutes, earlyLeaveMinutes } = calculateViolationMinutes(
-            record.employee_id,
-            record.date,
-            record.check_in,
-            record.check_out
-        );
+    // Clear schedule cache to ensure fresh data
+    clearScheduleCache();
 
-        updateStmt.run(lateMinutes, earlyLeaveMinutes, record.id);
+    for (const record of records) {
+        // Get effective schedule
+        const schedule = getEffectiveSchedule(record.employee_id, record.date);
+        
+        let lateMinutes = 0;
+        let earlyLeaveMinutes = 0;
+        let isAutoFilled = 0;
+        let missingType: string | null = null;
+        
+        // Skip non-work days - no violations should be recorded
+        if (!schedule.isWorkDay) {
+            log.debug('Skipping non-work day in recalculation', {
+                recordId: record.id,
+                employeeId: record.employee_id,
+                date: record.date,
+                source: schedule.source
+            });
+            // Update with zeros to clear any previous values
+            updateStmt.run(0, 0, 0, null, record.id);
+            updatedCount++;
+            continue;
+        }
+        
+        // Check if there are missing times
+        const hasMissingTime = !record.check_in || !record.check_out;
+        
+        if (hasMissingTime) {
+            // Apply missing time rules
+            const resolved = resolveMissingTime(
+                record.employee_id,
+                record.date,
+                record.check_in,
+                record.check_out,
+                schedule
+            );
+            
+            lateMinutes = resolved.lateMinutes;
+            earlyLeaveMinutes = resolved.earlyLeaveMinutes;
+            isAutoFilled = resolved.isAutoFilled ? 1 : 0;
+            missingType = resolved.missingType;
+            
+            log.debug('Applied missing time rules in recalculation', {
+                recordId: record.id,
+                employeeId: record.employee_id,
+                date: record.date,
+                lateMinutes,
+                earlyLeaveMinutes,
+                missingType
+            });
+        } else {
+            // Both times present - calculate normally using schedule
+            const checkInMinutes = timeToMinutes(record.check_in!);
+            const workStartMinutes = timeToMinutes(schedule.workStart);
+            const checkOutMinutes = timeToMinutes(record.check_out!);
+            const workEndMinutes = timeToMinutes(schedule.workEnd);
+            
+            // Calculate late minutes (with tolerance)
+            const lateThreshold = workStartMinutes + schedule.lateTolerance;
+            if (checkInMinutes > lateThreshold) {
+                lateMinutes = checkInMinutes - workStartMinutes;
+            }
+            
+            // Calculate early leave minutes
+            if (checkOutMinutes < workEndMinutes) {
+                earlyLeaveMinutes = workEndMinutes - checkOutMinutes;
+            }
+            
+            log.debug('Calculated violation minutes', {
+                recordId: record.id,
+                employeeId: record.employee_id,
+                date: record.date,
+                checkIn: record.check_in,
+                checkOut: record.check_out,
+                workStart: schedule.workStart,
+                workEnd: schedule.workEnd,
+                lateTolerance: schedule.lateTolerance,
+                lateMinutes,
+                earlyLeaveMinutes
+            });
+        }
+
+        updateStmt.run(lateMinutes, earlyLeaveMinutes, isAutoFilled, missingType, record.id);
         updatedCount++;
     }
 

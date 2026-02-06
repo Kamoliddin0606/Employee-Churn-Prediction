@@ -47,6 +47,106 @@ function getNextMonth(year: number, month: number): { year: number; month: numbe
 }
 
 /**
+ * Get previous month year and month values
+ * Handles year rollover (January -> December)
+ */
+function getPrevMonth(year: number, month: number): { year: number; month: number } {
+    if (month === 1) {
+        return { year: year - 1, month: 12 };
+    }
+    return { year, month: month - 1 };
+}
+
+/**
+ * Get KPI amount for an employee from employee_compensation table
+ * 
+ * @param employeeId - Employee ID
+ * @param year - Target year
+ * @param month - Target month
+ * @returns KPI amount or 0 if not found
+ */
+function getEmployeeKpiAmount(employeeId: number, year: number, month: number): number {
+    const db = getDatabase();
+    
+    const stmt = db.prepare(`
+        SELECT kpi_amount FROM employee_compensation
+        WHERE employee_id = ? AND year = ? AND month = ?
+    `);
+    
+    const row = stmt.get(employeeId, year, month) as { kpi_amount: number } | undefined;
+    return row?.kpi_amount || 0;
+}
+
+/**
+ * Get carried KPI months from previous month's penalty
+ * Formula: kpi_zeroed_months - kpi_zeroed = n (carried to next month)
+ * 
+ * Example:
+ * - Previous month: kpi_zeroed = 1, kpi_zeroed_months = 2
+ * - Carried: 2 - 1 = 1 month
+ * 
+ * @param employeeId - Employee ID
+ * @param year - Current year
+ * @param month - Current month
+ * @returns Number of KPI months carried from previous month
+ */
+function getCarriedKpiMonths(employeeId: number, year: number, month: number): number {
+    const db = getDatabase();
+    const prev = getPrevMonth(year, month);
+    
+    const stmt = db.prepare(`
+        SELECT kpi_zeroed, kpi_zeroed_months FROM employee_penalties
+        WHERE employee_id = ? AND year = ? AND month = ?
+    `);
+    
+    const row = stmt.get(employeeId, prev.year, prev.month) as { 
+        kpi_zeroed: number; 
+        kpi_zeroed_months: number; 
+    } | undefined;
+    
+    if (row && row.kpi_zeroed === 1 && row.kpi_zeroed_months > row.kpi_zeroed) {
+        // Formula: kpi_zeroed_months - kpi_zeroed = carried months
+        return row.kpi_zeroed_months - row.kpi_zeroed;
+    }
+    
+    return 0;
+}
+
+/**
+ * Get maximum KPI months from penalty rules for a specific month
+ * 
+ * @param year - Target year
+ * @param month - Target month
+ * @returns Maximum kpi_months value from rules
+ */
+function getMaxKpiMonthsFromRules(year: number, month: number): number {
+    const db = getDatabase();
+    
+    const stmt = db.prepare(`
+        SELECT MAX(kpi_months) as max_kpi_months FROM penalty_rules
+        WHERE year = ? AND month = ? AND is_active = 1 AND penalty_type = 'kpi_zero'
+    `);
+    
+    const row = stmt.get(year, month) as { max_kpi_months: number } | undefined;
+    return row?.max_kpi_months || 2; // Default to 2 if no rules found
+}
+
+/**
+ * Calculate KPI result after applying penalties
+ * 
+ * @param kpiZeroed - Whether KPI is zeroed
+ * @param kpiAmount - Base KPI amount from employee_compensation
+ * @param totalFine - Total fine amount
+ * @returns Calculated KPI result (0 if zeroed, otherwise max(0, kpiAmount - totalFine))
+ */
+function calculateKpiResult(kpiZeroed: boolean, kpiAmount: number, totalFine: number): number {
+    if (kpiZeroed) {
+        return 0;
+    }
+    return Math.max(0, kpiAmount - totalFine);
+}
+
+/**
  * Transform database row to PenaltyRule object
  */
 function transformPenaltyRule(row: Record<string, unknown>): PenaltyRule {
@@ -333,11 +433,22 @@ export function calculateEmployeePenalty(
     const preZeroRecord = getKpiZeroRecord(employeeId, year, month);
     const preZeroedKpi = preZeroRecord !== null;
 
+    // Get KPI amount from employee_compensation
+    const kpiAmount = getEmployeeKpiAmount(employeeId, year, month);
+
+    // Get carried KPI months from previous month
+    const carriedKpiMonths = getCarriedKpiMonths(employeeId, year, month);
+
+    // Get maximum KPI months allowed from rules
+    const maxKpiMonths = getMaxKpiMonthsFromRules(year, month);
+
     // Get penalty rules for this month
     const rules = getPenaltyRules(year, month);
 
     if (rules.length === 0) {
         log.warn('No penalty rules found', { year, month });
+        // Even without rules, calculate kpi_result
+        const kpiResult = calculateKpiResult(preZeroedKpi || carriedKpiMonths > 0, kpiAmount, 0);
         return {
             employeeId,
             employeeName: employee.name,
@@ -349,18 +460,21 @@ export function calculateEmployeePenalty(
             totalViolations,
             fines: [],
             totalFine: 0,
-            kpiZeroed: preZeroedKpi,
-            kpiZeroedMonths: 0,
+            kpiZeroed: preZeroedKpi || carriedKpiMonths > 0,
+            kpiZeroedMonths: carriedKpiMonths,
             terminationRecommended: false,
             preZeroedKpi,
+            kpiCarriedFromPrev: carriedKpiMonths,
+            kpiAmount,
+            kpiResult,
         };
     }
 
     // Calculate penalties based on late count
     const fines: Array<{ level: number; amount: number; description: string }> = [];
     let totalFine = 0;
-    let kpiZeroed = preZeroedKpi;
-    let kpiZeroedMonths = 0;
+    let kpiZeroed = preZeroedKpi || carriedKpiMonths > 0;
+    let kpiZeroedMonths = carriedKpiMonths; // Start with carried months
     let terminationRecommended = false;
 
     // Apply cumulative penalties for each violation occurrence
@@ -396,12 +510,23 @@ export function calculateEmployeePenalty(
         }
     }
 
+    // Apply max KPI months limit from rules
+    // Carried + current should not exceed max allowed
+    const effectiveKpiMonths = Math.min(kpiZeroedMonths, maxKpiMonths);
+
+    // Calculate KPI result
+    const kpiResult = calculateKpiResult(kpiZeroed, kpiAmount, totalFine);
+
     log.debug('Penalty calculated', {
         employeeId,
         employeeName: employee.name,
         totalViolations,
         totalFine,
         kpiZeroed,
+        kpiZeroedMonths: effectiveKpiMonths,
+        carriedKpiMonths,
+        kpiAmount,
+        kpiResult,
         terminationRecommended
     });
 
@@ -417,9 +542,12 @@ export function calculateEmployeePenalty(
         fines,
         totalFine,
         kpiZeroed,
-        kpiZeroedMonths,
+        kpiZeroedMonths: effectiveKpiMonths,
         terminationRecommended,
         preZeroedKpi,
+        kpiCarriedFromPrev: carriedKpiMonths,
+        kpiAmount,
+        kpiResult,
     };
 }
 
@@ -446,17 +574,24 @@ export function applyPenalty(result: PenaltyCalculationResult): number {
         // Update existing
         const updateStmt = db.prepare(`
             UPDATE employee_penalties
-            SET late_count = ?, total_fine = ?, kpi_zeroed = ?, 
+            SET late_count = ?, early_leave_count = ?, absent_count = ?, 
+                total_violations = ?, total_fine = ?, kpi_zeroed = ?, 
                 kpi_zeroed_months = ?, termination_recommended = ?,
+                kpi_carried_from_prev = ?, kpi_result = ?,
                 calculated_at = datetime('now'), updated_at = datetime('now')
             WHERE id = ?
         `);
         updateStmt.run(
             result.lateCount,
+            result.earlyLeaveCount,
+            result.absentCount,
+            result.totalViolations,
             result.totalFine,
             result.kpiZeroed ? 1 : 0,
             result.kpiZeroedMonths,
             result.terminationRecommended ? 1 : 0,
+            result.kpiCarriedFromPrev,
+            result.kpiResult,
             existing.id
         );
         penaltyId = existing.id;
@@ -464,18 +599,25 @@ export function applyPenalty(result: PenaltyCalculationResult): number {
         // Insert new
         const insertStmt = db.prepare(`
             INSERT INTO employee_penalties 
-            (employee_id, year, month, late_count, total_fine, kpi_zeroed, kpi_zeroed_months, termination_recommended)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            (employee_id, year, month, late_count, early_leave_count, absent_count, 
+             total_violations, total_fine, kpi_zeroed, kpi_zeroed_months, termination_recommended,
+             kpi_carried_from_prev, kpi_result)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
         const insertResult = insertStmt.run(
             result.employeeId,
             result.year,
             result.month,
             result.lateCount,
+            result.earlyLeaveCount,
+            result.absentCount,
+            result.totalViolations,
             result.totalFine,
             result.kpiZeroed ? 1 : 0,
             result.kpiZeroedMonths,
-            result.terminationRecommended ? 1 : 0
+            result.terminationRecommended ? 1 : 0,
+            result.kpiCarriedFromPrev,
+            result.kpiResult
         );
         penaltyId = Number(insertResult.lastInsertRowid);
     }
@@ -546,12 +688,13 @@ export function calculateAllPenalties(year: number, month: number): PenaltyCalcu
 
     log.info('Starting bulk penalty calculation', { year, month });
 
-    // Get all employees with violations for this month
+    // Get all active employees with violations for this month
     const employeesStmt = db.prepare(`
         SELECT DISTINCT e.id
         FROM employees e
         LEFT JOIN violation_summary vs ON e.id = vs.employee_id 
             AND vs.year = ? AND vs.month = ?
+        WHERE e.is_active = 1
         ORDER BY e.id
     `);
 
@@ -599,7 +742,7 @@ export function getAppliedPenalties(year: number, month: number): Array<Employee
         FROM employee_penalties ep
         JOIN employees e ON ep.employee_id = e.id
         JOIN departments d ON e.department_id = d.id
-        WHERE ep.year = ? AND ep.month = ?
+        WHERE ep.year = ? AND ep.month = ? AND e.is_active = 1
         ORDER BY ep.total_fine DESC, e.name ASC
     `);
 
@@ -611,6 +754,9 @@ export function getAppliedPenalties(year: number, month: number): Array<Employee
         year: row.year as number,
         month: row.month as number,
         lateCount: row.late_count as number,
+        earlyLeaveCount: row.early_leave_count as number,
+        absentCount: row.absent_count as number,
+        totalViolations: row.total_violations as number,
         totalFine: row.total_fine as number,
         kpiZeroed: Boolean(row.kpi_zeroed),
         kpiZeroedMonths: row.kpi_zeroed_months as number,

@@ -128,6 +128,26 @@ router.get('/', (req: Request, res: Response) => {
 });
 
 // =============================================================================
+// GET /api/schedules/debug/raw - Get raw schedule data for debugging
+// =============================================================================
+
+router.get('/debug/raw', (req: Request, res: Response) => {
+    try {
+        const db = getDatabase();
+        const stmt = db.prepare(`
+            SELECT id, target_type, target_id, work_start, work_end, 
+                   valid_from, valid_to, is_active
+            FROM work_schedules
+            ORDER BY target_type, target_id
+        `);
+        const rows = stmt.all();
+        res.json({ success: true, data: rows });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Failed to fetch raw schedules' });
+    }
+});
+
+// =============================================================================
 // GET /api/schedules/:id - Get single schedule
 // =============================================================================
 
@@ -284,7 +304,7 @@ router.put('/:id', (req: Request, res: Response) => {
     try {
         const db = getDatabase();
         const { id } = req.params;
-        const { workStart, workEnd, lateTolerance, workDays, isActive } = req.body;
+        const { workStart, workEnd, lateTolerance, workDays, isActive, validFrom, validTo } = req.body;
 
         // Check if schedule exists
         const existingStmt = db.prepare('SELECT id FROM work_schedules WHERE id = ?');
@@ -299,7 +319,7 @@ router.put('/:id', (req: Request, res: Response) => {
 
         // Build update query dynamically
         const updates: string[] = [];
-        const params: (string | number)[] = [];
+        const params: (string | number | null)[] = [];
 
         if (workStart !== undefined) {
             updates.push('work_start = ?');
@@ -320,6 +340,14 @@ router.put('/:id', (req: Request, res: Response) => {
         if (isActive !== undefined) {
             updates.push('is_active = ?');
             params.push(isActive ? 1 : 0);
+        }
+        if (validFrom !== undefined) {
+            updates.push('valid_from = ?');
+            params.push(validFrom || null);
+        }
+        if (validTo !== undefined) {
+            updates.push('valid_to = ?');
+            params.push(validTo || null);
         }
 
         if (updates.length === 0) {

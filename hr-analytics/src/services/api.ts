@@ -376,6 +376,8 @@ export const schedulesApi = {
         workEnd?: string;
         lateTolerance?: number;
         workDays?: number[];
+        validFrom?: string;
+        validTo?: string;
     }): Promise<ApiResponse<WorkSchedule>> {
         return request('/schedules', {
             method: 'POST',
@@ -392,6 +394,8 @@ export const schedulesApi = {
         lateTolerance?: number;
         workDays?: number[];
         isActive?: boolean;
+        validFrom?: string;
+        validTo?: string;
     }): Promise<ApiResponse<void>> {
         return request(`/schedules/${id}`, {
             method: 'PUT',
@@ -785,6 +789,131 @@ export const compensationApi = {
 };
 
 // =============================================================================
+// MISSING TIME SETTINGS API
+// =============================================================================
+
+/**
+ * Missing time settings target type
+ */
+export type MissingTimeTargetType = 'organization' | 'department' | 'employee';
+
+/**
+ * Missing time handling type
+ * 1 = Full absent (yo'q vaqt = to'liq ishlanmagan kun)
+ * 2 = Auto-fill with penalty (avtomatik to'ldirish)
+ */
+export type MissingTimeHandlingType = 1 | 2;
+
+/**
+ * Missing time settings from API
+ */
+export interface MissingTimeSettings {
+    id: number;
+    targetType: MissingTimeTargetType;
+    targetId: number;
+    handlingType: MissingTimeHandlingType;
+    missingCheckinPenaltyMinutes: number;
+    missingCheckoutPenaltyMinutes: number;
+    isActive: boolean;
+    validFrom: string | null;  // Sozlama qachondan boshlab amal qiladi (YYYY-MM-DD)
+    createdAt: string;
+    updatedAt: string;
+}
+
+/**
+ * Available target for missing time settings
+ */
+export interface MissingTimeTarget {
+    id: number;
+    name: string;
+    hasSettings: boolean;
+    settingsId: number | null;
+    handlingType: number | null;
+    organizationName?: string;
+    departmentName?: string;
+    externalId?: string;
+}
+
+/**
+ * Available targets response
+ */
+export interface AvailableTargetsResponse {
+    organizations: MissingTimeTarget[];
+    departments: MissingTimeTarget[];
+    employees: MissingTimeTarget[];
+}
+
+/**
+ * Missing Time Settings API
+ */
+export const missingTimeSettingsApi = {
+    /**
+     * Get all missing time settings
+     */
+    async getAll(targetType?: MissingTimeTargetType): Promise<ApiResponse<MissingTimeSettings[]>> {
+        const params = targetType ? `?targetType=${targetType}` : '';
+        return request(`/missing-time-settings${params}`);
+    },
+
+    /**
+     * Get available targets for creating settings
+     */
+    async getAvailableTargets(): Promise<ApiResponse<AvailableTargetsResponse>> {
+        return request('/missing-time-settings/targets/available');
+    },
+
+    /**
+     * Get settings by target
+     */
+    async getByTarget(targetType: MissingTimeTargetType, targetId: number): Promise<ApiResponse<MissingTimeSettings>> {
+        return request(`/missing-time-settings/${targetType}/${targetId}`);
+    },
+
+    /**
+     * Create new missing time settings
+     */
+    async create(data: {
+        targetType: MissingTimeTargetType;
+        targetId: number;
+        handlingType: MissingTimeHandlingType;
+        missingCheckinPenaltyMinutes?: number;
+        missingCheckoutPenaltyMinutes?: number;
+        isActive?: boolean;
+        validFrom?: string | null;
+    }): Promise<ApiResponse<MissingTimeSettings>> {
+        return request('/missing-time-settings', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        });
+    },
+
+    /**
+     * Update existing settings
+     */
+    async update(id: number, data: {
+        handlingType?: MissingTimeHandlingType;
+        missingCheckinPenaltyMinutes?: number;
+        missingCheckoutPenaltyMinutes?: number;
+        isActive?: boolean;
+        validFrom?: string | null;
+    }): Promise<ApiResponse<MissingTimeSettings>> {
+        return request(`/missing-time-settings/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+        });
+    },
+
+    /**
+     * Delete settings
+     */
+    async delete(id: number): Promise<ApiResponse<void>> {
+        return request(`/missing-time-settings/${id}`, {
+            method: 'DELETE',
+        });
+    },
+};
+
+// =============================================================================
 // EXPORT ALL APIs
 // =============================================================================
 
@@ -796,6 +925,7 @@ export const api = {
     settings: settingsApi,
     violations: violationsApi,
     compensation: compensationApi,
+    missingTimeSettings: missingTimeSettingsApi,
 };
 
 export default api;

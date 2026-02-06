@@ -218,4 +218,121 @@ router.put('/organization', (req: Request, res: Response) => {
     }
 });
 
+// =============================================================================
+// POST /api/settings/reset - Reset all data (clear database)
+// =============================================================================
+
+/**
+ * Reset all data - clears all tables except organizations and default settings
+ * 
+ * WARNING: This is a destructive operation!
+ * Deletes: employees, departments, time_records, attendance_records,
+ *          violation_summary, import_history, employee_penalties,
+ *          employee_compensation, kpi_zero_records, penalty_details
+ */
+router.post('/reset', (req: Request, res: Response) => {
+    try {
+        const db = getDatabase();
+
+        log.warn('Starting database reset - clearing all data');
+
+        // Get counts before deletion for logging
+        const countsBefore = {
+            employees: (db.prepare('SELECT COUNT(*) as count FROM employees').get() as { count: number })?.count || 0,
+            departments: (db.prepare('SELECT COUNT(*) as count FROM departments').get() as { count: number })?.count || 0,
+            timeRecords: (db.prepare('SELECT COUNT(*) as count FROM time_records').get() as { count: number })?.count || 0,
+            attendanceRecords: (db.prepare('SELECT COUNT(*) as count FROM attendance_records').get() as { count: number })?.count || 0,
+            violationSummary: (db.prepare('SELECT COUNT(*) as count FROM violation_summary').get() as { count: number })?.count || 0,
+            importHistory: (db.prepare('SELECT COUNT(*) as count FROM import_history').get() as { count: number })?.count || 0,
+            employeePenalties: (db.prepare('SELECT COUNT(*) as count FROM employee_penalties').get() as { count: number })?.count || 0,
+            employeeCompensation: (db.prepare('SELECT COUNT(*) as count FROM employee_compensation').get() as { count: number })?.count || 0,
+        };
+
+        log.info('Data counts before reset', countsBefore);
+
+        // Delete in correct order (respecting foreign key constraints)
+        // 1. Delete penalty-related tables first
+        db.prepare('DELETE FROM penalty_details').run();
+        db.prepare('DELETE FROM kpi_zero_records').run();
+        db.prepare('DELETE FROM employee_penalties').run();
+
+        // 2. Delete compensation data
+        db.prepare('DELETE FROM employee_compensation').run();
+
+        // 3. Delete violation summaries
+        db.prepare('DELETE FROM violation_summary').run();
+
+        // 4. Delete time and attendance records
+        db.prepare('DELETE FROM time_records').run();
+        db.prepare('DELETE FROM attendance_records').run();
+
+        // 5. Delete import history
+        db.prepare('DELETE FROM import_history').run();
+
+        // 6. Delete schedule exceptions (but keep work_schedules)
+        db.prepare('DELETE FROM schedule_exceptions').run();
+
+        // 7. Delete missing time settings for employees and departments (keep organization)
+        db.prepare("DELETE FROM missing_time_settings WHERE target_type != 'organization'").run();
+
+        // 8. Delete work schedules for employees and departments (keep organization)
+        db.prepare("DELETE FROM work_schedules WHERE target_type != 'organization'").run();
+
+        // 9. Delete employees
+        db.prepare('DELETE FROM employees').run();
+
+        // 10. Delete departments
+        db.prepare('DELETE FROM departments').run();
+
+        log.info('Database reset completed successfully');
+
+        res.json({
+            success: true,
+            message: "Barcha ma'lumotlar muvaffaqiyatli o'chirildi",
+            deletedCounts: countsBefore
+        });
+
+    } catch (error) {
+        log.error('Failed to reset database', { error });
+        res.status(500).json({
+            success: false,
+            error: "Ma'lumotlarni o'chirishda xatolik yuz berdi"
+        });
+    }
+});
+
+// =============================================================================
+// GET /api/settings/stats - Get database statistics
+// =============================================================================
+
+/**
+ * Get database statistics for admin panel
+ */
+router.get('/stats', (req: Request, res: Response) => {
+    try {
+        const db = getDatabase();
+
+        const stats = {
+            employees: (db.prepare('SELECT COUNT(*) as count FROM employees').get() as { count: number })?.count || 0,
+            departments: (db.prepare('SELECT COUNT(*) as count FROM departments').get() as { count: number })?.count || 0,
+            timeRecords: (db.prepare('SELECT COUNT(*) as count FROM time_records').get() as { count: number })?.count || 0,
+            attendanceRecords: (db.prepare('SELECT COUNT(*) as count FROM attendance_records').get() as { count: number })?.count || 0,
+            imports: (db.prepare('SELECT COUNT(*) as count FROM import_history').get() as { count: number })?.count || 0,
+            uniqueDates: (db.prepare('SELECT COUNT(DISTINCT date) as count FROM time_records').get() as { count: number })?.count || 0,
+        };
+
+        res.json({
+            success: true,
+            data: stats
+        });
+
+    } catch (error) {
+        log.error('Failed to fetch database stats', { error });
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch database statistics'
+        });
+    }
+});
+
 export default router;

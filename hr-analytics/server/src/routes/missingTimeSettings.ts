@@ -52,6 +52,7 @@ interface MissingTimeSettingsBody {
     missingCheckinPenaltyMinutes?: number;
     missingCheckoutPenaltyMinutes?: number;
     isActive?: boolean;
+    validFrom?: string | null;  // Sozlama qachondan boshlab amal qiladi (YYYY-MM-DD)
 }
 
 // =============================================================================
@@ -227,6 +228,125 @@ router.get('/hierarchy/:employeeId', async (req: Request, res: Response) => {
 });
 
 /**
+ * GET /api/missing-time-settings/targets/available
+ * 
+ * Get available targets for setting missing time rules
+ * Returns lists of organizations, departments, and employees
+ * with their current settings status
+ * 
+ * NOTE: This route MUST be defined before /:targetType/:targetId
+ * to prevent Express from matching 'targets' as targetType
+ * 
+ * @returns Available targets grouped by type
+ */
+router.get('/targets/available', async (req: Request, res: Response) => {
+    try {
+        const db = getDatabase();
+
+        log.debug('Getting available targets for missing time settings');
+
+        // Get all organizations
+        const organizations = db.prepare(`
+            SELECT 
+                o.id, 
+                o.name,
+                mts.id as settings_id,
+                mts.handling_type
+            FROM organizations o
+            LEFT JOIN missing_time_settings mts 
+                ON mts.target_type = 'organization' AND mts.target_id = o.id AND mts.is_active = 1
+        `).all() as Array<{
+            id: number;
+            name: string;
+            settings_id: number | null;
+            handling_type: number | null;
+        }>;
+
+        // Get all departments
+        const departments = db.prepare(`
+            SELECT 
+                d.id, 
+                d.name,
+                o.name as organization_name,
+                mts.id as settings_id,
+                mts.handling_type
+            FROM departments d
+            JOIN organizations o ON d.organization_id = o.id
+            LEFT JOIN missing_time_settings mts 
+                ON mts.target_type = 'department' AND mts.target_id = d.id AND mts.is_active = 1
+            ORDER BY d.name
+        `).all() as Array<{
+            id: number;
+            name: string;
+            organization_name: string;
+            settings_id: number | null;
+            handling_type: number | null;
+        }>;
+
+        // Get all employees (limited to first 100 for performance)
+        const employees = db.prepare(`
+            SELECT 
+                e.id, 
+                e.name,
+                e.external_id,
+                d.name as department_name,
+                mts.id as settings_id,
+                mts.handling_type
+            FROM employees e
+            JOIN departments d ON e.department_id = d.id
+            LEFT JOIN missing_time_settings mts 
+                ON mts.target_type = 'employee' AND mts.target_id = e.id AND mts.is_active = 1
+            ORDER BY e.name
+            LIMIT 100
+        `).all() as Array<{
+            id: number;
+            name: string;
+            external_id: string;
+            department_name: string;
+            settings_id: number | null;
+            handling_type: number | null;
+        }>;
+
+        return res.json({
+            success: true,
+            data: {
+                organizations: organizations.map(o => ({
+                    id: o.id,
+                    name: o.name,
+                    hasSettings: o.settings_id !== null,
+                    settingsId: o.settings_id,
+                    handlingType: o.handling_type
+                })),
+                departments: departments.map(d => ({
+                    id: d.id,
+                    name: d.name,
+                    organizationName: d.organization_name,
+                    hasSettings: d.settings_id !== null,
+                    settingsId: d.settings_id,
+                    handlingType: d.handling_type
+                })),
+                employees: employees.map(e => ({
+                    id: e.id,
+                    name: e.name,
+                    externalId: e.external_id,
+                    departmentName: e.department_name,
+                    hasSettings: e.settings_id !== null,
+                    settingsId: e.settings_id,
+                    handlingType: e.handling_type
+                }))
+            }
+        });
+
+    } catch (error) {
+        log.error('Error getting available targets', { error });
+        return res.status(500).json({
+            success: false,
+            error: 'Mavjud targetlarni olishda xatolik yuz berdi'
+        });
+    }
+});
+
+/**
  * GET /api/missing-time-settings/:targetType/:targetId
  * 
  * Get missing time settings for a specific target
@@ -341,7 +461,8 @@ router.post('/', async (req: Request, res: Response) => {
             handlingType: body.handlingType,
             missingCheckinPenaltyMinutes: body.missingCheckinPenaltyMinutes ?? 60,
             missingCheckoutPenaltyMinutes: body.missingCheckoutPenaltyMinutes ?? 120,
-            isActive: body.isActive ?? true
+            isActive: body.isActive ?? true,
+            validFrom: body.validFrom ?? null
         });
 
         if (!settings) {
@@ -400,7 +521,8 @@ router.put('/:id', async (req: Request, res: Response) => {
             handlingType: body.handlingType,
             missingCheckinPenaltyMinutes: body.missingCheckinPenaltyMinutes,
             missingCheckoutPenaltyMinutes: body.missingCheckoutPenaltyMinutes,
-            isActive: body.isActive
+            isActive: body.isActive,
+            validFrom: body.validFrom
         });
 
         if (!settings) {
@@ -465,122 +587,6 @@ router.delete('/:id', async (req: Request, res: Response) => {
         return res.status(500).json({
             success: false,
             error: 'Sozlamalarni o\'chirishda xatolik yuz berdi'
-        });
-    }
-});
-
-/**
- * GET /api/missing-time-settings/targets/available
- * 
- * Get available targets for setting missing time rules
- * Returns lists of organizations, departments, and employees
- * with their current settings status
- * 
- * @returns Available targets grouped by type
- */
-router.get('/targets/available', async (req: Request, res: Response) => {
-    try {
-        const db = getDatabase();
-
-        log.debug('Getting available targets for missing time settings');
-
-        // Get all organizations
-        const organizations = db.prepare(`
-            SELECT 
-                o.id, 
-                o.name,
-                mts.id as settings_id,
-                mts.handling_type
-            FROM organizations o
-            LEFT JOIN missing_time_settings mts 
-                ON mts.target_type = 'organization' AND mts.target_id = o.id AND mts.is_active = 1
-        `).all() as Array<{
-            id: number;
-            name: string;
-            settings_id: number | null;
-            handling_type: number | null;
-        }>;
-
-        // Get all departments
-        const departments = db.prepare(`
-            SELECT 
-                d.id, 
-                d.name,
-                o.name as organization_name,
-                mts.id as settings_id,
-                mts.handling_type
-            FROM departments d
-            JOIN organizations o ON d.organization_id = o.id
-            LEFT JOIN missing_time_settings mts 
-                ON mts.target_type = 'department' AND mts.target_id = d.id AND mts.is_active = 1
-            ORDER BY d.name
-        `).all() as Array<{
-            id: number;
-            name: string;
-            organization_name: string;
-            settings_id: number | null;
-            handling_type: number | null;
-        }>;
-
-        // Get all employees (limited to first 100 for performance)
-        const employees = db.prepare(`
-            SELECT 
-                e.id, 
-                e.name,
-                e.external_id,
-                d.name as department_name,
-                mts.id as settings_id,
-                mts.handling_type
-            FROM employees e
-            JOIN departments d ON e.department_id = d.id
-            LEFT JOIN missing_time_settings mts 
-                ON mts.target_type = 'employee' AND mts.target_id = e.id AND mts.is_active = 1
-            ORDER BY e.name
-            LIMIT 100
-        `).all() as Array<{
-            id: number;
-            name: string;
-            external_id: string;
-            department_name: string;
-            settings_id: number | null;
-            handling_type: number | null;
-        }>;
-
-        return res.json({
-            success: true,
-            data: {
-                organizations: organizations.map(o => ({
-                    id: o.id,
-                    name: o.name,
-                    hasSettings: o.settings_id !== null,
-                    settingsId: o.settings_id,
-                    handlingType: o.handling_type
-                })),
-                departments: departments.map(d => ({
-                    id: d.id,
-                    name: d.name,
-                    organizationName: d.organization_name,
-                    hasSettings: d.settings_id !== null,
-                    settingsId: d.settings_id,
-                    handlingType: d.handling_type
-                })),
-                employees: employees.map(e => ({
-                    id: e.id,
-                    name: e.name,
-                    externalId: e.external_id,
-                    departmentName: e.department_name,
-                    hasSettings: e.settings_id !== null,
-                    settingsId: e.settings_id,
-                    handlingType: e.handling_type
-                }))
-            }
-        });
-
-    } catch (error) {
-        log.error('Error getting available targets', { error });
-        return res.status(500).json({
-            success: false,
-            error: 'Mavjud targetlarni olishda xatolik yuz berdi'
         });
     }
 });

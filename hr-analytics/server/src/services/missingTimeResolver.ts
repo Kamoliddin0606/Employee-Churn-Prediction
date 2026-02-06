@@ -69,6 +69,7 @@ interface MissingTimeSettingsRow {
     missing_checkin_penalty_minutes: number;
     missing_checkout_penalty_minutes: number;
     is_active: number;
+    valid_from: string | null;
     created_at: string;
     updated_at: string;
 }
@@ -110,6 +111,7 @@ function rowToSettings(row: MissingTimeSettingsRow): MissingTimeSettings {
         missingCheckinPenaltyMinutes: row.missing_checkin_penalty_minutes,
         missingCheckoutPenaltyMinutes: row.missing_checkout_penalty_minutes,
         isActive: row.is_active === 1,
+        validFrom: row.valid_from,
         createdAt: row.created_at,
         updatedAt: row.updated_at
     };
@@ -176,33 +178,46 @@ function calculateWorkMinutes(checkIn: string | null, checkOut: string | null): 
 /**
  * Get missing time settings for a specific target
  * Retrieves settings by target type and ID from database
+ * Supports date-based filtering for settings with valid_from
  * 
  * @param targetType - Level of settings ('organization', 'department', 'employee')
  * @param targetId - ID of the target entity
+ * @param date - Optional date string (YYYY-MM-DD) to filter by valid_from
  * @returns MissingTimeSettings if found and active, null otherwise
  */
 export function getSettingsByTarget(
     targetType: ScheduleTargetType,
-    targetId: number
+    targetId: number,
+    date?: string
 ): MissingTimeSettings | null {
     try {
         const db = getDatabase();
         
+        // Query with date filtering - get the most recent valid setting
+        // valid_from IS NULL means setting applies from beginning of time
+        // ORDER BY valid_from DESC NULLS LAST ensures we get the most specific setting
         const stmt = db.prepare(`
             SELECT * FROM missing_time_settings
-            WHERE target_type = ? AND target_id = ? AND is_active = 1
+            WHERE target_type = ? 
+              AND target_id = ? 
+              AND is_active = 1
+              AND (valid_from IS NULL OR valid_from <= ?)
+            ORDER BY valid_from DESC
+            LIMIT 1
         `);
         
-        const row = stmt.get(targetType, targetId) as MissingTimeSettingsRow | undefined;
+        // Use provided date or current date
+        const effectiveDate = date || new Date().toISOString().split('T')[0];
+        const row = stmt.get(targetType, targetId, effectiveDate) as MissingTimeSettingsRow | undefined;
         
         if (!row) {
-            log.debug('No settings found', { targetType, targetId });
+            log.debug('No settings found', { targetType, targetId, date: effectiveDate });
             return null;
         }
         
         return rowToSettings(row);
     } catch (error) {
-        log.error('Error getting settings by target', { targetType, targetId, error });
+        log.error('Error getting settings by target', { targetType, targetId, date, error });
         return null;
     }
 }
@@ -230,19 +245,22 @@ function getEmployeeInfo(employeeId: number): EmployeeInfo | null {
 }
 
 /**
- * Get effective missing time settings for an employee
+ * Get effective missing time settings for an employee on a specific date
  * Implements priority-based resolution: Employee > Department > Organization
+ * Supports date-based filtering for settings with valid_from
  * 
  * Resolution chain:
- * 1. Check for employee-specific settings
- * 2. If not found, check department settings
- * 3. If not found, fall back to organization settings
+ * 1. Check for employee-specific settings valid for the date
+ * 2. If not found, check department settings valid for the date
+ * 3. If not found, fall back to organization settings valid for the date
  * 
  * @param employeeId - Employee ID to get settings for
+ * @param date - Optional date string (YYYY-MM-DD) to filter by valid_from
  * @returns Effective settings with source level, or null if no settings found
  */
 export function getEffectiveMissingTimeSettings(
-    employeeId: number
+    employeeId: number,
+    date?: string
 ): EffectiveMissingTimeSettings | null {
     try {
         // Step 1: Get employee info (needed for department lookup)
@@ -253,9 +271,9 @@ export function getEffectiveMissingTimeSettings(
         }
 
         // Step 2: Check employee-level settings (highest priority)
-        const employeeSettings = getSettingsByTarget('employee', employeeId);
+        const employeeSettings = getSettingsByTarget('employee', employeeId, date);
         if (employeeSettings) {
-            log.debug('Using employee-level settings', { employeeId, settingsId: employeeSettings.id });
+            log.debug('Using employee-level settings', { employeeId, settingsId: employeeSettings.id, date });
             return {
                 settings: employeeSettings,
                 source: 'employee'
@@ -263,12 +281,13 @@ export function getEffectiveMissingTimeSettings(
         }
 
         // Step 3: Check department-level settings
-        const departmentSettings = getSettingsByTarget('department', employee.department_id);
+        const departmentSettings = getSettingsByTarget('department', employee.department_id, date);
         if (departmentSettings) {
             log.debug('Using department-level settings', { 
                 employeeId, 
                 departmentId: employee.department_id,
-                settingsId: departmentSettings.id 
+                settingsId: departmentSettings.id,
+                date
             });
             return {
                 settings: departmentSettings,
@@ -278,11 +297,12 @@ export function getEffectiveMissingTimeSettings(
 
         // Step 4: Fall back to organization-level settings
         // Note: Organization ID is typically 1 (default)
-        const organizationSettings = getSettingsByTarget('organization', 1);
+        const organizationSettings = getSettingsByTarget('organization', 1, date);
         if (organizationSettings) {
             log.debug('Using organization-level settings', { 
                 employeeId, 
-                settingsId: organizationSettings.id 
+                settingsId: organizationSettings.id,
+                date
             });
             return {
                 settings: organizationSettings,
@@ -291,11 +311,11 @@ export function getEffectiveMissingTimeSettings(
         }
 
         // No settings found at any level
-        log.warn('No missing time settings found at any level', { employeeId });
+        log.warn('No missing time settings found at any level', { employeeId, date });
         return null;
 
     } catch (error) {
-        log.error('Error getting effective missing time settings', { employeeId, error });
+        log.error('Error getting effective missing time settings', { employeeId, date, error });
         return null;
     }
 }
@@ -553,8 +573,8 @@ export function resolveMissingTime(
             };
         }
 
-        // Get effective settings for this employee
-        const effectiveSettings = getEffectiveMissingTimeSettings(employeeId);
+        // Get effective settings for this employee on this date
+        const effectiveSettings = getEffectiveMissingTimeSettings(employeeId, date);
         
         if (!effectiveSettings) {
             // No settings found - use default Type 1 behavior
@@ -617,8 +637,8 @@ export function createMissingTimeSettings(
             INSERT INTO missing_time_settings (
                 target_type, target_id, handling_type,
                 missing_checkin_penalty_minutes, missing_checkout_penalty_minutes,
-                is_active
-            ) VALUES (?, ?, ?, ?, ?, ?)
+                is_active, valid_from
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
         `);
         
         const result = stmt.run(
@@ -627,16 +647,21 @@ export function createMissingTimeSettings(
             settings.handlingType,
             settings.missingCheckinPenaltyMinutes,
             settings.missingCheckoutPenaltyMinutes,
-            settings.isActive ? 1 : 0
+            settings.isActive ? 1 : 0,
+            settings.validFrom || null
         );
         
         log.info('Created missing time settings', { 
             id: result.lastInsertRowid, 
             targetType: settings.targetType,
-            targetId: settings.targetId
+            targetId: settings.targetId,
+            validFrom: settings.validFrom
         });
         
-        return getSettingsByTarget(settings.targetType, settings.targetId);
+        // Get the newly created settings by ID
+        const getStmt = db.prepare('SELECT * FROM missing_time_settings WHERE id = ?');
+        const row = getStmt.get(result.lastInsertRowid) as MissingTimeSettingsRow | undefined;
+        return row ? rowToSettings(row) : null;
         
     } catch (error) {
         log.error('Error creating missing time settings', { settings, error });
@@ -677,6 +702,10 @@ export function updateMissingTimeSettings(
         if (updates.isActive !== undefined) {
             updateFields.push('is_active = ?');
             values.push(updates.isActive ? 1 : 0);
+        }
+        if (updates.validFrom !== undefined) {
+            updateFields.push('valid_from = ?');
+            values.push(updates.validFrom || '');
         }
         
         if (updateFields.length === 0) {

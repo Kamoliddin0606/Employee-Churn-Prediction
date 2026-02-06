@@ -10,7 +10,7 @@
  */
 
 import React, { useCallback, useState } from 'react';
-import { Upload, FileSpreadsheet, AlertCircle, CheckCircle2, X, Clock, FileText } from 'lucide-react';
+import { Upload, FileSpreadsheet, AlertCircle, CheckCircle2, X, Clock, FileText, Users, Download } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
 import { Progress } from './ui/progress';
@@ -20,7 +20,7 @@ import { useLanguage } from '../i18n';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 // File type options
-type FileType = 'checkinout' | 'details';
+type FileType = 'checkinout' | 'details' | 'employees';
 
 interface FileTypeOption {
     value: FileType;
@@ -28,6 +28,7 @@ interface FileTypeOption {
     labelEn: string;
     description: string;
     icon: React.ReactNode;
+    templateUrl?: string;
 }
 
 const FILE_TYPE_OPTIONS: FileTypeOption[] = [
@@ -44,6 +45,14 @@ const FILE_TYPE_OPTIONS: FileTypeOption[] = [
         labelEn: 'Monthly Details',
         description: 'Status kodlari (W, L, E, A, NS)',
         icon: <FileText className="h-8 w-8" />,
+    },
+    {
+        value: 'employees',
+        label: 'Xodimlar',
+        labelEn: 'Employees',
+        description: 'Yangi xodimlar, bo\'limlar va tashkilotlar',
+        icon: <Users className="h-8 w-8" />,
+        templateUrl: `${API_BASE_URL}/import/employees/template`,
     },
 ];
 
@@ -117,7 +126,12 @@ export function FileImportBackend() {
 
             setImportProgress(30);
 
-            const response = await fetch(`${API_BASE_URL}/import/upload`, {
+            // Different endpoint for employees import
+            const endpoint = selectedFileType === 'employees' 
+                ? `${API_BASE_URL}/import/employees`
+                : `${API_BASE_URL}/import/upload`;
+
+            const response = await fetch(endpoint, {
                 method: 'POST',
                 body: formData,
             });
@@ -134,7 +148,7 @@ export function FileImportBackend() {
 
             setImportProgress(100);
             setImportResult(data.data);
-            setWarnings(data.data?.warnings || []);
+            setWarnings(data.data?.warnings || data.data?.errors || []);
             setImportStatus('success');
 
             // Auto-reset after 5 seconds
@@ -187,19 +201,29 @@ export function FileImportBackend() {
                             <p className="text-sm text-muted-foreground">Yuklamoqchi bo'lgan Excel fayl qaysi formatda?</p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {FILE_TYPE_OPTIONS.map((option) => (
-                                <button
-                                    key={option.value}
-                                    onClick={() => setSelectedFileType(option.value)}
-                                    className="flex flex-col items-center p-6 border-2 rounded-xl transition-all hover:border-primary hover:bg-primary/5 group"
-                                >
-                                    <div className="text-muted-foreground group-hover:text-primary transition-colors">
-                                        {option.icon}
-                                    </div>
-                                    <h4 className="mt-3 font-semibold text-foreground">{option.label}</h4>
-                                    <p className="mt-1 text-sm text-muted-foreground text-center">{option.description}</p>
-                                </button>
+                                <div key={option.value} className="flex flex-col">
+                                    <button
+                                        onClick={() => setSelectedFileType(option.value)}
+                                        className="flex flex-col items-center p-6 border-2 rounded-xl transition-all hover:border-primary hover:bg-primary/5 group flex-1"
+                                    >
+                                        <div className="text-muted-foreground group-hover:text-primary transition-colors">
+                                            {option.icon}
+                                        </div>
+                                        <h4 className="mt-3 font-semibold text-foreground">{option.label}</h4>
+                                        <p className="mt-1 text-sm text-muted-foreground text-center">{option.description}</p>
+                                    </button>
+                                    {option.templateUrl && (
+                                        <a
+                                            href={option.templateUrl}
+                                            className="mt-2 flex items-center justify-center gap-1 text-xs text-primary hover:underline"
+                                        >
+                                            <Download className="h-3 w-3" />
+                                            Shablon yuklab olish
+                                        </a>
+                                    )}
+                                </div>
                             ))}
                         </div>
                     </div>
