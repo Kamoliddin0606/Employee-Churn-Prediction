@@ -731,6 +731,8 @@ export function calculateAllPenalties(year: number, month: number): PenaltyCalcu
 export function getAppliedPenalties(year: number, month: number): Array<EmployeePenalty & {
     employeeName: string;
     departmentName: string;
+    kpiAmount: number | null;
+    absentTotalMinutes: number | null;
 }> {
     const db = getDatabase();
 
@@ -738,10 +740,17 @@ export function getAppliedPenalties(year: number, month: number): Array<Employee
         SELECT 
             ep.*,
             e.name as employee_name,
-            d.name as department_name
+            e.external_id as external_id,
+            d.name as department_name,
+            ec.kpi_amount as kpi_amount,
+            vs.absent_total_minutes as absent_total_minutes
         FROM employee_penalties ep
         JOIN employees e ON ep.employee_id = e.id
         JOIN departments d ON e.department_id = d.id
+        LEFT JOIN employee_compensation ec ON ep.employee_id = ec.employee_id 
+            AND ep.year = ec.year AND ep.month = ec.month
+        LEFT JOIN violation_summary vs ON ep.employee_id = vs.employee_id 
+            AND ep.year = vs.year AND ep.month = vs.month
         WHERE ep.year = ? AND ep.month = ? AND e.is_active = 1
         ORDER BY ep.total_fine DESC, e.name ASC
     `);
@@ -765,8 +774,12 @@ export function getAppliedPenalties(year: number, month: number): Array<Employee
         calculatedAt: row.calculated_at as string,
         createdAt: row.created_at as string,
         updatedAt: row.updated_at as string,
+        kpiCarriedFromPrev: row.kpi_carried_from_prev as number,
+        kpiResult: row.kpi_result as number,
         employeeName: row.employee_name as string,
         departmentName: row.department_name as string,
+        kpiAmount: row.kpi_amount as number | null,
+        absentTotalMinutes: row.absent_total_minutes as number | null,
     }));
 }
 

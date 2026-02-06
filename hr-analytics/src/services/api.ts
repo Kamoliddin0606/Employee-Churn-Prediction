@@ -133,6 +133,7 @@ export interface ViolationSummary {
     lateCount: number;
     earlyLeaveCount: number;
     absentCount: number;
+    absentTotalMinutes?: number;    // Total minutes of absent days based on schedule
     violationCount: number;
     calculationLevel: string;
     calculatedAt: string;
@@ -652,6 +653,7 @@ export const violationsApi = {
             lateCount: number;
             earlyLeaveCount: number;
             absentCount: number;
+            absentTotalMinutes: number;
             violationCount: number;
             notAtWorkplaceCount?: number;
             notAtWorkplaceMinutes?: number;

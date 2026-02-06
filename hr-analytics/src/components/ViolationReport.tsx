@@ -72,6 +72,7 @@ export default function ViolationReport() {
             lateCount: number;
             earlyLeaveCount: number;
             absentCount: number;
+            absentTotalMinutes: number;
             violationCount: number;
             notAtWorkplaceCount?: number;
             notAtWorkplaceMinutes?: number;
@@ -245,6 +246,17 @@ export default function ViolationReport() {
             }
         },
         {
+            key: 'absentTotalMinutes',
+            header: 'Kelmagan (daq)',
+            className: 'text-center',
+            render: (value) => {
+                const mins = value as number;
+                return mins > 0 ? (
+                    <span className="text-red-600 dark:text-red-400 font-medium">{mins}</span>
+                ) : <span className="text-gray-400">-</span>;
+            }
+        },
+        {
             key: 'violationCount',
             header: 'Jami',
             className: 'text-center',
@@ -262,7 +274,20 @@ export default function ViolationReport() {
                     </span>
                 );
             }
-        }
+        },
+        {
+            key: 'totalMinutes',
+            header: 'Jami (daq)',
+            className: 'text-center',
+            render: (_, row) => {
+                const totalMinutes = (row.totalLateMinutes || 0) + 
+                                    (row.totalEarlyLeaveMinutes || 0) + 
+                                    (row.absentTotalMinutes || 0);
+                return totalMinutes > 0 ? (
+                    <span className="text-purple-600 dark:text-purple-400 font-bold">{totalMinutes}</span>
+                ) : <span className="text-gray-400">-</span>;
+            }
+        },
     ], []);
 
     // =============================================================================

@@ -237,6 +237,7 @@ router.get('/report', (req: Request, res: Response) => {
         vs.late_count as lateCount,
         vs.early_leave_count as earlyLeaveCount,
         vs.absent_count as absentCount,
+        vs.absent_total_minutes as absentTotalMinutes,
         vs.violation_count as violationCount,
         vs.calculation_level as calculationLevel,
         vs.calculated_at as calculatedAt
@@ -256,6 +257,7 @@ router.get('/report', (req: Request, res: Response) => {
             lateCount: number;
             earlyLeaveCount: number;
             absentCount: number;
+            absentTotalMinutes: number;
             violationCount: number;
         }
 
@@ -266,6 +268,7 @@ router.get('/report', (req: Request, res: Response) => {
             lateCount: acc.lateCount + (row.lateCount as number || 0),
             earlyLeaveCount: acc.earlyLeaveCount + (row.earlyLeaveCount as number || 0),
             absentCount: acc.absentCount + (row.absentCount as number || 0),
+            absentTotalMinutes: acc.absentTotalMinutes + (row.absentTotalMinutes as number || 0),
             violationCount: acc.violationCount + (row.violationCount as number || 0)
         }), {
             totalLateMinutes: 0,
@@ -273,6 +276,7 @@ router.get('/report', (req: Request, res: Response) => {
             lateCount: 0,
             earlyLeaveCount: 0,
             absentCount: 0,
+            absentTotalMinutes: 0,
             violationCount: 0
         });
 

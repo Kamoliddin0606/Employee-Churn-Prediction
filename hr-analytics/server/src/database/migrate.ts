@@ -487,7 +487,14 @@ const migrations: string[] = [
   // If kpi_zeroed = 1, kpi_result = 0
   // Otherwise kpi_result = max(0, kpi_amount - total_fine)
   // ---------------------------------------------------------------------------
-  `ALTER TABLE employee_penalties ADD COLUMN kpi_result REAL DEFAULT 0`
+  `ALTER TABLE employee_penalties ADD COLUMN kpi_result REAL DEFAULT 0`,
+
+  // ---------------------------------------------------------------------------
+  // Migration 54: Add absent_total_minutes column to violation_summary
+  // Stores total minutes of absent days based on employee schedule
+  // Calculated as: sum of (work_hours * 60) for each absent day
+  // ---------------------------------------------------------------------------
+  `ALTER TABLE violation_summary ADD COLUMN absent_total_minutes INTEGER DEFAULT 0`
 ];
 
 // =============================================================================

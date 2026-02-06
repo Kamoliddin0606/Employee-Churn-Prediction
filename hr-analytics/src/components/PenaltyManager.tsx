@@ -96,10 +96,14 @@ interface EmployeePenalty {
     lateCount: number;           // Kech kelish
     earlyLeaveCount: number;     // Erta ketish
     absentCount: number;         // Kelmagan
+    absentTotalMinutes?: number; // Kelmagan umumiy daqiqalar
     totalViolations: number;     // Jami buzilishlar
     totalFine: number;
     kpiZeroed: boolean;
     kpiZeroedMonths: number;
+    kpiCarriedFromPrev?: number; // O'tgan oydan ko'chirilgan KPI
+    kpiResult?: number;          // KPI natijasi
+    kpiAmount?: number;          // KPI miqdori
     terminationRecommended: boolean;
     employeeName: string;
     departmentName: string;
@@ -142,6 +146,9 @@ export default function PenaltyManager() {
     const [penalties, setPenalties] = useState<EmployeePenalty[]>([]);
     const [summary, setSummary] = useState<PenaltySummary | null>(null);
     const [expandedEmployee, setExpandedEmployee] = useState<number | null>(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [sortField, setSortField] = useState<keyof EmployeePenalty>('totalFine');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
     // Copy modal state
     const [showCopyModal, setShowCopyModal] = useState(false);
@@ -362,6 +369,55 @@ export default function PenaltyManager() {
     function formatCurrency(amount: number): string {
         return new Intl.NumberFormat('uz-UZ').format(amount) + ' so\'m';
     }
+
+    // =========================================================================
+    // FILTERING AND SORTING
+    // =========================================================================
+
+    // Filter penalties based on search query
+    const filteredPenalties = penalties.filter(penalty => {
+        if (!searchQuery) return true;
+        const query = searchQuery.toLowerCase();
+        return (
+            penalty.employeeName.toLowerCase().includes(query) ||
+            penalty.departmentName.toLowerCase().includes(query) ||
+            penalty.totalFine.toString().includes(query) ||
+            penalty.totalViolations.toString().includes(query) ||
+            (penalty.kpiAmount?.toString() || '').includes(query) ||
+            (penalty.kpiResult?.toString() || '').includes(query)
+        );
+    });
+
+    // Sort penalties
+    const sortedPenalties = [...filteredPenalties].sort((a, b) => {
+        const aVal = a[sortField];
+        const bVal = b[sortField];
+        
+        if (aVal === undefined || aVal === null) return 1;
+        if (bVal === undefined || bVal === null) return -1;
+        
+        if (typeof aVal === 'string' && typeof bVal === 'string') {
+            return sortOrder === 'asc' 
+                ? aVal.localeCompare(bVal)
+                : bVal.localeCompare(aVal);
+        }
+        
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+            return sortOrder === 'asc' ? aVal - bVal : bVal - aVal;
+        }
+        
+        return 0;
+    });
+
+    // Handle sort
+    const handleSort = (field: keyof EmployeePenalty) => {
+        if (sortField === field) {
+            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortField(field);
+            setSortOrder('desc');
+        }
+    };
 
     // =========================================================================
     // RENDER
@@ -612,8 +668,15 @@ export default function PenaltyManager() {
                         </div>
                     )}
 
-                    {/* Calculate Button */}
-                    <div className="flex justify-end">
+                    {/* Calculate Button and Search */}
+                    <div className="flex justify-between items-center gap-4">
+                        <input
+                            type="text"
+                            placeholder="Qidirish (xodim, bo'lim, jarima...)"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        />
                         <button
                             onClick={handleCalculatePenalties}
                             disabled={calculating}
@@ -633,24 +696,46 @@ export default function PenaltyManager() {
                         <table className="w-full">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Xodim</th>
-                                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Bo'lim</th>
-                                    <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Buzilishlar</th>
-                                    <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">Jarima</th>
-                                    <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">KPI</th>
+                                    <th onClick={() => handleSort('employeeName')} className="px-4 py-3 text-left text-sm font-semibold text-gray-700 cursor-pointer hover:bg-gray-100">
+                                        Xodim {sortField === 'employeeName' && (sortOrder === 'asc' ? '↑' : '↓')}
+                                    </th>
+                                    <th onClick={() => handleSort('departmentName')} className="px-4 py-3 text-left text-sm font-semibold text-gray-700 cursor-pointer hover:bg-gray-100">
+                                        Bo'lim {sortField === 'departmentName' && (sortOrder === 'asc' ? '↑' : '↓')}
+                                    </th>
+                                    <th onClick={() => handleSort('absentTotalMinutes')} className="px-4 py-3 text-center text-sm font-semibold text-gray-700 cursor-pointer hover:bg-gray-100">
+                                        Kelmagan (daq) {sortField === 'absentTotalMinutes' && (sortOrder === 'asc' ? '↑' : '↓')}
+                                    </th>
+                                    <th onClick={() => handleSort('kpiAmount')} className="px-4 py-3 text-center text-sm font-semibold text-gray-700 cursor-pointer hover:bg-gray-100">
+                                        KPI Miqdori {sortField === 'kpiAmount' && (sortOrder === 'asc' ? '↑' : '↓')}
+                                    </th>
+                                    <th onClick={() => handleSort('kpiResult')} className="px-4 py-3 text-center text-sm font-semibold text-gray-700 cursor-pointer hover:bg-gray-100">
+                                        KPI Natija {sortField === 'kpiResult' && (sortOrder === 'asc' ? '↑' : '↓')}
+                                    </th>
+                                    <th onClick={() => handleSort('totalViolations')} className="px-4 py-3 text-center text-sm font-semibold text-gray-700 cursor-pointer hover:bg-gray-100">
+                                        Buzilishlar {sortField === 'totalViolations' && (sortOrder === 'asc' ? '↑' : '↓')}
+                                    </th>
+                                    <th onClick={() => handleSort('totalFine')} className="px-4 py-3 text-right text-sm font-semibold text-gray-700 cursor-pointer hover:bg-gray-100">
+                                        Jarima {sortField === 'totalFine' && (sortOrder === 'asc' ? '↑' : '↓')}
+                                    </th>
+                                    <th onClick={() => handleSort('kpiZeroedMonths')} className="px-4 py-3 text-center text-sm font-semibold text-gray-700 cursor-pointer hover:bg-gray-100">
+                                        KPI {sortField === 'kpiZeroedMonths' && (sortOrder === 'asc' ? '↑' : '↓')}
+                                    </th>
                                     <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Status</th>
                                     <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700"></th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
-                                {penalties.length === 0 ? (
+                                {sortedPenalties.length === 0 ? (
                                     <tr>
-                                        <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
-                                            Bu oy uchun jarimalar hali hisoblanmagan. "Jarimalarni Hisoblash" tugmasini bosing.
+                                        <td colSpan={10} className="px-4 py-8 text-center text-gray-500">
+                                            {penalties.length === 0 
+                                                ? "Bu oy uchun jarimalar hali hisoblanmagan. 'Jarimalarni Hisoblash' tugmasini bosing."
+                                                : "Qidiruv natijasi topilmadi."
+                                            }
                                         </td>
                                     </tr>
                                 ) : (
-                                    penalties.map((penalty) => (
+                                    sortedPenalties.map((penalty) => (
                                         <tr 
                                             key={penalty.id} 
                                             className={`hover:bg-gray-50 ${
@@ -660,6 +745,27 @@ export default function PenaltyManager() {
                                         >
                                             <td className="px-4 py-3 font-medium">{penalty.employeeName}</td>
                                             <td className="px-4 py-3 text-gray-600">{penalty.departmentName}</td>
+                                            <td className="px-4 py-3 text-center">
+                                                {penalty.absentTotalMinutes ? (
+                                                    <span className="text-red-600 font-medium">
+                                                        {penalty.absentTotalMinutes}
+                                                    </span>
+                                                ) : '-'}
+                                            </td>
+                                            <td className="px-4 py-3 text-center">
+                                                {penalty.kpiAmount ? (
+                                                    <span className="text-blue-600 font-medium">
+                                                        {formatCurrency(penalty.kpiAmount)}
+                                                    </span>
+                                                ) : '-'}
+                                            </td>
+                                            <td className="px-4 py-3 text-center">
+                                                {penalty.kpiResult !== undefined && penalty.kpiResult !== null ? (
+                                                    <span className={`font-medium ${penalty.kpiResult === 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                                        {formatCurrency(penalty.kpiResult)}
+                                                    </span>
+                                                ) : '-'}
+                                            </td>
                                             <td className="px-4 py-3 text-center">
                                                 <div className="flex flex-col items-center" title={`Kech: ${penalty.lateCount || 0}, Erta: ${penalty.earlyLeaveCount || 0}, Kelmagan: ${penalty.absentCount || 0}`}>
                                                     <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${

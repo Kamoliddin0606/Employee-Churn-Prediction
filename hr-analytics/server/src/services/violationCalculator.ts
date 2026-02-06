@@ -61,6 +61,7 @@ interface MonthlyViolationResult {
     lateCount: number;
     earlyLeaveCount: number;
     absentCount: number;
+    absentTotalMinutes: number;    // Total minutes of absent days based on schedule
     violationCount: number;
     // Not-at-workplace tracking (Type 2 settings - both check_in and check_out missing)
     notAtWorkplaceCount: number;   // Days when employee was not at workplace
@@ -194,6 +195,7 @@ export function calculateEmployeeMonthlyViolations(
         lateCount: 0,
         earlyLeaveCount: 0,
         absentCount: 0,  // Will be calculated from time_records
+        absentTotalMinutes: 0,  // Total minutes of absent days
         violationCount: 0,
         notAtWorkplaceCount: 0,
         notAtWorkplaceMinutes: 0
@@ -267,11 +269,18 @@ export function calculateEmployeeMonthlyViolations(
             // One or both times missing - count as absent
             result.absentCount++;
             
+            // Calculate absent minutes based on schedule
+            const workStartMinutes = timeToMinutes(schedule.workStart);
+            const workEndMinutes = timeToMinutes(schedule.workEnd);
+            const absentMinutes = workEndMinutes - workStartMinutes;
+            result.absentTotalMinutes += absentMinutes;
+            
             log.debug('Missing time(s) - counted as absent', {
                 employeeId,
                 date: record.date,
                 checkIn: record.check_in,
-                checkOut: record.check_out
+                checkOut: record.check_out,
+                absentMinutes
             });
         }
     }
@@ -335,15 +344,16 @@ export function calculateAllEmployeesMonthlyViolations(
     INSERT INTO violation_summary (
       employee_id, year, month, 
       total_late_minutes, total_early_leave_minutes,
-      late_count, early_leave_count, absent_count, violation_count,
+      late_count, early_leave_count, absent_count, absent_total_minutes, violation_count,
       calculation_level, calculated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
     ON CONFLICT(employee_id, year, month) DO UPDATE SET
       total_late_minutes = excluded.total_late_minutes,
       total_early_leave_minutes = excluded.total_early_leave_minutes,
       late_count = excluded.late_count,
       early_leave_count = excluded.early_leave_count,
       absent_count = excluded.absent_count,
+      absent_total_minutes = excluded.absent_total_minutes,
       violation_count = excluded.violation_count,
       calculation_level = excluded.calculation_level,
       calculated_at = excluded.calculated_at
@@ -364,6 +374,7 @@ export function calculateAllEmployeesMonthlyViolations(
                 violations.lateCount,
                 violations.earlyLeaveCount,
                 violations.absentCount,
+                violations.absentTotalMinutes,
                 violations.violationCount,
                 level
             );
